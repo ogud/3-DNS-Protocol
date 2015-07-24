@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+  <!ENTITY rfc1035 PUBLIC "" "./reference.RFC.1035.xml">
+  <!ENTITY rfc1995 PUBLIC "" "./reference.RFC.1995.xml">
+  <!ENTITY rfc2119 PUBLIC "" "./reference.RFC.2119.xml">
+  <!ENTITY rfc2845 PUBLIC "" "./reference.RFC.2845.xml">
+  <!ENTITY rfc3833 PUBLIC "" "./reference.RFC.3833.xml">
+  <!ENTITY rfc4034 PUBLIC "" "./reference.RFC.4034.xml">
+  <!ENTITY rfc5358 PUBLIC "" "./reference.RFC.5358.xml">
+]>
+
+<rfc category="std" docName="draft-ogud-dnsop-acl-metaqueries-01"
+     ipr="trust200902" updates="1035">
+
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+  <?rfc toc="yes" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc iprnotified="no" ?>
+  <?rfc strict="yes"?>
+  <?rfc compact="yes" ?>
+
+  <front>
+    <title abbrev="Refusing DNS Queries of Type ANY">
+      Required Behaviour for Authoritative-Only DNS Servers that
+      Refuse Meta Queries 
+    </title>
+   <author fullname="Olafur Gudmundsson" initials="O."
+      surname="Gudmundsson">
+      <organization>CloudFlare Inc.</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>San Francisco</city>
+          <region>CA</region>
+          <code>94107</code>
+          <country>USA</country>
+        </postal>
+        <email>olafur@cloudflare.com</email>
+      </address>
+    </author>
+
+<author fullname="Paul Wouters"> 
+</author> 
+<!-- Add your name here --> 
+<date/> 
+<area> NO clue</area> 
+<workgroup> None</workgroup> 
+<abstract> 
+<t> 
+General protocol is to do a REST call an get back a Json blob 
+that contains info/error/cmd/.. blocs that client parses. 
+</t>
+<t>
+We are going to talk the same protocol to all R* entities so from a
+3-DNS point of view it does not matter if it is talking to
+Registry, Registrar or Reseller, they will all speak the same
+protocol. 
+</t> 
+
+</abstract> 
+</front>
+
+
+<middle> 
+<section title="Introduction"> 
+<t> 
+why is this needed ? Current system does not work well
+</t> 
+<t> ADD more text</t>
+</section>
+<section title="Protocol"> 
+<t>
+The basic call is 
+&lt;SERVER&gt;&lt;cmd&gt;/domain/auth=""/extra-stuff 
+</t>
+<t>
+The cmd can be:
+     getds  --- insert DS from CDS/CDNSKEY at domain 
+     putns  --  update NS set --- extra parameter --> NS=name 
+     delds  --  delete the DS record at domain (how to authorize is a question) 
+     status ---  gives back the current NS and DS + glue records for the domain 
+     refer: URI  
+</t>
+<t>
+The basic answer is a jason blob 
+the important parts of the blob are 
+- debug: list of debug messages normally empty 
+- error: if there was one 
+- domain: what domain this is answer for 
+- rr: the new list of rrs "can be empty" 
+- challenge: RR to insert into the zone 
+</t>
+
+</section> 
+<section title="Authorization"> 
+<t>
+The authorization can be either based on Token (like auth code) or buy challenge i.e. inserting a blob into the zone. 
+It is up to registrars to register the referral URI with registries, or block the access to updating DS and NS. 
+</t>
+</section> 
+<section title="Security considerations"> 
+<t>
+TBD</t>
+</section> 
+
+<section title="IANA Actions"> 
+<t> URI ??? TBD </t> 
+</section>
+<section title="Internationalization Considerations">
+<t> This protcol is designed for machine to machine communications</t> 
+</section> 
+</middle>
+
+<back> 
+  <references title="Normative References">
+      &rfc2119;
+    </references>
+
+    <references title="Informative References">
+      &rfc2845;
+    </references>
+
+<section title="Document History"> 
+<t> First version</t> 
+</section> 
+</back>
+</rfc> 
+
