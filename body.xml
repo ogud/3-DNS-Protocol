@@ -50,8 +50,16 @@
 <workgroup> None</workgroup> 
 <abstract> 
 <t> 
-General protocol is to do a REST call an get back a Json blob 
-that contains info/error/cmd/.. blocs that client parses. 
+There is a need for simple protocol to allow third party DNS operators
+to talk to Registry/Registars/Reseller about domains the DNS operator
+is operating. This protocol is REST based. When a authenticated
+channel exists between the R* entity and the DNS operator it is
+possilbe to bootstrap DNSSEC. 
+</t>
+<t> Once DNSSEC has been bootstrapped this protocol can also be used
+ to trigger maintainance of delegation information like NS and glue
+ records. This protocol is keept simple and flexible to accomondate 
+ different operating models. 
 </t>
 <t>
 We are going to talk the same protocol to all R* entities so from a
@@ -66,39 +74,72 @@ protocol.
 
 <middle> 
 <section title="Introduction"> 
-<t> 
-why is this needed ? Current system does not work well
-</t> 
-<t> ADD more text</t>
+  <t> 
+    why is this needed ? Current system does not work well
+  </t> 
+  <t> ADD more text</t>
+  <t>
+    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", 
+    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+    document are to be interpreted as described in <xref target="RFC2119" />.
+  </t>
 </section>
 <section title="Protocol"> 
-<t>
-The basic call is 
-&lt;SERVER&gt;&lt;cmd&gt;/domain/auth=""/extra-stuff 
-</t>
-<t>
-The cmd can be:
-     getds  --- insert DS from CDS/CDNSKEY at domain 
-     putns  --  update NS set --- extra parameter --> NS=name 
-     delds  --  delete the DS record at domain (how to authorize is a question) 
-     status ---  gives back the current NS and DS + glue records for the domain 
-     refer: URI  
-</t>
-<t>
-The basic answer is a jason blob 
-the important parts of the blob are 
-- debug: list of debug messages normally empty 
-- error: if there was one 
-- domain: what domain this is answer for 
-- rr: the new list of rrs "can be empty" 
-- challenge: RR to insert into the zone 
-</t>
-
+  <t>
+    The basic call is 
+    &lt;SERVER&gt;&lt;cmd&gt;/domain/auth=""/extra-stuff 
+  </t>
+  <t>
+    The cmd can be:
+    <list style="hanging">
+      <t hangText="/getDS"> install DS from CDS/CDNSKEY at domain if
+      present and different from current DS set</t>
+      <t hangText="/getNS">  update NS set based on the childs NS set </t>
+      <t hangText="/delDS"> delete the all DS records at domain (how to authorize is a question) </t>
+      <t hangText="/status"> Returns the current NS and DS + glue
+	records for the domain and or any other status information</t>
+    </list>
+  </t>
+  
+  <t> 
+    The commands "getDS" and "status" are required, the others a are
+    RECOMMENDED. The following options to the commands are allowed
+    <list style="hanging"> 
+      <t hangText="auth="> an authenticaion token</t> 
+      <t hangText="debug="> request a debug session </t> 
+    </list>
+  </t>
+  
+  <t>
+    The basic answer is a jason blob the important parts of the blob are 
+    <list style="hanging">
+      <t hangText="refer:"> will contain an URI; this is an referal to
+	an URI that is better able to do execute the command</t>
+      <t hangText="refused:"> This command can not be executed, and
+      the reason is inside the block </t> 
+      <t hangText="debug:"> list of debug messages normally empty
+      unless debug flag is present, this section should be ignored in
+      normal processing</t>
+      <t hangText="error:"> if there was one look inside debug for
+      more details</t>
+      <t hangText="domain:"> what domain this is an answer for this
+      section MUST be included in all answers</t>
+      <t hangText="rr:">  the new list of rrs "can be empty" </t>
+      <t hangText="challenge:"> an RR to insert into the zone </t>
+    </list>
+  </t> 
+  <t> If ``refer'' block is present then the client is to attempt to
+  connect to that URI and retry the command there. Client SHOULD
+  always honor the refer command over all other answers it gets in
+  the answer.  </t> 
 </section> 
+
 <section title="Authorization"> 
-<t>
-The authorization can be either based on Token (like auth code) or buy challenge i.e. inserting a blob into the zone. 
-It is up to registrars to register the referral URI with registries, or block the access to updating DS and NS. 
+  <t>
+The authorization can be either based on Token (like auth code) or buy
+challenge i.e. inserting a blob into the zone.  It is up to registrars
+to register the referral URI with registries, or block the access to
+updating DS and NS.  
 </t>
 </section> 
 <section title="Security considerations"> 
@@ -110,7 +151,7 @@ TBD</t>
 <t> URI ??? TBD </t> 
 </section>
 <section title="Internationalization Considerations">
-<t> This protcol is designed for machine to machine communications</t> 
+<t> This protcol is designed for machine to machine communications </t> 
 </section> 
 </middle>
 
