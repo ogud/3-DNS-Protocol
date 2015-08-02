@@ -44,29 +44,52 @@
 
 <author fullname="Paul Wouters"> 
 </author> 
+
+   <author fullname="Matthew Pounsett" initials="M."
+      surname="Pounsett">
+      <organization>Rightside</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>Toronto</city>
+          <region>ON</region>
+          <code></code>
+          <country>Canada</country>
+        </postal>
+        <email>matt.pounsett@rightside.co</email>
+      </address>
+    </author>
+
 <!-- Add your name here --> 
 <date/> 
 <area> NO clue</area> 
 <workgroup> None</workgroup> 
 <abstract> 
 <t> 
-There is a need for simple protocol to allow third party DNS operators
-to talk to Registry/Registars/Reseller about domains the DNS operator
-is operating. This protocol is REST based. When a authenticated
-channel exists between the R* entity and the DNS operator it is
-possilbe to bootstrap DNSSEC. 
+	There are several problems that arise in the standard
+	Registrant/Registrar/Registry model when the operator of a zone is
+	neither the Registrant nor the Registrar for the delegation.  Historically
+	the issues have been minor, and limited to difficulty guiding the
+	Registrant through the initial changes to the NS records for the
+	delegation.  As this is usually a one-off activity when the operator first
+	takes charge of the zone it has not been treated as a serious issue.
+
+	With the rise of DNSSEC it has become necessary for the Registrant in this
+	situation to make regular (often annual) changes to the delegation in
+	order to manage KSK rolls, by updating the delegation's DS record(s).
+	Under the current model this is prone to Registrant error and significant
+	delays.
+
+	There is a need for a simple protocol which would allow a third party DNS
+	operator to update DS and NS records for a delegation without involving
+	the registrant in each operation.
+
+	The protocol described in this draft is REST based, and when used through
+	an authenticated channel can be used to bootstrap DNSSEC.  Once DNSSEC is
+	established this channel can be used to trigger maintenance of delegation
+	records such as DS, NS, and glue records.   The protocol is kept simple
+	and flexible in order to accomodate different operating models.
 </t>
-<t> Once DNSSEC has been bootstrapped this protocol can also be used
- to trigger maintainance of delegation information like NS and glue
- records. This protocol is keept simple and flexible to accomondate 
- different operating models. 
-</t>
-<t>
-We are going to talk the same protocol to all R* entities so from a
-3-DNS point of view it does not matter if it is talking to
-Registry, Registrar or Reseller, they will all speak the same
-protocol. 
-</t> 
 
 </abstract> 
 </front>
@@ -77,13 +100,26 @@ protocol.
   <t> 
     why is this needed ? Current system does not work well
   </t> 
-  <t> ADD more text</t>
-  <t>
-    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", 
-    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-    document are to be interpreted as described in <xref target="RFC2119" />.
-  </t>
+
+<section title="Notational Conventions">
+	<section title="RFC 2119 Keywords">
+		<t>
+			The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+			"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+			"OPTIONAL" in this document are to be interpreted as described
+			in <xref target="RFC2119" />.
+		</t>
+	</section>
+
+	<section title="Definitions">
+		<t>
+			For the purposes of this draft, a third-party DNS operator is any
+			DNS operator responsible for a zone where the operator is neither
+			the Registrant nor the Registrar of record for the delegation.
+		</t>
+	</section>
 </section>
+
 <section title="Protocol"> 
   <t>
     The basic call is 
