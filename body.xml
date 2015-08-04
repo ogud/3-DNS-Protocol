@@ -101,29 +101,29 @@
     why is this needed ? Current system does not work well
   </t> 
 
-<section title="Notational Conventions">
-	<section title="RFC 2119 Keywords">
-		<t>
-			The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
-			"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
-			"OPTIONAL" in this document are to be interpreted as described
-			in <xref target="RFC2119" />.
-		</t>
-	</section>
-
-	<section title="Definitions">
-		<t>
-			For the purposes of this draft, a third-party DNS operator is any
-			DNS operator responsible for a zone where the operator is neither
-			the Registrant nor the Registrar of record for the delegation.
-		</t>
-	</section>
-</section>
-
-<section title="Protocol"> 
-  <t>
-    The basic call is 
-    &lt;SERVER&gt;&lt;cmd&gt;/domain/auth=""/extra-stuff 
+  <section title="Notational Conventions">
+    <section title="RFC 2119 Keywords">
+      <t>
+	The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+	"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+	"OPTIONAL" in this document are to be interpreted as described
+	in <xref target="RFC2119" />.
+      </t>
+    </section>
+    
+    <section title="Definitions">
+      <t>
+	For the purposes of this draft, a third-party DNS operator is any
+	DNS operator responsible for a zone where the operator is neither
+	the Registrant nor the Registrar of record for the delegation.
+      </t>
+    </section>
+  </section>
+</section> 
+  <section title="Protocol"> 
+    <t>
+      The basic call is 
+      &lt;SERVER&gt;&lt;cmd&gt;/domain/auth=""/extra-stuff 
   </t>
   <t>
     The cmd can be:
