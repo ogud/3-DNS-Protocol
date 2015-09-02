@@ -20,20 +20,25 @@
 %
 % [[author]]
 % fullname="Paul Wouters" 
+% initials = "P."
+% surname = "Wouters"
 %
 % [[author]]
 % fullname="Matthew Pounsett" 
 % initials="M."
 % surname="Pounsett"
 % organization="Rightside"
-%  [author.address] 
+%   [author.address] 
 %   street="Toronto, ON"
-%   email="matt.pounsett@rightside.co"
+%   email="matt@conundrum.com"
+%
 % [[author]]
-% fullname = "Jacques LaTour" 
+% fullname = "Jacques Latour" 
+% initials = "J."
+% surname = "Latour"
 % organization="CIRA"
-%  [author.address] 
-%   street="Ontario,ON" 
+%   [author.address] 
+%   street="Ottawa ,ON" 
 %   email="jacques.latour@cira.ca"
 
 .# Abstract
@@ -64,16 +69,18 @@ and flexible in order to accomodate different operating models.
 {mainmatter}
 
 # Introduction
-Wwhy is this needed ? Current system does not work well
+Why is this needed ? Current system does not work well
 
-## Notational Conventions
+# Notational Conventions
+
+## RFC2119 Keywords
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
 "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described
 in [@RFC2119].
 
     
-# Definitions
+## Definitions
 For the purposes of this draft, a third-party DNS operator is any
 DNS operator responsible for a zone where the operator is neither
 the Registrant nor the Registrar of record for the delegation.
@@ -82,7 +89,7 @@ the Registrant nor the Registrar of record for the delegation.
 The basic call is 
       <SERVER><cmd>/domain/auth=""/extra-stuff 
 
-##Commands 
+## Commands 
 The commands can be:
 
   "/getDS"  install DS from CDS/CDNSKEY at domain present and different from current DS set
@@ -133,7 +140,7 @@ updating DS and NS.
 
 OAUTH??? would work how ??? 
 
-#Security considerations
+# Security considerations
 
 TBD
 
