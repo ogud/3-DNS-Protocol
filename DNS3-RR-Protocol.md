@@ -20,20 +20,25 @@
 %
 % [[author]]
 % fullname="Paul Wouters" 
+% initials = "P."
+% surname = "Wouters"
 %
 % [[author]]
 % fullname="Matthew Pounsett" 
 % initials="M."
 % surname="Pounsett"
 % organization="Rightside"
-%  [author.address] 
+%   [author.address] 
 %   street="Toronto, ON"
 %   email="matt.pounsett@rightside.co"
+%
 % [[author]]
-% fullname = "Jacques LaTour" 
+% fullname = "Jacques Latour" 
+% initials = "J."
+% surname = "Latour"
 % organization="CIRA"
-%  [author.address] 
-%   street="Ontario,ON" 
+%   [author.address] 
+%   street="Ottawa ,ON" 
 %   email="jacques.latour@cira.ca"
 
 .# Abstract
