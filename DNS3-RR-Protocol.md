@@ -51,8 +51,8 @@ delegation.  As this is usually a one-off activity when the operator first
 takes charge of the zone it has not been treated as a serious issue.
 
 With the rise of DNSSEC it has become necessary for the Registrant in this
-situation to make regular (often annual) changes to the delegation in
-order to manage KSK rolls, by updating the delegation's DS record(s).
+situation to make regular (sometimes annual) changes to the delegation in
+order to track KSK rolls, by updating the delegation's DS record(s).
 Under the current model this is prone to Registrant error and significant
 delays.
 
@@ -69,7 +69,11 @@ and flexible in order to accomodate different operating models.
 {mainmatter}
 
 # Introduction
-Why is this needed ? Current system does not work well
+Why is this needed ? 
+Current system does not work well, there are many examples of where DS
+records have not been updated but key rollover proceeds. In these
+cases the domain becomes invalid and all users that are behind
+validating resolvers will not be able to to access the domain. 
 
 # Notational Conventions
 
