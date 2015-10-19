@@ -7,7 +7,7 @@
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2015-10-08T00:00:00Z
+% date = 2015-10-19T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
