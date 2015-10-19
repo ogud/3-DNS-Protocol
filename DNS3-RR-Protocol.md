@@ -2,7 +2,7 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-RRR-protocol-00"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-00.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
