@@ -1,0 +1,92 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: IETF.DNSoperator.API
+host: api.registry.tld
+basePath: /dnsop/v1
+schemes:
+  - https
+paths:
+  '/domains/{domain}/cds':
+    put:
+      summary: Bootstap (initial sign) a domain
+      operationId: createCDS
+      produces:
+        - none
+      parameters:
+        - name: Authorization
+          in: header
+          description: API Key
+          required: true
+          type: string
+        - name: domain
+          in: path
+          description: Domain Name
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Successful operation but no http body returned
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Domain/CDS not found
+        '500':
+          description: Server error
+    delete:
+      summary: Unsign a domain
+      operationId: deleteCDS
+      produces:
+        - none
+      parameters:
+        - name: Authorization
+          in: header
+          description: API Key
+          required: true
+          type: string
+        - name: domain
+          in: path
+          description: Domain Name
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Domain/CDS not found
+        '500':
+          description: Server error
+    post:
+      summary: Domain DS maintenance
+      operationId: updateCDS
+      produces:
+        - none
+      parameters:
+        - name: Authorization
+          in: header
+          description: API Key
+          required: true
+          type: string
+        - name: domain
+          in: path
+          description: Domain Name
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Successful operation but no http body returned
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Domain/CDS not found
+        '500':
+          description: Server error
+          
