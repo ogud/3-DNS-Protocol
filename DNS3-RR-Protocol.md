@@ -194,7 +194,7 @@ that is tied to the affected zone.
    
 ### Initial Trust Establishment (Turn on DNSSEC)
 #### Request
-   Syntax: PUT /domains/{domain}/cds
+    Syntax: PUT /domains/{domain}/cds
 
    A DS record based on the CDS record in the child zone file will be inserted into the registry and the parent zone file upon the successful completion of such request. If there are multiple CDS records in the child zone file, multiple DS records will be added. 
 
@@ -207,7 +207,7 @@ that is tied to the affected zone.
 
 ### Removing a DS (turn off DNSSEC)
 #### Request
-   Syntax: DELETE /domains/{domain}/cds
+    Syntax: DELETE /domains/{domain}/cds
    
    
 #### Response
