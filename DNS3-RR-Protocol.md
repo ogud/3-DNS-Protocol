@@ -174,53 +174,60 @@ Parents can have additional tests, defined delays, and even ask the
 DNS operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. 
 
-# OP-3-DNS-RR Protocol
+# OP-3-DNS-RR RESTful API
 
-## Command 
-The basic call is 
-      https://<SERVER-name>/Update/<domain>/
+## Authentication
+   The API does not impose any unique server authentication requirements.
+   The server authentication provided by TLS fully addresses the needs.
+   In general, transports for the API must provide a TLS-protected transport (e.g., HTTPS)
+   
+## Authorization
+   Authorization is out of scope of this document. The CDS records present in the zone file are indications of intention to sign/unsign/update the DS records of the domain in the parent zone. This means the proceeding of the action is not determined by who issued the request. Therefore, authorization is out of the scope. Registries who plan to provide this service can, however, implement their own policy such as IP white listing, API key, etc.
+   
+## Base URL Locator
 
-The following options to the commands are specified
+   The base URL for registries or registrars who want to provide this service to DNS operators can be made auto-discoverable as an RDAP extension.
+   
+## CDS resource
+   Path: /domains/{domain}/cds
+   {domain}: is the domain name to be operated on
+   
+### Initial Trust Establishment (Turn on DNSSEC)
+#### Request
+   Syntax: PUT /domains/{domain}/cds
 
-   "auth="   an authentication token
+   A DS record based on the CDS record in the child zone file will be inserted into the registry and the parent zone file upon the successful completion of such request. If there are multiple CDS records in the child zone file, multiple DS records will be added. 
 
-   "debug="  request a debug session
+#### Response
+   - HTTP Status code 204 with an empty body indicates a success.
+   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
+   
 
-The service above is defined on standard https port but it could run
-on any port as specified by an URI.
+### Removing a DS (turn off DNSSEC)
+#### Request
+   Syntax: DELETE /domains/{domain}/cds
+   
+   
+#### Response
+   - HTTP Status code 204 with an empty body indicates a success.
+   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 500 indicates a failure due to unforeseeable reasons. 
 
-## Answers
-The basic answer is a jason blob the these are some possible blocks in
-the response: 
-
-   "refer:"  will contain an URI; this is an referral to an URI that is better able to do execute the command
-
-   "refused:"  This command can not be executed, and the reason is inside the block
-
-   "debug:"  list of debug messages normally empty unless debug flag is 
-present, this section should be ignored in normal processing
-
-   "error:"  if there was one look inside debug for more details
-
-   "domain:" what domain this is an answer for this section MUST be included in all answers
-
-   "rr:"  the new list of rrs "can be empty" 
-
-   "id:"  An identifier for the transaction 
-
-If ``refer'' block is present in answer then the client is instructed to 
-connect to that URI and retry the command there. Client SHOULD
-always honor the refer command over all other answers it gets in
-the answer.
-
-# Authorization
-
-The authorization can be either based on Token (like auth code) or buy
-challenge i.e. inserting a blob into the zone.  It is up to registrars
-to register the referral URI with registries, or block the access to
-updating DS and NS.  
-
-OAUTH??? how that would work  ??? 
+### DS Maintenance (Key roll over)
+#### Request
+    Syntax: POST /domains/{domain}/cds
+	
+#### Response
+   - HTTP Status code 204 with an empty body indicates a success.
+   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
+   
+## Customized Error Messages
+   Service providers can provide a customized error message in the response body in addition to the HTTP status code defined in the previous section.
 
 # Security considerations
 
