@@ -62,13 +62,13 @@ delays. Even when the Registrant has outsourced the operation of DNS to a third 
 the registrant still has to be in the loop to update the DS record. 
 
 There is a need for a simple protocol that allows a third party DNS
-operator to update DS and NS records for a delegation without involving
+operator to update DS and NS records in a trusted manner for a delegation without involving
 the registrant for each operation.
 
 The protocol described in this draft is REST based, and when used through
-an authenticated channel can be used to bootstrap DNSSEC.  Once DNSSEC is
-established this channel can be used to trigger maintenance of delegation
-records such as DS, NS, and glue records.   The protocol is kept as simple as possible. 
+an authenticated channel can be used to establish the DNSSEC Initial Trust (to turn on DNSSEC or
+bootstrap DNSSEC).  Once DNSSEC trust is established this channel can be used to trigger maintenance
+of delegation records such as DS, NS, and glue records.   The protocol is kept as simple as possible. 
 
 
 {mainmatter}
@@ -182,11 +182,16 @@ that is tied to the affected zone.
    In general, transports for the API must provide a TLS-protected transport (e.g., HTTPS)
    
 ## Authorization
-   Authorization is out of scope of this document. The CDS records present in the zone file are indications of intention to sign/unsign/update the DS records of the domain in the parent zone. This means the proceeding of the action is not determined by who issued the request. Therefore, authorization is out of the scope. Registries who plan to provide this service can, however, implement their own policy such as IP white listing, API key, etc.
+   Authorization is out of scope of this document. The CDS records present in the zone file
+   are indications of intention to sign/unsign/update the DS records of the domain in the parent zone.
+   This means the proceeding of the action is not determined by who issued the request. 
+   Therefore, authorization is out of the scope. Registries who plan to provide this service can, 
+   however, implement their own policy such as IP white listing, API key, etc.
    
 ## Base URL Locator
 
-   The base URL for registries or registrars who want to provide this service to DNS operators can be made auto-discoverable as an RDAP extension.
+   The base URL for registries or registrars who want to provide this service to DNS operators
+   can be made auto-discoverable as an RDAP extension.
    
 ## CDS resource
    Path: /domains/{domain}/cds
@@ -194,14 +199,17 @@ that is tied to the affected zone.
    
 ### Initial Trust Establishment (Turn on DNSSEC)
 #### Request
-    Syntax: PUT /domains/{domain}/cds
+    Syntax: POST /domains/{domain}/cds
 
-   A DS record based on the CDS record in the child zone file will be inserted into the registry and the parent zone file upon the successful completion of such request. If there are multiple CDS records in the child zone file, multiple DS records will be added. 
+   A DS record based on the CDS record in the child zone file will be inserted into the
+   registry and the parent zone file upon the successful completion of such request. If 
+   there are multiple CDS records in the child zone file, multiple DS records will be added. 
 
 #### Response
-   - HTTP Status code 204 with an empty body indicates a success.
-   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 201 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 403 indicates a failure due to an invalid challenge token.
+   - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
    
 
@@ -209,25 +217,41 @@ that is tied to the affected zone.
 #### Request
     Syntax: DELETE /domains/{domain}/cds
    
-   
 #### Response
-   - HTTP Status code 204 with an empty body indicates a success.
-   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons. 
 
 ### DS Maintenance (Key roll over)
 #### Request
-    Syntax: POST /domains/{domain}/cds
+    Syntax: PUT /domains/{domain}/cds
 	
 #### Response
-   - HTTP Status code 204 with an empty body indicates a success.
-   - HTTP Status code 404 indicates the domain does not exist in the registry.
+   - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 404 indicates the domain does not exist.
+   - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
+
+## Tokens resource
+   Path: /domains/{domain}/tokens
+   {domain}: is the domain name to be operated on
+   
+### Setup Initial Trust Establishment with Challenge
+#### Request
+    Syntax: POST /domains/{domain}/tokens
+
+   A random token to be included as a _delegate TXT record prior establishing the DNSSEC initial trust.
+
+#### Response
+   - HTTP Status code 201 indicates a success.
+   - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
    
+   
 ## Customized Error Messages
-   Service providers can provide a customized error message in the response body in addition to the HTTP status code defined in the previous section.
+   Service providers can provide a customized error message in the response body
+   in addition to the HTTP status code defined in the previous section.
 
 # Security considerations
 
