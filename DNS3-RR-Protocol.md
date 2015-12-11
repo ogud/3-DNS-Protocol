@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-00.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-01ab.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2015-10-19T00:00:00Z
+% date = 2015-12-12T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
