@@ -269,10 +269,17 @@ This protcol is designed for machine to machine communications
 
 {backmatter}
 
+# REST YML definition 
+
+`{{dnsoperator.yml}}`
+
 # Document History
 
-Second version that adds a full REST definition. 
+## Version 01
+This version adds a full REST definition this is based on suggestions from Jakob Schlyter. 
 
+
+## Version 00 
 First rough version
 
 

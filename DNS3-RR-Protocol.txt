@@ -231,7 +231,7 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
    The child can signal its desire to have DNSSEC validation enabled by
    publishing one of the special DNS records CDS and/or CDNSKEY[RFC7344]
-   and its proposed extension [I-D.ogud-dnsop-maintain-ds].  Once the
+   and its proposed extension [I-D.ietf-dnsop-maintain-ds].  Once the
    "parent" "sees" these records it SHOULD start acceptance processing.
    This document will cover below how to make the CDS records visible to
    the right parental agent.
@@ -420,10 +420,10 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
 8.1.  Normative References
 
-   [I-D.ogud-dnsop-maintain-ds]
+   [I-D.ietf-dnsop-maintain-ds]
               Gu[eth]mundsson, O. and P. Wouters, "Managing DS records
-              from parent via CDS/CDNSKEY", draft-ogud-dnsop-maintain-
-              ds-00 (work in progress), October 2015.
+              from parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-
+              ds-00 (work in progress), December 2015.
 
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
@@ -437,10 +437,10 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
 8.2.  Informative References
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+   [I-D.ogud-dnsop-maintain-ds]
+              Gu[eth]mundsson, O. and P. Wouters, "Managing DS records
+              from parent via CDS/CDNSKEY", draft-ogud-dnsop-maintain-
+              ds-00 (work in progress), October 2015.
 
 
 
@@ -449,6 +449,11 @@ Latour, et al.            Expires June 13, 2016                 [Page 8]
 
 Internet-Draft                  3-DNS-RRR                  December 2015
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
 
    [RFC6690]  Shelby, Z., "Constrained RESTful Environments (CoRE) Link
               Format", RFC 6690, DOI 10.17487/RFC6690, August 2012,
@@ -489,11 +494,6 @@ Authors' Addresses
    Rightside
 
    Email: matt@conundrum.com
-
-
-
-
-
 
 
 
