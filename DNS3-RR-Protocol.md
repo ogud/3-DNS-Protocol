@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-00.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-01ab.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2015-10-19T00:00:00Z
+% date = 2015-12-11T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
@@ -25,7 +25,7 @@
 % organization = "Cloudflare, Inc."
 %  [author.address] 
 %  email = "olafur+ietf@cloudflare.com"
-%  street = "San Francisco, CA, 94107"
+%  street = "San Francisco, CA"
 %
 % [[author]]
 % fullname="Paul Wouters" 
@@ -89,7 +89,7 @@ party operator on the hand needs to go through the Registrant to
 update any delegation information. 
 
 Current system does not work well, there are many examples of failures
-including the inability to upload DS records du to non-support by
+including the inability to upload DS records due to non-support by
 Registrar interface, the registrant forgets/does-not perform action but
 tools proceed with key rollover without checking that the new DS is in
 place. Another common failure is the DS record is not removed when the
@@ -102,7 +102,6 @@ behind validating resolvers will not be able to to access the domain.
 
 
 # Notational Conventions
-
     
 ## Definitions
 For the purposes of this draft, a third-party DNS operator is any
@@ -111,7 +110,7 @@ the Registrant nor the Registrar of record for the delegation.
 
 When we say Registrar that can in many cases be applied to a Reseller
 i.e. an entity that sells delegations but registrations are processed
-through the Registrar. 
+through an Registrar the reseller has agreement with. 
 
 ## RFC2119 Keywords
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
@@ -121,7 +120,7 @@ in [@RFC2119].
 
 # What is the goal ? 
 The primary goal is to use the DNS protocol to provide information from
-child zone to the parent zone, this is a way to maintain the
+child zone to the parent zone, to maintain the 
 delegation information. The precondition for this to be practical is
 that the domain is DNSSEC signed. 
 
@@ -129,7 +128,7 @@ IN the general case there should be a way to find the right
 Registrar/Registry entity to talk to but that does not exist. Whois[]
 is the natural protocol to carry such information but that protocol is
 unreliable and hard to parse. Its proposed successor RDAP [@RFC7480]
-has yet be deployed on any TLD. 
+has yet be deployed on most TLD's. 
 
 The preferred communication mechanism is to use is to use a REST [@RFC6690]
 call to start processing of the requested delegation information. 
@@ -152,16 +151,16 @@ operated by third parties.
 
 The child can signal its desire to have DNSSEC validation enabled by
 publishing one of the special DNS records CDS and/or
-CDNSKEY[@!RFC7344]. Once the "parent" "sees" these records it SHOULD
+CDNSKEY[@!RFC7344] and its proposed extension [@!I-D.ietf-dnsop-maintain-ds#00]. 
+Once the "parent" "sees" these records it SHOULD
 start acceptance processing. This document will cover below how to
 make the CDS records visible to the right parental agent. 
 
-We argue that the publication of CDS/CDNSKEY record is sufficient for
-the parent to start acceptance processing. The main point is to
+We and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of CDS/CDNSKEY record is sufficient for 
+the parent to start acceptance processing. The main point is to 
 provide authentication thus if the child is in "good" state then the DS
 upload should be simple to accept and publish. If there is a problem
 the parent has ability to remove the DS at any time.
-
 
 ## What checks are needed by parent ?
 The parent upon receiving a signal that it check the child for desire
@@ -176,6 +175,8 @@ that is tied to the affected zone.
 
 # OP-3-DNS-RR RESTful API
 
+The specification of this API is minimalistic, but a realistic one. 
+
 ## Authentication
    The API does not impose any unique server authentication requirements.
    The server authentication provided by TLS fully addresses the needs.
@@ -185,7 +186,7 @@ that is tied to the affected zone.
    Authorization is out of scope of this document. The CDS records present in the zone file
    are indications of intention to sign/unsign/update the DS records of the domain in the parent zone.
    This means the proceeding of the action is not determined by who issued the request. 
-   Therefore, authorization is out of the scope. Registries who plan to provide this service can, 
+   Therefore, authorization is out of the scope. Registries and registars who plan to provide this service can, 
    however, implement their own policy such as IP white listing, API key, etc.
    
 ## Base URL Locator
@@ -269,6 +270,9 @@ This protcol is designed for machine to machine communications
 {backmatter}
 
 # Document History
+
+Second version that adds a full REST definition. 
+
 First rough version
 
 
