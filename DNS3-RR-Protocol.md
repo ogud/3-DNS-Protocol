@@ -33,6 +33,7 @@
 % surname = "Wouters"
 % organization="Red Hat"
 %  [author.address]
+%  street="Toronto, ON"
 %  email="paul@nohats.ca"
 %
 % [[author]]
@@ -40,9 +41,9 @@
 % initials="M."
 % surname="Pounsett"
 % organization="Rightside"
-%   [author.address] 
-%   street="Toronto, ON"
-%   email="matt@conundrum.com"
+%  [author.address] 
+%  street="Toronto, ON"
+%  email="matt@conundrum.com"
 %
 
 .# Abstract
@@ -79,13 +80,13 @@ DNS registration systems today are designed around making
 registrations easy and fast. After the domain has been registered the 
 there are really three options on who maintains the DNS zone that is
 loaded on the "primary" DNS servers for the domain this can be the
-Registrant, Registrar, or a third party. 
+Registrant, Registrar, or a third party DNS Operator. 
 
 Unfortunately the ease to make changes differs for each one of these
 options. The Registrant needs to use the interface that the registrar
 provides to update NS and DS records. The Registrar on the other hand
 can make changes directly into the registration system. The third
-party operator on the hand needs to go through the Registrant to
+party DNS Operator on the hand needs to go through the Registrant to
 update any delegation information. 
 
 Current system does not work well, there are many examples of failures
@@ -93,7 +94,7 @@ including the inability to upload DS records due to non-support by
 Registrar interface, the registrant forgets/does-not perform action but
 tools proceed with key rollover without checking that the new DS is in
 place. Another common failure is the DS record is not removed when the
-DNS operator changes from one that supports DNSSEC signing to one that
+DNS Operator changes from one that supports DNSSEC signing to one that
 does not. 
 
 The failures result either inability to use DNSSEC or in validation
@@ -104,8 +105,8 @@ behind validating resolvers will not be able to to access the domain.
 # Notational Conventions
     
 ## Definitions
-For the purposes of this draft, a third-party DNS operator is any
-DNS operator responsible for a zone where the operator is neither
+For the purposes of this draft, a third-party DNS Operator is any
+DNS Operator responsible for a zone where the operator is neither
 the Registrant nor the Registrar of record for the delegation.
 
 When we say Registrar that can in many cases be applied to a Reseller
@@ -124,7 +125,7 @@ child zone to the parent zone, to maintain the
 delegation information. The precondition for this to be practical is
 that the domain is DNSSEC signed. 
 
-IN the general case there should be a way to find the right
+In the general case there should be a way to find the right
 Registrar/Registry entity to talk to but that does not exist. Whois[]
 is the natural protocol to carry such information but that protocol is
 unreliable and hard to parse. Its proposed successor RDAP [@RFC7480]
@@ -140,10 +141,10 @@ biggest stumbling block is deploying DNSSEC is the initial
 configuration of the DNSSEC domain trust anchor in the parent, DS
 record. 
 
-## How does Domain signal to parent it wants DNSSEC Trust Anchor ? 
+## How does a child signal its parent it wants DNSSEC Trust Anchor ? 
 The child needs first to sign the domain, then the child can "upload"
-the DS record. The "normal" way to upload is to go through
-registration interface, but that fails frequently. The DNS operator
+the DS record to its parent. The "normal" way to upload is to go through
+registration interface, but that fails frequently. The DNS Operator
 may not have access to the interface thus the registrant needs to
 relay the information. For large operations this does not scale, as
 evident in lack of Trust Anchors for signed deployments that are
@@ -160,17 +161,17 @@ We and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of CDS/CDNSKE
 the parent to start acceptance processing. The main point is to 
 provide authentication thus if the child is in "good" state then the DS
 upload should be simple to accept and publish. If there is a problem
-the parent has ability to remove the DS at any time.
+the parent has ability to not add the DS.
 
 ## What checks are needed by parent ?
 The parent upon receiving a signal that it check the child for desire
 for DS record publication. The basic tests include, 
     1. All the nameservers for the zone agree on zone contents 
     2. The zone is signed 
-    3. The zone has a CDS signed by the KSK referenced i the CDS 
+    3. The zone has a CDS signed by the KSK referenced in the CDS 
 
-Parents can have additional tests, defined delays, and even ask the
-DNS operator to prove they can add data to the zone, or provide a code
+Parents can have additional tests, defined delays, queries over TCP, and even ask the
+DNS Operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. 
 
 # OP-3-DNS-RR RESTful API
@@ -191,7 +192,7 @@ The specification of this API is minimalistic, but a realistic one.
    
 ## Base URL Locator
 
-   The base URL for registries or registrars who want to provide this service to DNS operators
+   The base URL for registries or registrars who want to provide this service to DNS Operators
    can be made auto-discoverable as an RDAP extension.
    
 ## CDS resource
@@ -204,7 +205,10 @@ The specification of this API is minimalistic, but a realistic one.
 
    A DS record based on the CDS record in the child zone file will be inserted into the
    registry and the parent zone file upon the successful completion of such request. If 
-   there are multiple CDS records in the child zone file, multiple DS records will be added. 
+   there are multiple CDS records in the child zone file, multiple DS records will be added.  
+   
+   Either the CDS/CDNSKEY or the DNSKEY can be used to create the DS record.
+   
 
 #### Response
    - HTTP Status code 201 indicates a success.
