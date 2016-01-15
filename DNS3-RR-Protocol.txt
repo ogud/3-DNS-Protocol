@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: June 13, 2016                                  Cloudflare, Inc.
+Expires: July 17, 2016                                  Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                                Rightside
-                                                       December 11, 2015
+                                                        January 14, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-           draft-latour-dnsoperator-to-rrr-protocol-01ab.txt
+            draft-latour-dnsoperator-to-rrr-protocol-01.txt
 
 Abstract
 
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Latour, et al.            Expires June 13, 2016                 [Page 1]
+Latour, et al.            Expires July 17, 2016                 [Page 1]
 
-Internet-Draft                  3-DNS-RRR                  December 2015
+Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 Status of This Memo
@@ -73,11 +73,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 13, 2016.
+   This Internet-Draft will expire on July 17, 2016.
 
 Copyright Notice
 
-   Copyright (c) 2015 IETF Trust and the persons identified as the
+   Copyright (c) 2016 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -93,12 +93,12 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   3
+   2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   4
      2.1.  Definitions . . . . . . . . . . . . . . . . . . . . . . .   4
      2.2.  RFC2119 Keywords  . . . . . . . . . . . . . . . . . . . .   4
    3.  What is the goal ?  . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Why DNSSEC ?  . . . . . . . . . . . . . . . . . . . . . .   4
-     3.2.  How does Domain signal to parent it wants DNSSEC Trust
+     3.2.  How does a child signal its parent it wants DNSSEC Trust
            Anchor ?  . . . . . . . . . . . . . . . . . . . . . . . .   4
      3.3.  What checks are needed by parent ?  . . . . . . . . . . .   5
    4.  OP-3-DNS-RR RESTful API . . . . . . . . . . . . . . . . . . .   5
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Latour, et al.            Expires June 13, 2016                 [Page 2]
+Latour, et al.            Expires July 17, 2016                 [Page 2]
 
-Internet-Draft                  3-DNS-RRR                  December 2015
+Internet-Draft                  3-DNS-RRR                   January 2016
 
 
        4.4.1.  Initial Trust Establishment (Turn on DNSSEC)  . . . .   6
@@ -125,8 +125,10 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    7.  Internationalization Considerations . . . . . . . . . . . . .   8
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .   8
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .   9
+     A.1.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .   9
+     A.2.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .   9
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
@@ -135,13 +137,13 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    around making registrations easy and fast.  After the domain has been
    registered the there are really three options on who maintains the
    DNS zone that is loaded on the "primary" DNS servers for the domain
-   this can be the Registrant, Registrar, or a third party.
+   this can be the Registrant, Registrar, or a third party DNS Operator.
 
    Unfortunately the ease to make changes differs for each one of these
    options.  The Registrant needs to use the interface that the
    registrar provides to update NS and DS records.  The Registrar on the
    other hand can make changes directly into the registration system.
-   The third party operator on the hand needs to go through the
+   The third party DNS Operator on the hand needs to go through the
    Registrant to update any delegation information.
 
    Current system does not work well, there are many examples of
@@ -149,7 +151,7 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    support by Registrar interface, the registrant forgets/does-not
    perform action but tools proceed with key rollover without checking
    that the new DS is in place.  Another common failure is the DS record
-   is not removed when the DNS operator changes from one that supports
+   is not removed when the DNS Operator changes from one that supports
    DNSSEC signing to one that does not.
 
    The failures result either inability to use DNSSEC or in validation
@@ -157,23 +159,23 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    are behind validating resolvers will not be able to to access the
    domain.
 
-2.  Notational Conventions
 
 
 
 
 
 
-
-Latour, et al.            Expires June 13, 2016                 [Page 3]
+Latour, et al.            Expires July 17, 2016                 [Page 3]
 
-Internet-Draft                  3-DNS-RRR                  December 2015
+Internet-Draft                  3-DNS-RRR                   January 2016
 
+
+2.  Notational Conventions
 
 2.1.  Definitions
 
-   For the purposes of this draft, a third-party DNS operator is any DNS
-   operator responsible for a zone where the operator is neither the
+   For the purposes of this draft, a third-party DNS Operator is any DNS
+   Operator responsible for a zone where the operator is neither the
    Registrant nor the Registrar of record for the delegation.
 
    When we say Registrar that can in many cases be applied to a Reseller
@@ -193,7 +195,7 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    information.  The precondition for this to be practical is that the
    domain is DNSSEC signed.
 
-   IN the general case there should be a way to find the right
+   In the general case there should be a way to find the right
    Registrar/Registry entity to talk to but that does not exist.
    Whois[] is the natural protocol to carry such information but that
    protocol is unreliable and hard to parse.  Its proposed successor
@@ -210,24 +212,23 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    stumbling block is deploying DNSSEC is the initial configuration of
    the DNSSEC domain trust anchor in the parent, DS record.
 
-3.2.  How does Domain signal to parent it wants DNSSEC Trust Anchor ?
+3.2.  How does a child signal its parent it wants DNSSEC Trust Anchor ?
 
    The child needs first to sign the domain, then the child can "upload"
-   the DS record.  The "normal" way to upload is to go through
-   registration interface, but that fails frequently.  The DNS operator
-   may not have access to the interface thus the registrant needs to
-   relay the information.  For large operations this does not scale, as
+   the DS record to its parent.  The "normal" way to upload is to go
+   through registration interface, but that fails frequently.  The DNS
+   Operator may not have access to the interface thus the registrant
 
 
 
-
-Latour, et al.            Expires June 13, 2016                 [Page 4]
+Latour, et al.            Expires July 17, 2016                 [Page 4]
 
-Internet-Draft                  3-DNS-RRR                  December 2015
+Internet-Draft                  3-DNS-RRR                   January 2016
 
 
-   evident in lack of Trust Anchors for signed deployments that are
-   operated by third parties.
+   needs to relay the information.  For large operations this does not
+   scale, as evident in lack of Trust Anchors for signed deployments
+   that are operated by third parties.
 
    The child can signal its desire to have DNSSEC validation enabled by
    publishing one of the special DNS records CDS and/or CDNSKEY[RFC7344]
@@ -241,7 +242,7 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    processing.  The main point is to provide authentication thus if the
    child is in "good" state then the DS upload should be simple to
    accept and publish.  If there is a problem the parent has ability to
-   remove the DS at any time.
+   not add the DS.
 
 3.3.  What checks are needed by parent ?
 
@@ -250,11 +251,11 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
        1. All the nameservers for the zone agree on zone contents
        2. The zone is signed
-       3. The zone has a CDS signed by the KSK referenced i the CDS
+       3. The zone has a CDS signed by the KSK referenced in the CDS
 
-   Parents can have additional tests, defined delays, and even ask the
-   DNS operator to prove they can add data to the zone, or provide a
-   code that is tied to the affected zone.
+   Parents can have additional tests, defined delays, queries over TCP,
+   and even ask the DNS Operator to prove they can add data to the zone,
+   or provide a code that is tied to the affected zone.
 
 4.  OP-3-DNS-RR RESTful API
 
@@ -273,22 +274,22 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    present in the zone file are indications of intention to sign/unsign/
    update the DS records of the domain in the parent zone.  This means
    the proceeding of the action is not determined by who issued the
-   request.  Therefore, authorization is out of the scope.  Registries
 
 
 
-Latour, et al.            Expires June 13, 2016                 [Page 5]
+Latour, et al.            Expires July 17, 2016                 [Page 5]
 
-Internet-Draft                  3-DNS-RRR                  December 2015
+Internet-Draft                  3-DNS-RRR                   January 2016
 
 
+   request.  Therefore, authorization is out of the scope.  Registries
    and registars who plan to provide this service can, however,
    implement their own policy such as IP white listing, API key, etc.
 
 4.3.  Base URL Locator
 
    The base URL for registries or registrars who want to provide this
-   service to DNS operators can be made auto-discoverable as an RDAP
+   service to DNS Operators can be made auto-discoverable as an RDAP
    extension.
 
 4.4.  CDS resource
@@ -307,6 +308,9 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    successful completion of such request.  If there are multiple CDS
    records in the child zone file, multiple DS records will be added.
 
+   Either the CDS/CDNSKEY or the DNSKEY can be used to create the DS
+   record.
+
 4.4.1.2.  Response
 
    o  HTTP Status code 201 indicates a success.
@@ -323,20 +327,20 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
 4.4.2.  Removing a DS (turn off DNSSEC)
 
+
+
+
+
+
+
+Latour, et al.            Expires July 17, 2016                 [Page 6]
+
+Internet-Draft                  3-DNS-RRR                   January 2016
+
+
 4.4.2.1.  Request
 
                    Syntax: DELETE /domains/{domain}/cds
-
-
-
-
-
-
-
-Latour, et al.            Expires June 13, 2016                 [Page 6]
-
-Internet-Draft                  3-DNS-RRR                  December 2015
-
 
 4.4.2.2.  Response
 
@@ -380,22 +384,25 @@ Internet-Draft                  3-DNS-RRR                  December 2015
    A random token to be included as a _delegate TXT record prior
    establishing the DNSSEC initial trust.
 
+
+
+
+
+
+Latour, et al.            Expires July 17, 2016                 [Page 7]
+
+Internet-Draft                  3-DNS-RRR                   January 2016
+
+
 4.5.1.2.  Response
 
    o  HTTP Status code 201 indicates a success.
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
-
-
-
-Latour, et al.            Expires June 13, 2016                 [Page 7]
-
-Internet-Draft                  3-DNS-RRR                  December 2015
-
-
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
+
 
 4.6.  Customized Error Messages
 
@@ -435,20 +442,20 @@ Internet-Draft                  3-DNS-RRR                  December 2015
               10.17487/RFC7344, September 2014,
               <http://www.rfc-editor.org/info/rfc7344>.
 
+
+
+
+Latour, et al.            Expires July 17, 2016                 [Page 8]
+
+Internet-Draft                  3-DNS-RRR                   January 2016
+
+
 8.2.  Informative References
 
    [I-D.ogud-dnsop-maintain-ds]
               Gu[eth]mundsson, O. and P. Wouters, "Managing DS records
               from parent via CDS/CDNSKEY", draft-ogud-dnsop-maintain-
               ds-00 (work in progress), October 2015.
-
-
-
-
-Latour, et al.            Expires June 13, 2016                 [Page 8]
-
-Internet-Draft                  3-DNS-RRR                  December 2015
-
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
@@ -466,7 +473,12 @@ Internet-Draft                  3-DNS-RRR                  December 2015
 
 Appendix A.  Document History
 
-   Second version that adds a full REST definition.
+A.1.  Version 01
+
+   This version adds a full REST definition this is based on suggestions
+   from Jakob Schlyter.
+
+A.2.  Version 00
 
    First rough version
 
@@ -482,6 +494,16 @@ Authors' Addresses
    Cloudflare, Inc.
 
    Email: olafur+ietf@cloudflare.com
+
+
+
+
+
+
+
+Latour, et al.            Expires July 17, 2016                 [Page 9]
+
+Internet-Draft                  3-DNS-RRR                   January 2016
 
 
    Paul Wouters
@@ -501,4 +523,38 @@ Authors' Addresses
 
 
 
-Latour, et al.            Expires June 13, 2016                 [Page 9]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Latour, et al.            Expires July 17, 2016                [Page 10]
