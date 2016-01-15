@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-01ab.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-01.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2015-12-11T00:00:00Z
+% date = 2016-01-14T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
@@ -272,10 +272,6 @@ URI ??? TBD
 This protcol is designed for machine to machine communications 
 
 {backmatter}
-
-# REST YML definition 
-
-`{{dnsoperator.yml}}`
 
 # Document History
 
