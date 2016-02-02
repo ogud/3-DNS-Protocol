@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: July 17, 2016                                  Cloudflare, Inc.
+Expires: August 5, 2016                                 Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                                Rightside
-                                                        January 14, 2016
+                                                        February 2, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-            draft-latour-dnsoperator-to-rrr-protocol-01.txt
+           draft-latour-dnsoperator-to-rrr-protocol-02aa.txt
 
 Abstract
 
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 1]
+Latour, et al.           Expires August 5, 2016                 [Page 1]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 Status of This Memo
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 17, 2016.
+   This Internet-Draft will expire on August 5, 2016.
 
 Copyright Notice
 
@@ -103,19 +103,19 @@ Table of Contents
      3.3.  What checks are needed by parent ?  . . . . . . . . . . .   5
    4.  OP-3-DNS-RR RESTful API . . . . . . . . . . . . . . . . . . .   5
      4.1.  Authentication  . . . . . . . . . . . . . . . . . . . . .   5
-     4.2.  Authorization . . . . . . . . . . . . . . . . . . . . . .   5
+     4.2.  Authorization . . . . . . . . . . . . . . . . . . . . . .   6
      4.3.  Base URL Locator  . . . . . . . . . . . . . . . . . . . .   6
      4.4.  CDS resource  . . . . . . . . . . . . . . . . . . . . . .   6
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 2]
+Latour, et al.           Expires August 5, 2016                 [Page 2]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
        4.4.1.  Initial Trust Establishment (Turn on DNSSEC)  . . . .   6
-       4.4.2.  Removing a DS (turn off DNSSEC) . . . . . . . . . . .   6
+       4.4.2.  Removing a DS (turn off DNSSEC) . . . . . . . . . . .   7
        4.4.3.  DS Maintenance (Key roll over)  . . . . . . . . . . .   7
      4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   7
        4.5.1.  Setup Initial Trust Establishment with Challenge  . .   7
@@ -149,7 +149,7 @@ Internet-Draft                  3-DNS-RRR                   January 2016
    Current system does not work well, there are many examples of
    failures including the inability to upload DS records due to non-
    support by Registrar interface, the registrant forgets/does-not
-   perform action but tools proceed with key rollover without checking
+   perform action but tools proceed with key roll-over without checking
    that the new DS is in place.  Another common failure is the DS record
    is not removed when the DNS Operator changes from one that supports
    DNSSEC signing to one that does not.
@@ -165,9 +165,9 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 3]
+Latour, et al.           Expires August 5, 2016                 [Page 3]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 2.  Notational Conventions
@@ -221,9 +221,9 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 4]
+Latour, et al.           Expires August 5, 2016                 [Page 4]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
    needs to relay the information.  For large operations this does not
@@ -255,7 +255,11 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
    Parents can have additional tests, defined delays, queries over TCP,
    and even ask the DNS Operator to prove they can add data to the zone,
-   or provide a code that is tied to the affected zone.
+   or provide a code that is tied to the affected zone.  The protocol is
+   partially-synchronus, i.e. the server can elect to hold connection
+   open until the operation has concluded or it can return that it
+   received the request.  It is up to the child to monitor the parent
+   for completion of the operation and issue follow-up calls.
 
 4.  OP-3-DNS-RR RESTful API
 
@@ -268,20 +272,22 @@ Internet-Draft                  3-DNS-RRR                   January 2016
    addresses the needs.  In general, transports for the API must provide
    a TLS-protected transport (e.g., HTTPS)
 
+
+
+
+
+
+Latour, et al.           Expires August 5, 2016                 [Page 5]
+
+Internet-Draft                  3-DNS-RRR                  February 2016
+
+
 4.2.  Authorization
 
    Authorization is out of scope of this document.  The CDS records
    present in the zone file are indications of intention to sign/unsign/
    update the DS records of the domain in the parent zone.  This means
    the proceeding of the action is not determined by who issued the
-
-
-
-Latour, et al.            Expires July 17, 2016                 [Page 5]
-
-Internet-Draft                  3-DNS-RRR                   January 2016
-
-
    request.  Therefore, authorization is out of the scope.  Registries
    and registars who plan to provide this service can, however,
    implement their own policy such as IP white listing, API key, etc.
@@ -325,18 +331,14 @@ Internet-Draft                  3-DNS-RRR                   January 2016
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
 
-4.4.2.  Removing a DS (turn off DNSSEC)
 
 
-
-
-
-
-
-Latour, et al.            Expires July 17, 2016                 [Page 6]
+Latour, et al.           Expires August 5, 2016                 [Page 6]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
+
+4.4.2.  Removing a DS (turn off DNSSEC)
 
 4.4.2.1.  Request
 
@@ -387,11 +389,9 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 
-
-
-Latour, et al.            Expires July 17, 2016                 [Page 7]
+Latour, et al.           Expires August 5, 2016                 [Page 7]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 4.5.1.2.  Response
@@ -445,9 +445,9 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 8]
+Latour, et al.           Expires August 5, 2016                 [Page 8]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 8.2.  Informative References
@@ -501,9 +501,9 @@ Authors' Addresses
 
 
 
-Latour, et al.            Expires July 17, 2016                 [Page 9]
+Latour, et al.           Expires August 5, 2016                 [Page 9]
 
-Internet-Draft                  3-DNS-RRR                   January 2016
+Internet-Draft                  3-DNS-RRR                  February 2016
 
 
    Paul Wouters
@@ -557,4 +557,4 @@ Internet-Draft                  3-DNS-RRR                   January 2016
 
 
 
-Latour, et al.            Expires July 17, 2016                [Page 10]
+Latour, et al.           Expires August 5, 2016                [Page 10]
