@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-01.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-02aa.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2016-01-14T00:00:00Z
+% date = 2016-02-02T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
@@ -92,7 +92,7 @@ update any delegation information.
 Current system does not work well, there are many examples of failures
 including the inability to upload DS records due to non-support by
 Registrar interface, the registrant forgets/does-not perform action but
-tools proceed with key rollover without checking that the new DS is in
+tools proceed with key roll-over without checking that the new DS is in
 place. Another common failure is the DS record is not removed when the
 DNS Operator changes from one that supports DNSSEC signing to one that
 does not. 
@@ -173,6 +173,10 @@ for DS record publication. The basic tests include,
 Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. 
+The protocol is partially-synchronus, i.e. the server can elect to
+hold connection open until the operation has concluded or it can
+return that it received the request. It is up to the child to monitor
+the parent for completion of the operation and issue possible follow-up calls. 
 
 # OP-3-DNS-RR RESTful API
 
