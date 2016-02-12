@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: August 5, 2016                                 Cloudflare, Inc.
+Expires: August 15, 2016                                Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                                Rightside
-                                                        February 2, 2016
+                                                       February 12, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-           draft-latour-dnsoperator-to-rrr-protocol-02aa.txt
+            draft-latour-dnsoperator-to-rrr-protocol-02.txt
 
 Abstract
 
@@ -53,7 +53,7 @@ Abstract
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 1]
+Latour, et al.           Expires August 15, 2016                [Page 1]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 5, 2016.
+   This Internet-Draft will expire on August 15, 2016.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 2]
+Latour, et al.           Expires August 15, 2016                [Page 2]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -165,7 +165,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 3]
+Latour, et al.           Expires August 15, 2016                [Page 3]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -221,7 +221,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 4]
+Latour, et al.           Expires August 15, 2016                [Page 4]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -259,7 +259,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    partially-synchronus, i.e. the server can elect to hold connection
    open until the operation has concluded or it can return that it
    received the request.  It is up to the child to monitor the parent
-   for completion of the operation and issue follow-up calls.
+   for completion of the operation and issue possible follow-up calls.
 
 4.  OP-3-DNS-RR RESTful API
 
@@ -277,7 +277,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 5]
+Latour, et al.           Expires August 15, 2016                [Page 5]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -333,7 +333,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 6]
+Latour, et al.           Expires August 15, 2016                [Page 6]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -389,7 +389,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 7]
+Latour, et al.           Expires August 15, 2016                [Page 7]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -438,14 +438,14 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               <http://www.rfc-editor.org/info/rfc4035>.
 
    [RFC7344]  Kumari, W., Gudmundsson, O., and G. Barwood, "Automating
-              DNSSEC Delegation Trust Maintenance", RFC 7344, DOI
-              10.17487/RFC7344, September 2014,
+              DNSSEC Delegation Trust Maintenance", RFC 7344,
+              DOI 10.17487/RFC7344, September 2014,
               <http://www.rfc-editor.org/info/rfc7344>.
 
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 8]
+Latour, et al.           Expires August 15, 2016                [Page 8]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -458,8 +458,8 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               ds-00 (work in progress), October 2015.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
    [RFC6690]  Shelby, Z., "Constrained RESTful Environments (CoRE) Link
@@ -467,8 +467,8 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               <http://www.rfc-editor.org/info/rfc6690>.
 
    [RFC7480]  Newton, A., Ellacott, B., and N. Kong, "HTTP Usage in the
-              Registration Data Access Protocol (RDAP)", RFC 7480, DOI
-              10.17487/RFC7480, March 2015,
+              Registration Data Access Protocol (RDAP)", RFC 7480,
+              DOI 10.17487/RFC7480, March 2015,
               <http://www.rfc-editor.org/info/rfc7480>.
 
 Appendix A.  Document History
@@ -501,7 +501,7 @@ Authors' Addresses
 
 
 
-Latour, et al.           Expires August 5, 2016                 [Page 9]
+Latour, et al.           Expires August 15, 2016                [Page 9]
 
 Internet-Draft                  3-DNS-RRR                  February 2016
 
@@ -557,4 +557,4 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 5, 2016                [Page 10]
+Latour, et al.           Expires August 15, 2016               [Page 10]
