@@ -75,7 +75,7 @@ of delegation records such as DS, NS, and glue records.   The protocol is kept a
 {mainmatter}
 
 # Introduction
-Why is this needed ? 
+Why is this needed? 
 DNS registration systems today are designed around making
 registrations easy and fast. After the domain has been registered the 
 there are really three options on who maintains the DNS zone that is
@@ -119,7 +119,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
 "OPTIONAL" in this document are to be interpreted as described
 in [@RFC2119].
 
-# What is the goal ? 
+# What is the goal? 
 The primary goal is to use the DNS protocol to provide information from
 child zone to the parent zone, to maintain the 
 delegation information. The precondition for this to be practical is
@@ -134,14 +134,14 @@ has yet be deployed on most TLD's.
 The preferred communication mechanism is to use is to use a REST [@RFC6690]
 call to start processing of the requested delegation information. 
 
-## Why DNSSEC ? 
+## Why DNSSEC? 
 DNSSEC [@!RFC4035] provides data authentication for DNS answers,
 having DNSSEC enabled makes it possible to trust the answers. The
 biggest stumbling block is deploying DNSSEC is the initial
 configuration of the DNSSEC domain trust anchor in the parent, DS
 record. 
 
-## How does a child signal its parent it wants DNSSEC Trust Anchor ? 
+## How does a child signal its parent it wants DNSSEC Trust Anchor? 
 The child needs first to sign the domain, then the child can "upload"
 the DS record to its parent. The "normal" way to upload is to go through
 registration interface, but that fails frequently. The DNS Operator
@@ -163,12 +163,12 @@ provide authentication thus if the child is in "good" state then the DS
 upload should be simple to accept and publish. If there is a problem
 the parent has ability to not add the DS.
 
-## What checks are needed by parent ?
+## What checks are needed by parent?
 The parent upon receiving a signal that it check the child for desire
 for DS record publication. The basic tests include, 
-    1. All the nameservers for the zone agree on zone contents 
-    2. The zone is signed 
-    3. The zone has a CDS signed by the KSK referenced in the CDS 
+    1. The zone is signed 
+    2. All the nameservers for the zone agree on CDS contents
+    3. The zone has a CDS signed by a KSK referenced in the current DS 
 
 Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
