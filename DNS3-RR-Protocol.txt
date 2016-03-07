@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: August 15, 2016                                Cloudflare, Inc.
+Expires: September 8, 2016                              Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                                Rightside
-                                                       February 12, 2016
+                                                           March 7, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-            draft-latour-dnsoperator-to-rrr-protocol-02.txt
+           draft-latour-dnsoperator-to-rrr-protocol-03aa.txt
 
 Abstract
 
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Latour, et al.           Expires August 15, 2016                [Page 1]
+Latour, et al.          Expires September 8, 2016               [Page 1]
 
-Internet-Draft                  3-DNS-RRR                  February 2016
+Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 Status of This Memo
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 15, 2016.
+   This Internet-Draft will expire on September 8, 2016.
 
 Copyright Notice
 
@@ -96,11 +96,11 @@ Table of Contents
    2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   4
      2.1.  Definitions . . . . . . . . . . . . . . . . . . . . . . .   4
      2.2.  RFC2119 Keywords  . . . . . . . . . . . . . . . . . . . .   4
-   3.  What is the goal ?  . . . . . . . . . . . . . . . . . . . . .   4
-     3.1.  Why DNSSEC ?  . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  What is the goal? . . . . . . . . . . . . . . . . . . . . . .   4
+     3.1.  Why DNSSEC? . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  How does a child signal its parent it wants DNSSEC Trust
-           Anchor ?  . . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.3.  What checks are needed by parent ?  . . . . . . . . . . .   5
+           Anchor? . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     3.3.  What checks are needed by parent? . . . . . . . . . . . .   5
    4.  OP-3-DNS-RR RESTful API . . . . . . . . . . . . . . . . . . .   5
      4.1.  Authentication  . . . . . . . . . . . . . . . . . . . . .   5
      4.2.  Authorization . . . . . . . . . . . . . . . . . . . . . .   6
@@ -109,12 +109,13 @@ Table of Contents
 
 
 
-Latour, et al.           Expires August 15, 2016                [Page 2]
+Latour, et al.          Expires September 8, 2016               [Page 2]
 
-Internet-Draft                  3-DNS-RRR                  February 2016
+Internet-Draft                  3-DNS-RRR                     March 2016
 
 
-       4.4.1.  Initial Trust Establishment (Turn on DNSSEC)  . . . .   6
+       4.4.1.  Initial Trust Establishment (Enable DNSSEC
+               validation) . . . . . . . . . . . . . . . . . . . . .   6
        4.4.2.  Removing a DS (turn off DNSSEC) . . . . . . . . . . .   7
        4.4.3.  DS Maintenance (Key roll over)  . . . . . . . . . . .   7
      4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   7
@@ -127,13 +128,15 @@ Internet-Draft                  3-DNS-RRR                  February 2016
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .   9
-     A.1.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .   9
-     A.2.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .   9
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
+     A.1.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .   9
+     A.2.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .   9
+     A.3.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .   9
+     A.4.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  10
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
 
-   Why is this needed ? DNS registration systems today are designed
+   Why is this needed?  DNS registration systems today are designed
    around making registrations easy and fast.  After the domain has been
    registered the there are really three options on who maintains the
    DNS zone that is loaded on the "primary" DNS servers for the domain
@@ -162,12 +165,9 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 3]
+Latour, et al.          Expires September 8, 2016               [Page 3]
 
-Internet-Draft                  3-DNS-RRR                  February 2016
+Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 2.  Notational Conventions
@@ -188,7 +188,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-3.  What is the goal ?
+3.  What is the goal?
 
    The primary goal is to use the DNS protocol to provide information
    from child zone to the parent zone, to maintain the delegation
@@ -205,14 +205,14 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    [RFC6690] call to start processing of the requested delegation
    information.
 
-3.1.  Why DNSSEC ?
+3.1.  Why DNSSEC?
 
    DNSSEC [RFC4035] provides data authentication for DNS answers, having
    DNSSEC enabled makes it possible to trust the answers.  The biggest
    stumbling block is deploying DNSSEC is the initial configuration of
    the DNSSEC domain trust anchor in the parent, DS record.
 
-3.2.  How does a child signal its parent it wants DNSSEC Trust Anchor ?
+3.2.  How does a child signal its parent it wants DNSSEC Trust Anchor?
 
    The child needs first to sign the domain, then the child can "upload"
    the DS record to its parent.  The "normal" way to upload is to go
@@ -221,9 +221,9 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-Latour, et al.           Expires August 15, 2016                [Page 4]
+Latour, et al.          Expires September 8, 2016               [Page 4]
 
-Internet-Draft                  3-DNS-RRR                  February 2016
+Internet-Draft                  3-DNS-RRR                     March 2016
 
 
    needs to relay the information.  For large operations this does not
@@ -238,20 +238,21 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    the right parental agent.
 
    We and [I-D.ogud-dnsop-maintain-ds] argue that the publication of
-   CDS/CDNSKEY record is sufficient for the parent to start acceptance
-   processing.  The main point is to provide authentication thus if the
-   child is in "good" state then the DS upload should be simple to
-   accept and publish.  If there is a problem the parent has ability to
-   not add the DS.
+   CDS/CDNSKEY record is sufficient for the parent to start the
+   acceptance processing.  The main point is to provide authentication
+   thus if the child is in "good" state then the DS upload should be
+   simple to accept and publish.  If there is a problem the parent has
+   ability to not add the DS.
 
-3.3.  What checks are needed by parent ?
+3.3.  What checks are needed by parent?
 
    The parent upon receiving a signal that it check the child for desire
    for DS record publication.  The basic tests include,
 
-       1. All the nameservers for the zone agree on zone contents
-       2. The zone is signed
-       3. The zone has a CDS signed by the KSK referenced in the CDS
+    1. The zone is signed
+    2. The zone has a CDS signed by a KSK referenced in the current DS,
+       referring to a at least one key in the current DNSKEY RRset
+    3. All the nameservers for the zone agree on the CDS contents
 
    Parents can have additional tests, defined delays, queries over TCP,
    and even ask the DNS Operator to prove they can add data to the zone,
@@ -264,22 +265,21 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 4.  OP-3-DNS-RR RESTful API
 
    The specification of this API is minimalistic, but a realistic one.
+   Question: How to respond if the party contacted is not ALLOOWED to
+   make the requested change ?
 
 4.1.  Authentication
 
    The API does not impose any unique server authentication
    requirements.  The server authentication provided by TLS fully
-   addresses the needs.  In general, transports for the API must provide
-   a TLS-protected transport (e.g., HTTPS)
+   addresses the needs.  In general, for the API SHOULD be provied over
+   TLS-protected transport (e.g., HTTPS) or VPN.
 
 
 
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 5]
+Latour, et al.          Expires September 8, 2016               [Page 5]
 
-Internet-Draft                  3-DNS-RRR                  February 2016
+Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 4.2.  Authorization
@@ -303,7 +303,7 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    Path: /domains/{domain}/cds {domain}: is the domain name to be
    operated on
 
-4.4.1.  Initial Trust Establishment (Turn on DNSSEC)
+4.4.1.  Initial Trust Establishment (Enable DNSSEC validation)
 
 4.4.1.1.  Request
 
@@ -312,10 +312,11 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    A DS record based on the CDS record in the child zone file will be
    inserted into the registry and the parent zone file upon the
    successful completion of such request.  If there are multiple CDS
-   records in the child zone file, multiple DS records will be added.
+   records in the CDS RRset, multiple DS records will be added.
 
    Either the CDS/CDNSKEY or the DNSKEY can be used to create the DS
-   record.
+   record.  Note: entity expecting CDNSKEY is still expected accept the
+   /cds command.
 
 4.4.1.2.  Response
 
@@ -328,15 +329,17 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
+
+
+
+
+Latour, et al.          Expires September 8, 2016               [Page 6]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 6]
-
-Internet-Draft                  3-DNS-RRR                  February 2016
-
 
 4.4.2.  Removing a DS (turn off DNSSEC)
 
@@ -379,20 +382,24 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 4.5.1.  Setup Initial Trust Establishment with Challenge
 
+
+
+
+
+
+
+
+Latour, et al.          Expires September 8, 2016               [Page 7]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
 4.5.1.1.  Request
 
                    Syntax: POST /domains/{domain}/tokens
 
    A random token to be included as a _delegate TXT record prior
    establishing the DNSSEC initial trust.
-
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 7]
-
-Internet-Draft                  3-DNS-RRR                  February 2016
-
 
 4.5.1.2.  Response
 
@@ -415,6 +422,9 @@ Internet-Draft                  3-DNS-RRR                  February 2016
    TBD This will hopefully get more zones to become validated thus
    overall the security gain out weights the possible drawbacks.
 
+   risk of takeover ? risk of validation errors < declines transfer
+   issues
+
 6.  IANA Actions
 
    URI ??? TBD
@@ -432,23 +442,23 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               from parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-
               ds-00 (work in progress), December 2015.
 
+
+
+
+Latour, et al.          Expires September 8, 2016               [Page 8]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
               Extensions", RFC 4035, DOI 10.17487/RFC4035, March 2005,
               <http://www.rfc-editor.org/info/rfc4035>.
 
    [RFC7344]  Kumari, W., Gudmundsson, O., and G. Barwood, "Automating
-              DNSSEC Delegation Trust Maintenance", RFC 7344,
-              DOI 10.17487/RFC7344, September 2014,
+              DNSSEC Delegation Trust Maintenance", RFC 7344, DOI
+              10.17487/RFC7344, September 2014,
               <http://www.rfc-editor.org/info/rfc7344>.
-
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 8]
-
-Internet-Draft                  3-DNS-RRR                  February 2016
-
 
 8.2.  Informative References
 
@@ -458,8 +468,8 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               ds-00 (work in progress), October 2015.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
    [RFC6690]  Shelby, Z., "Constrained RESTful Environments (CoRE) Link
@@ -467,18 +477,36 @@ Internet-Draft                  3-DNS-RRR                  February 2016
               <http://www.rfc-editor.org/info/rfc6690>.
 
    [RFC7480]  Newton, A., Ellacott, B., and N. Kong, "HTTP Usage in the
-              Registration Data Access Protocol (RDAP)", RFC 7480,
-              DOI 10.17487/RFC7480, March 2015,
+              Registration Data Access Protocol (RDAP)", RFC 7480, DOI
+              10.17487/RFC7480, March 2015,
               <http://www.rfc-editor.org/info/rfc7480>.
 
 Appendix A.  Document History
 
-A.1.  Version 01
+A.1.  Version 03
+
+   Clarified based on comments and questions from early implementors
+
+A.2.  Version 02
+
+   Reflected comments on mailing lists
+
+A.3.  Version 01
 
    This version adds a full REST definition this is based on suggestions
    from Jakob Schlyter.
 
-A.2.  Version 00
+
+
+
+
+
+Latour, et al.          Expires September 8, 2016               [Page 9]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
+A.4.  Version 00
 
    First rough version
 
@@ -494,16 +522,6 @@ Authors' Addresses
    Cloudflare, Inc.
 
    Email: olafur+ietf@cloudflare.com
-
-
-
-
-
-
-
-Latour, et al.           Expires August 15, 2016                [Page 9]
-
-Internet-Draft                  3-DNS-RRR                  February 2016
 
 
    Paul Wouters
@@ -539,22 +557,4 @@ Internet-Draft                  3-DNS-RRR                  February 2016
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Latour, et al.           Expires August 15, 2016               [Page 10]
+Latour, et al.          Expires September 8, 2016              [Page 10]
