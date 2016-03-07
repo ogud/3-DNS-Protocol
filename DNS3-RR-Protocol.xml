@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="info" docName="draft-latour-dnsoperator-to-rrr-protocol-02.txt">
+<rfc ipr="trust200902" category="info" docName="draft-latour-dnsoperator-to-rrr-protocol-03aa.txt">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -72,7 +72,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2016" month="February" day="12"/>
+<date year="2016" month="March" day="7"/>
 
 <area>Applications</area>
 <workgroup></workgroup>
@@ -113,7 +113,7 @@ of delegation records such as DS, NS, and glue records.   The protocol is kept a
 <middle>
 
 <section anchor="introduction" title="Introduction">
-<t>Why is this needed ?
+<t>Why is this needed?
 DNS registration systems today are designed around making
 registrations easy and fast. After the domain has been registered the
 there are really three options on who maintains the DNS zone that is
@@ -163,7 +163,7 @@ in <xref target="RFC2119"/>.
 </section>
 </section>
 
-<section anchor="what-is-the-goal-" title="What is the goal ?">
+<section anchor="what-is-the-goal" title="What is the goal?">
 <t>The primary goal is to use the DNS protocol to provide information from
 child zone to the parent zone, to maintain the
 delegation information. The precondition for this to be practical is
@@ -179,7 +179,7 @@ has yet be deployed on most TLD's.
 call to start processing of the requested delegation information.
 </t>
 
-<section anchor="why-dnssec-" title="Why DNSSEC ?">
+<section anchor="why-dnssec" title="Why DNSSEC?">
 <t>DNSSEC <xref target="RFC4035"/> provides data authentication for DNS answers,
 having DNSSEC enabled makes it possible to trust the answers. The
 biggest stumbling block is deploying DNSSEC is the initial
@@ -188,7 +188,7 @@ record.
 </t>
 </section>
 
-<section anchor="how-does-a-child-signal-its-parent-it-wants-dnssec-trust-anchor-" title="How does a child signal its parent it wants DNSSEC Trust Anchor ?">
+<section anchor="how-does-a-child-signal-its-parent-it-wants-dnssec-trust-anchor" title="How does a child signal its parent it wants DNSSEC Trust Anchor?">
 <t>The child needs first to sign the domain, then the child can &quot;upload&quot;
 the DS record to its parent. The &quot;normal&quot; way to upload is to go through
 registration interface, but that fails frequently. The DNS Operator
@@ -205,22 +205,23 @@ start acceptance processing. This document will cover below how to
 make the CDS records visible to the right parental agent.
 </t>
 <t>We and <xref target="I-D.ogud-dnsop-maintain-ds"/> argue that the publication of CDS/CDNSKEY record is sufficient for
-the parent to start acceptance processing. The main point is to
+the parent to start the acceptance processing. The main point is to
 provide authentication thus if the child is in &quot;good&quot; state then the DS
 upload should be simple to accept and publish. If there is a problem
 the parent has ability to not add the DS.
 </t>
 </section>
 
-<section anchor="what-checks-are-needed-by-parent-" title="What checks are needed by parent ?">
+<section anchor="what-checks-are-needed-by-parent" title="What checks are needed by parent?">
 <t>The parent upon receiving a signal that it check the child for desire
 for DS record publication. The basic tests include,
 </t>
 
 <figure align="center"><artwork align="center">
-1. All the nameservers for the zone agree on zone contents 
-2. The zone is signed 
-3. The zone has a CDS signed by the KSK referenced in the CDS 
+1. The zone is signed 
+2. The zone has a CDS signed by a KSK referenced in the current DS, 
+   referring to a at least one key in the current DNSKEY RRset
+3. All the nameservers for the zone agree on the CDS contents
 </artwork></figure>
 <t>Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
@@ -235,12 +236,13 @@ the parent for completion of the operation and issue possible follow-up calls.
 
 <section anchor="op3dnsrr-restful-api" title="OP-3-DNS-RR RESTful API">
 <t>The specification of this API is minimalistic, but a realistic one.
+Question: How to respond if the party contacted is not ALLOOWED to make the requested change ?
 </t>
 
 <section anchor="authentication" title="Authentication">
 <t>The API does not impose any unique server authentication requirements.
    The server authentication provided by TLS fully addresses the needs.
-   In general, transports for the API must provide a TLS-protected transport (e.g., HTTPS)
+   In general, for the API SHOULD be provied over TLS-protected transport (e.g., HTTPS) or VPN.
 </t>
 </section>
 
@@ -264,7 +266,7 @@ the parent for completion of the operation and issue possible follow-up calls.
    {domain}: is the domain name to be operated on
 </t>
 
-<section anchor="initial-trust-establishment-turn-on-dnssec" title="Initial Trust Establishment (Turn on DNSSEC)">
+<section anchor="initial-trust-establishment-enable-dnssec-validation" title="Initial Trust Establishment (Enable DNSSEC validation)">
 
 <section anchor="request" title="Request">
 
@@ -273,9 +275,10 @@ Syntax: POST /domains/{domain}/cds
 </artwork></figure>
 <t>A DS record based on the CDS record in the child zone file will be inserted into the
    registry and the parent zone file upon the successful completion of such request. If
-   there are multiple CDS records in the child zone file, multiple DS records will be added.
+   there are multiple CDS records in the CDS RRset, multiple DS records will be added.
 </t>
 <t>Either the CDS/CDNSKEY or the DNSKEY can be used to create the DS record.
+   Note: entity expecting CDNSKEY is still expected accept the /cds command.
 </t>
 </section>
 
@@ -380,6 +383,10 @@ Syntax: POST /domains/{domain}/tokens
 <t>TBD This will hopefully get more zones to become validated thus
 overall the security gain out weights the possible drawbacks.
 </t>
+<t>risk of takeover ?
+risk of validation errors &lt; declines
+transfer issues
+</t>
 </section>
 
 <section anchor="iana-actions" title="IANA Actions">
@@ -407,6 +414,16 @@ overall the security gain out weights the possible drawbacks.
 </references>
 
 <section anchor="document-history" title="Document History">
+
+<section anchor="version-03" title="Version 03">
+<t>Clarified based on comments and questions from early implementors
+</t>
+</section>
+
+<section anchor="version-02" title="Version 02">
+<t>Reflected comments on mailing lists
+</t>
+</section>
 
 <section anchor="version-01" title="Version 01">
 <t>This version adds a full REST definition this is based on suggestions from Jakob Schlyter.
