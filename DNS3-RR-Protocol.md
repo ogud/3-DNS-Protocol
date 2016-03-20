@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-03aa.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-03ab.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2016-03-07T00:00:00Z
+% date = 2016-03-20T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
@@ -102,7 +102,7 @@ failures that case the domain to become invalid and all users that are
 behind validating resolvers will not be able to to access the domain. 
 
 
-# Notational Conventions
+# Notional Conventions
     
 ## Definitions
 For the purposes of this draft, a third-party DNS Operator is any
@@ -169,31 +169,31 @@ for DS record publication. The basic tests include,
     1. The zone is signed 
     2. The zone has a CDS signed by a KSK referenced in the current DS, 
        referring to a at least one key in the current DNSKEY RRset
-    3. All the nameservers for the zone agree on the CDS contents
+    3. All the name-servers for the zone agree on the CDS contents
 
 Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. 
-The protocol is partially-synchronus, i.e. the server can elect to
+The protocol is partially-synchronous, i.e. the server can elect to
 hold connection open until the operation has concluded or it can
 return that it received the request. It is up to the child to monitor
 the parent for completion of the operation and issue possible follow-up calls. 
 
 # OP-3-DNS-RR RESTful API
 
-The specification of this API is minimalistic, but a realistic one. 
-Question: How to respond if the party contacted is not ALLOOWED to make the requested change ? 
+The specification of this API is minimalist, but a realistic one. 
+Question: How to respond if the party contacted is not ALLOWED to make the requested change ? 
 
 ## Authentication
    The API does not impose any unique server authentication requirements.
    The server authentication provided by TLS fully addresses the needs.
-   In general, for the API SHOULD be provied over TLS-protected transport (e.g., HTTPS) or VPN.
+   In general, for the API SHOULD be provided over TLS-protected transport (e.g., HTTPS) or VPN.
    
 ## Authorization
    Authorization is out of scope of this document. The CDS records present in the zone file
    are indications of intention to sign/unsign/update the DS records of the domain in the parent zone.
    This means the proceeding of the action is not determined by who issued the request. 
-   Therefore, authorization is out of the scope. Registries and registars who plan to provide this service can, 
+   Therefore, authorization is out of the scope. Registries and registrars who plan to provide this service can, 
    however, implement their own policy such as IP white listing, API key, etc.
    
 ## Base URL Locator
@@ -278,7 +278,7 @@ URI ??? TBD
 
 
 # Internationalization Considerations
-This protcol is designed for machine to machine communications 
+This protocol is designed for machine to machine communications 
 
 {backmatter}
 
