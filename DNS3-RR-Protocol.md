@@ -169,7 +169,7 @@ for DS record publication. The basic tests include,
     1. The zone is signed 
     2. The zone has a CDS signed by a KSK referenced in the current DS, 
        referring to a at least one key in the current DNSKEY RRset
-    3. All the name-servers for the zone agree on the CDS contents
+    3. All the name-servers for the zone agree on the CDS RRset contents
 
 Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
@@ -255,7 +255,7 @@ Question: How to respond if the party contacted is not ALLOWED to make the reque
    A random token to be included as a _delegate TXT record prior establishing the DNSSEC initial trust.
 
 #### Response
-   - HTTP Status code 201 indicates a success.
+   - HTTP Status code 201 indicates a success. OG: should this be 200 ? TBD!!!!
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
    
@@ -263,6 +263,14 @@ Question: How to respond if the party contacted is not ALLOWED to make the reque
 ## Customized Error Messages
    Service providers can provide a customized error message in the response body
    in addition to the HTTP status code defined in the previous section.
+
+   This can include an Identifiying number/string that can be used to track the requests. 
+
+#Using the definitions 
+This section at the moment contains comments from early implementers 
+## How to react to 403 on POST cds
+The basic reaction to a 403 on POST /domains/{domain}/cds is to issue POST /domains/{domain}/tokens 
+command to fetch the challenge to insert into the zone. 
 
 # Security considerations
 
