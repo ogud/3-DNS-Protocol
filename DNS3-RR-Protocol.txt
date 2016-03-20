@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: September 8, 2016                              Cloudflare, Inc.
+Expires: September 21, 2016                             Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                                Rightside
-                                                           March 7, 2016
+                                                          March 20, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-           draft-latour-dnsoperator-to-rrr-protocol-03aa.txt
+           draft-latour-dnsoperator-to-rrr-protocol-03ab.txt
 
 Abstract
 
@@ -53,7 +53,7 @@ Abstract
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 1]
+Latour, et al.         Expires September 21, 2016               [Page 1]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 8, 2016.
+   This Internet-Draft will expire on September 21, 2016.
 
 Copyright Notice
 
@@ -93,7 +93,7 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   4
+   2.  Notional Conventions  . . . . . . . . . . . . . . . . . . . .   4
      2.1.  Definitions . . . . . . . . . . . . . . . . . . . . . . .   4
      2.2.  RFC2119 Keywords  . . . . . . . . . . . . . . . . . . . .   4
    3.  What is the goal? . . . . . . . . . . . . . . . . . . . . . .   4
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 2]
+Latour, et al.         Expires September 21, 2016               [Page 2]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -121,16 +121,17 @@ Internet-Draft                  3-DNS-RRR                     March 2016
      4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   7
        4.5.1.  Setup Initial Trust Establishment with Challenge  . .   7
      4.6.  Customized Error Messages . . . . . . . . . . . . . . . .   8
+     4.7.  How to react to 403 on POST cds . . . . . . . . . . . . .   8
    5.  Security considerations . . . . . . . . . . . . . . . . . . .   8
-   6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .   8
-   7.  Internationalization Considerations . . . . . . . . . . . . .   8
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
+   6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .   9
+   7.  Internationalization Considerations . . . . . . . . . . . . .   9
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
-   Appendix A.  Document History . . . . . . . . . . . . . . . . . .   9
-     A.1.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .   9
-     A.2.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .   9
-     A.3.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .   9
+   Appendix A.  Document History . . . . . . . . . . . . . . . . . .  10
+     A.1.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  10
+     A.2.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  10
+     A.3.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  10
      A.4.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  10
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
@@ -164,13 +165,12 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-
-Latour, et al.          Expires September 8, 2016               [Page 3]
+Latour, et al.         Expires September 21, 2016               [Page 3]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
 
-2.  Notational Conventions
+2.  Notional Conventions
 
 2.1.  Definitions
 
@@ -221,7 +221,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 4]
+Latour, et al.         Expires September 21, 2016               [Page 4]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -249,35 +249,35 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    The parent upon receiving a signal that it check the child for desire
    for DS record publication.  The basic tests include,
 
-    1. The zone is signed
-    2. The zone has a CDS signed by a KSK referenced in the current DS,
-       referring to a at least one key in the current DNSKEY RRset
-    3. All the nameservers for the zone agree on the CDS contents
+   1. The zone is signed
+   2. The zone has a CDS signed by a KSK referenced in the current DS,
+      referring to a at least one key in the current DNSKEY RRset
+   3. All the name-servers for the zone agree on the CDS RRset contents
 
    Parents can have additional tests, defined delays, queries over TCP,
    and even ask the DNS Operator to prove they can add data to the zone,
    or provide a code that is tied to the affected zone.  The protocol is
-   partially-synchronus, i.e. the server can elect to hold connection
+   partially-synchronous, i.e. the server can elect to hold connection
    open until the operation has concluded or it can return that it
    received the request.  It is up to the child to monitor the parent
    for completion of the operation and issue possible follow-up calls.
 
 4.  OP-3-DNS-RR RESTful API
 
-   The specification of this API is minimalistic, but a realistic one.
-   Question: How to respond if the party contacted is not ALLOOWED to
+   The specification of this API is minimalist, but a realistic one.
+   Question: How to respond if the party contacted is not ALLOWED to
    make the requested change ?
 
 4.1.  Authentication
 
    The API does not impose any unique server authentication
    requirements.  The server authentication provided by TLS fully
-   addresses the needs.  In general, for the API SHOULD be provied over
+   addresses the needs.  In general, for the API SHOULD be provided over
    TLS-protected transport (e.g., HTTPS) or VPN.
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 5]
+Latour, et al.         Expires September 21, 2016               [Page 5]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -289,7 +289,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    update the DS records of the domain in the parent zone.  This means
    the proceeding of the action is not determined by who issued the
    request.  Therefore, authorization is out of the scope.  Registries
-   and registars who plan to provide this service can, however,
+   and registrars who plan to provide this service can, however,
    implement their own policy such as IP white listing, API key, etc.
 
 4.3.  Base URL Locator
@@ -333,7 +333,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 6]
+Latour, et al.         Expires September 21, 2016               [Page 6]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -389,7 +389,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.          Expires September 8, 2016               [Page 7]
+Latour, et al.         Expires September 21, 2016               [Page 7]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -403,7 +403,8 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 4.5.1.2.  Response
 
-   o  HTTP Status code 201 indicates a success.
+   o  HTTP Status code 201 indicates a success.  OG: should this be 200
+      ? TBD!!!!
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
@@ -417,6 +418,18 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    response body in addition to the HTTP status code defined in the
    previous section.
 
+   This can include an Identifiying number/string that can be used to
+   track the requests.
+
+   #Using the definitions This section at the moment contains comments
+   from early implementers
+
+4.7.  How to react to 403 on POST cds
+
+   The basic reaction to a 403 on POST /domains/{domain}/cds is to issue
+   POST /domains/{domain}/tokens command to fetch the challenge to
+   insert into the zone.
+
 5.  Security considerations
 
    TBD This will hopefully get more zones to become validated thus
@@ -425,13 +438,25 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    risk of takeover ? risk of validation errors < declines transfer
    issues
 
+
+
+
+
+
+
+
+Latour, et al.         Expires September 21, 2016               [Page 8]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
 6.  IANA Actions
 
    URI ??? TBD
 
 7.  Internationalization Considerations
 
-   This protcol is designed for machine to machine communications
+   This protocol is designed for machine to machine communications
 
 8.  References
 
@@ -441,14 +466,6 @@ Internet-Draft                  3-DNS-RRR                     March 2016
               Gu[eth]mundsson, O. and P. Wouters, "Managing DS records
               from parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-
               ds-00 (work in progress), December 2015.
-
-
-
-
-Latour, et al.          Expires September 8, 2016               [Page 8]
-
-Internet-Draft                  3-DNS-RRR                     March 2016
-
 
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
@@ -481,6 +498,14 @@ Internet-Draft                  3-DNS-RRR                     March 2016
               10.17487/RFC7480, March 2015,
               <http://www.rfc-editor.org/info/rfc7480>.
 
+
+
+
+Latour, et al.         Expires September 21, 2016               [Page 9]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
 Appendix A.  Document History
 
 A.1.  Version 03
@@ -495,16 +520,6 @@ A.3.  Version 01
 
    This version adds a full REST definition this is based on suggestions
    from Jakob Schlyter.
-
-
-
-
-
-
-Latour, et al.          Expires September 8, 2016               [Page 9]
-
-Internet-Draft                  3-DNS-RRR                     March 2016
-
 
 A.4.  Version 00
 
@@ -542,19 +557,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Latour, et al.          Expires September 8, 2016              [Page 10]
+Latour, et al.         Expires September 21, 2016              [Page 10]
