@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-02.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-03aa.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2016-02-12T00:00:00Z
+% date = 2016-03-07T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
@@ -158,7 +158,7 @@ start acceptance processing. This document will cover below how to
 make the CDS records visible to the right parental agent. 
 
 We and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of CDS/CDNSKEY record is sufficient for 
-the parent to start acceptance processing. The main point is to 
+the parent to start the acceptance processing. The main point is to 
 provide authentication thus if the child is in "good" state then the DS
 upload should be simple to accept and publish. If there is a problem
 the parent has ability to not add the DS.
@@ -167,8 +167,9 @@ the parent has ability to not add the DS.
 The parent upon receiving a signal that it check the child for desire
 for DS record publication. The basic tests include, 
     1. The zone is signed 
-    2. All the nameservers for the zone agree on CDS contents
-    3. The zone has a CDS signed by a KSK referenced in the current DS 
+    2. The zone has a CDS signed by a KSK referenced in the current DS, 
+       referring to a at least one key in the current DNSKEY RRset
+    3. All the nameservers for the zone agree on the CDS contents
 
 Parents can have additional tests, defined delays, queries over TCP, and even ask the
 DNS Operator to prove they can add data to the zone, or provide a code
@@ -181,11 +182,12 @@ the parent for completion of the operation and issue possible follow-up calls.
 # OP-3-DNS-RR RESTful API
 
 The specification of this API is minimalistic, but a realistic one. 
+Question: How to respond if the party contacted is not ALLOOWED to make the requested change ? 
 
 ## Authentication
    The API does not impose any unique server authentication requirements.
    The server authentication provided by TLS fully addresses the needs.
-   In general, transports for the API must provide a TLS-protected transport (e.g., HTTPS)
+   In general, for the API SHOULD be provied over TLS-protected transport (e.g., HTTPS) or VPN.
    
 ## Authorization
    Authorization is out of scope of this document. The CDS records present in the zone file
@@ -203,16 +205,16 @@ The specification of this API is minimalistic, but a realistic one.
    Path: /domains/{domain}/cds
    {domain}: is the domain name to be operated on
    
-### Initial Trust Establishment (Turn on DNSSEC)
+### Initial Trust Establishment (Enable DNSSEC validation)
 #### Request
     Syntax: POST /domains/{domain}/cds
 
    A DS record based on the CDS record in the child zone file will be inserted into the
    registry and the parent zone file upon the successful completion of such request. If 
-   there are multiple CDS records in the child zone file, multiple DS records will be added.  
+   there are multiple CDS records in the CDS RRset, multiple DS records will be added.  
    
    Either the CDS/CDNSKEY or the DNSKEY can be used to create the DS record.
-   
+   Note: entity expecting CDNSKEY is still expected accept the /cds command.
 
 #### Response
    - HTTP Status code 201 indicates a success.
@@ -267,6 +269,9 @@ The specification of this API is minimalistic, but a realistic one.
 TBD This will hopefully get more zones to become validated thus
 overall the security gain out weights the possible drawbacks. 
 
+risk of takeover ?
+risk of validation errors < declines 
+transfer issues 
 
 # IANA Actions
 URI ??? TBD
@@ -278,6 +283,12 @@ This protcol is designed for machine to machine communications
 {backmatter}
 
 # Document History
+
+## Version 03 
+Clarified based on comments and questions from early implementors 
+
+## Version 02 
+Reflected comments on mailing lists 
 
 ## Version 01
 This version adds a full REST definition this is based on suggestions from Jakob Schlyter. 
