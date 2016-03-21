@@ -40,7 +40,7 @@
 % fullname="Matthew Pounsett" 
 % initials="M."
 % surname="Pounsett"
-% organization="Rightside"
+% organization="Rightside Group, Ltd."
 %  [author.address] 
 %  street="Toronto, ON"
 %  email="matt@conundrum.com"
