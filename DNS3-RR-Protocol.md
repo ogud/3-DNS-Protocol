@@ -109,9 +109,9 @@ For the purposes of this draft, a third-party DNS Operator is any
 DNS Operator responsible for a zone where the operator is neither
 the Registrant nor the Registrar of record for the delegation.
 
-When we say Registrar that can in many cases be applied to a Reseller
-i.e. an entity that sells delegations but registrations are processed
-through an Registrar the reseller has agreement with. 
+Uses of the word 'Registrar' in this document may also be applied to
+resellers: an entity that sells delegations through a registrar with whom the
+entity has a reseller agreement.
 
 ## RFC2119 Keywords
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
