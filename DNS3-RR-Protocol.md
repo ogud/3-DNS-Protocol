@@ -55,17 +55,16 @@ initial changes to the NS records for the delegation.  As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 
-When the domain on the other hand uses DNSSEC it necessary for the Registrant
-in this situation to make regular (sometimes annual) changes to the delegation
-in order to track KSK rollover, by updating the delegation's DS record(s).
-Under the current model this is prone to Registrant error and significant
-delays. Even when the Registrant has outsourced the operation of DNS to a
-third party the registrant still has to be in the loop to update the DS
-record.
+On the other hand, when the domain is signed with DNSSEC it is necessary for
+the DS records in the parent delegation to be changed regularly in order to
+track KSK rollover.  In the current model, this is subject to delays, as the
+DNS operator must get the attention of the registrant, and is error prone, as
+the registrant must successfully copy and paste DS data or DNSKEY data, which
+is difficult to visually compare.
 
 There is a need for a simple protocol that allows a third party DNS operator
-to update DS and NS records in a trusted manner for a delegation without
-involving the registrant for each operation.
+to update DS and NS records for a delegation, in a trusted manner, without
+involving the registrant in each operation.
 
 The protocol described in this draft is REST based, and when used through an
 authenticated channel can be used to establish the DNSSEC Initial Trust (to
@@ -76,33 +75,39 @@ NS, and glue records.   The protocol is kept as simple as possible.
 {mainmatter}
 
 # Introduction
-Why is this needed?  DNS registration systems today are designed around making
-registrations easy and fast. After the domain has been registered the there
-are really three options on who maintains the DNS zone that is loaded on the
-"primary" DNS servers for the domain this can be the Registrant, Registrar, or
-a third party DNS Operator.
 
-Unfortunately the ease to make changes differs for each one of these options.
-The Registrant needs to use the interface that the registrar provides to
-update NS and DS records. The Registrar on the other hand can make changes
-directly into the registration system. The third party DNS Operator on the
-hand needs to go through the Registrant to update any delegation information.
+DNS registration systems are designed around making registrations easy and
+fast.  When it comes to setting up the master (or primary) DNS service, the
+level of ease varies greatly depending on whether the DNS operator is the
+registrar, registrant, or a third party.
 
-Current system does not work well, there are many examples of failures
-including the inability to upload DS records due to non-support by Registrar
-interface, the registrant forgets/does-not perform action but tools proceed
-with key roll-over without checking that the new DS is in place. Another
-common failure is the DS record is not removed when the DNS Operator changes
-from one that supports DNSSEC signing to one that does not.
+When the registrar is the DNS operator, it is able to directly and
+automatically make changes at the registray as necessary.  If the registrant
+is the DNS operator, they can make whatever changes they need using whatever
+interface the registrar provides. A third party DNS operator, on the other
+hand, must go through the registrant (who may or may not be technically
+capable) in order to have changes submitted through the registrar to the
+registry.
 
-The failures result either inability to use DNSSEC or in validation failures
-that case the domain to become invalid and all users that are behind
-validating resolvers will not be able to to access the domain.
+There are many examples of common failure modes with a third-party DNS
+operator:
+   - submission of incorrect data to the registrar due to copy and paste
+     errors, or unintentionally omitting important data
+   - registrants failing to submit data to the registrar in a timely manner
+   - failure to remove DS records when moving from a DNS operator that
+     supports DNSSEC to one that does not
 
+These sorts of human errors can result in partial or complete failure of a
+zone for anyone using a DNSSEC validating resolver.  The protocol described by
+this draft is intended to simplify the process of updating delegation
+information, for both the registrant and third party DNS operators, by
+enabling automation and eliminating obvious and common sources of human
+error.
 
 # Notional Conventions
     
 ## Definitions
+
 For the purposes of this draft, a third-party DNS Operator is any DNS Operator
 responsible for a zone where the operator is neither the Registrant nor the
 Registrar of record for the delegation.
@@ -112,6 +117,7 @@ resellers: an entity that sells delegations through a registrar with whom the
 entity has a reseller agreement.
 
 ## RFC2119 Keywords
+
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [@RFC2119].
