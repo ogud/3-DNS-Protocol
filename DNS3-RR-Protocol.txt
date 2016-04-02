@@ -5,16 +5,16 @@
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Informational                            O. Gudmundsson
-Expires: September 21, 2016                             Cloudflare, Inc.
+Expires: September 22, 2016                             Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
-                                                               Rightside
-                                                          March 20, 2016
+                                                   Rightside Group, Ltd.
+                                                          March 21, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-           draft-latour-dnsoperator-to-rrr-protocol-03ab.txt
+            draft-latour-dnsoperator-to-rrr-protocol-03.txt
 
 Abstract
 
@@ -53,7 +53,7 @@ Abstract
 
 
 
-Latour, et al.         Expires September 21, 2016               [Page 1]
+Latour, et al.         Expires September 22, 2016               [Page 1]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 21, 2016.
+   This Internet-Draft will expire on September 22, 2016.
 
 Copyright Notice
 
@@ -99,17 +99,17 @@ Table of Contents
    3.  What is the goal? . . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Why DNSSEC? . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  How does a child signal its parent it wants DNSSEC Trust
-           Anchor? . . . . . . . . . . . . . . . . . . . . . . . . .   4
+           Anchor?  The child  . . . . . . . . . . . . . . . . . . .   4
      3.3.  What checks are needed by parent? . . . . . . . . . . . .   5
    4.  OP-3-DNS-RR RESTful API . . . . . . . . . . . . . . . . . . .   5
-     4.1.  Authentication  . . . . . . . . . . . . . . . . . . . . .   5
+     4.1.  Authentication  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Authorization . . . . . . . . . . . . . . . . . . . . . .   6
      4.3.  Base URL Locator  . . . . . . . . . . . . . . . . . . . .   6
      4.4.  CDS resource  . . . . . . . . . . . . . . . . . . . . . .   6
 
 
 
-Latour, et al.         Expires September 21, 2016               [Page 2]
+Latour, et al.         Expires September 22, 2016               [Page 2]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -119,7 +119,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
        4.4.2.  Removing a DS (turn off DNSSEC) . . . . . . . . . . .   7
        4.4.3.  DS Maintenance (Key roll over)  . . . . . . . . . . .   7
      4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   7
-       4.5.1.  Setup Initial Trust Establishment with Challenge  . .   7
+       4.5.1.  Setup Initial Trust Establishment with Challenge  . .   8
      4.6.  Customized Error Messages . . . . . . . . . . . . . . . .   8
      4.7.  How to react to 403 on POST cds . . . . . . . . . . . . .   8
    5.  Security considerations . . . . . . . . . . . . . . . . . . .   8
@@ -165,7 +165,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 21, 2016               [Page 3]
+Latour, et al.         Expires September 22, 2016               [Page 3]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -178,9 +178,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    Operator responsible for a zone where the operator is neither the
    Registrant nor the Registrar of record for the delegation.
 
-   When we say Registrar that can in many cases be applied to a Reseller
-   i.e. an entity that sells delegations but registrations are processed
-   through an Registrar the reseller has agreement with.
+   Uses of the word 'Registrar' in this document may also be applied to
+   resellers: an entity that sells delegations through a registrar with
+   whom the entity has a reseller agreement.
 
 2.2.  RFC2119 Keywords
 
@@ -213,29 +213,31 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    the DNSSEC domain trust anchor in the parent, DS record.
 
 3.2.  How does a child signal its parent it wants DNSSEC Trust Anchor?
+      The child
 
-   The child needs first to sign the domain, then the child can "upload"
-   the DS record to its parent.  The "normal" way to upload is to go
-   through registration interface, but that fails frequently.  The DNS
-   Operator may not have access to the interface thus the registrant
+   needs first to sign the domain, then the child can "upload" the DS
+   record to its parent.  The "normal" way to upload is to go through
+   registration interface, but that fails frequently.  The DNS Operator
 
 
 
-Latour, et al.         Expires September 21, 2016               [Page 4]
+Latour, et al.         Expires September 22, 2016               [Page 4]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
 
-   needs to relay the information.  For large operations this does not
-   scale, as evident in lack of Trust Anchors for signed deployments
-   that are operated by third parties.
+   may not have access to the interface thus the registrant needs to
+   relay the information.  For large operations this does not scale, as
+   evident in lack of Trust Anchors for signed deployments that are
+   operated by third parties.
 
    The child can signal its desire to have DNSSEC validation enabled by
    publishing one of the special DNS records CDS and/or CDNSKEY[RFC7344]
-   and its proposed extension [I-D.ietf-dnsop-maintain-ds].  Once the
-   "parent" "sees" these records it SHOULD start acceptance processing.
-   This document will cover below how to make the CDS records visible to
-   the right parental agent.
+   and its proposed extension [I-D.ietf-dnsop-maintain-ds].
+
+   Once the "parent" "sees" these records it SHOULD start acceptance
+   processing.  This document will cover below how to make the CDS
+   records visible to the right parental agent.
 
    We and [I-D.ogud-dnsop-maintain-ds] argue that the publication of
    CDS/CDNSKEY record is sufficient for the parent to start the
@@ -266,7 +268,19 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
    The specification of this API is minimalist, but a realistic one.
    Question: How to respond if the party contacted is not ALLOWED to
-   make the requested change ?
+   make the requested change?
+
+
+
+
+
+
+
+
+Latour, et al.         Expires September 22, 2016               [Page 5]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
 
 4.1.  Authentication
 
@@ -274,13 +288,6 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    requirements.  The server authentication provided by TLS fully
    addresses the needs.  In general, for the API SHOULD be provided over
    TLS-protected transport (e.g., HTTPS) or VPN.
-
-
-
-Latour, et al.         Expires September 21, 2016               [Page 5]
-
-Internet-Draft                  3-DNS-RRR                     March 2016
-
 
 4.2.  Authorization
 
@@ -307,7 +314,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 4.4.1.1.  Request
 
-                    Syntax: POST /domains/{domain}/cds
+   Syntax: POST /domains/{domain}/cds
 
    A DS record based on the CDS record in the child zone file will be
    inserted into the registry and the parent zone file upon the
@@ -324,19 +331,17 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
    o  HTTP Status code 400 indicates a failure due to validation.
 
+
+
+Latour, et al.         Expires September 22, 2016               [Page 6]
+
+Internet-Draft                  3-DNS-RRR                     March 2016
+
+
    o  HTTP Status code 403 indicates a failure due to an invalid
       challenge token.
 
    o  HTTP Status code 404 indicates the domain does not exist.
-
-
-
-
-
-Latour, et al.         Expires September 21, 2016               [Page 6]
-
-Internet-Draft                  3-DNS-RRR                     March 2016
-
 
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
@@ -380,19 +385,16 @@ Internet-Draft                  3-DNS-RRR                     March 2016
    Path: /domains/{domain}/tokens {domain}: is the domain name to be
    operated on
 
-4.5.1.  Setup Initial Trust Establishment with Challenge
 
 
 
 
-
-
-
-
-Latour, et al.         Expires September 21, 2016               [Page 7]
+Latour, et al.         Expires September 22, 2016               [Page 7]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
+
+4.5.1.  Setup Initial Trust Establishment with Challenge
 
 4.5.1.1.  Request
 
@@ -403,8 +405,8 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 4.5.1.2.  Response
 
-   o  HTTP Status code 201 indicates a success.  OG: should this be 200
-      ? TBD!!!!
+   o  HTTP Status code 200 indicates a success.  Token included in the
+      body of the response, as a valid TXT record
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
@@ -443,9 +445,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-
-
-Latour, et al.         Expires September 21, 2016               [Page 8]
+Latour, et al.         Expires September 22, 2016               [Page 8]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -501,7 +501,7 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 21, 2016               [Page 9]
+Latour, et al.         Expires September 22, 2016               [Page 9]
 
 Internet-Draft                  3-DNS-RRR                     March 2016
 
@@ -546,7 +546,7 @@ Authors' Addresses
 
 
    Matthew Pounsett
-   Rightside
+   Rightside Group, Ltd.
 
    Email: matt@conundrum.com
 
@@ -557,4 +557,4 @@ Authors' Addresses
 
 
 
-Latour, et al.         Expires September 21, 2016              [Page 10]
+Latour, et al.         Expires September 22, 2016              [Page 10]

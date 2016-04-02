@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR"
 % category = "info"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-03ab.txt"
+% docName = "draft-latour-dnsoperator-to-rrr-protocol-03.txt"
 % area = "Applications"
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2016-03-20T00:00:00Z
+% date = 2016-03-21T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour"
@@ -40,7 +40,7 @@
 % fullname="Matthew Pounsett"
 % initials="M."
 % surname="Pounsett"
-% organization="Rightside"
+% organization="Rightside Group, Ltd."
 %  [author.address]
 %  street="Toronto, ON"
 %  email="matt@conundrum.com"
@@ -260,7 +260,8 @@ A random token to be included as a _delegate TXT record prior establishing the
 DNSSEC initial trust.
 
 #### Response
-   - HTTP Status code 201 indicates a success. OG: should this be 200 ? TBD!!!!
+   - HTTP Status code 200 indicates a success.  Token included in the body of the response,
+     as a valid TXT record
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
