@@ -4,17 +4,17 @@
 
 Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
-Intended status: Informational                            O. Gudmundsson
-Expires: September 22, 2016                             Cloudflare, Inc.
+Intended status: Standards Track                          O. Gudmundsson
+Expires: October 28, 2016                               Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                    Rightside Group, Ltd.
-                                                          March 21, 2016
+                                                          April 26, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-            draft-latour-dnsoperator-to-rrr-protocol-03.txt
+          draft-ietf-regext-dnsoperator-to-rrr-protocol-00.txt
 
 Abstract
 
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 1]
+Latour, et al.          Expires October 28, 2016                [Page 1]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 Status of This Memo
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 22, 2016.
+   This Internet-Draft will expire on October 28, 2016.
 
 Copyright Notice
 
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 2]
+Latour, et al.          Expires October 28, 2016                [Page 2]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
        4.4.1.  Initial Trust Establishment (Enable DNSSEC
@@ -165,9 +165,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 3]
+Latour, et al.          Expires October 28, 2016                [Page 3]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 2.  Notional Conventions
@@ -221,9 +221,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 4]
+Latour, et al.          Expires October 28, 2016                [Page 4]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
    may not have access to the interface thus the registrant needs to
@@ -277,9 +277,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 5]
+Latour, et al.          Expires October 28, 2016                [Page 5]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 4.1.  Authentication
@@ -333,9 +333,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 6]
+Latour, et al.          Expires October 28, 2016                [Page 6]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
    o  HTTP Status code 403 indicates a failure due to an invalid
@@ -389,9 +389,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 7]
+Latour, et al.          Expires October 28, 2016                [Page 7]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 4.5.1.  Setup Initial Trust Establishment with Challenge
@@ -445,9 +445,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 8]
+Latour, et al.          Expires October 28, 2016                [Page 8]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 6.  IANA Actions
@@ -501,9 +501,9 @@ Internet-Draft                  3-DNS-RRR                     March 2016
 
 
 
-Latour, et al.         Expires September 22, 2016               [Page 9]
+Latour, et al.          Expires October 28, 2016                [Page 9]
 
-Internet-Draft                  3-DNS-RRR                     March 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 Appendix A.  Document History
@@ -557,4 +557,4 @@ Authors' Addresses
 
 
 
-Latour, et al.         Expires September 22, 2016              [Page 10]
+Latour, et al.          Expires October 28, 2016               [Page 10]

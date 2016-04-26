@@ -1,13 +1,13 @@
 % title = "Third Party DNS operator to Registrars/Registries Protocol"
 % abbrev = "3-DNS-RRR" 
-% category = "info"
+% category = "std"
 % ipr="trust200902"
-% docName = "draft-latour-dnsoperator-to-rrr-protocol-03.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-00.txt"
 % area = "Applications" 
 % workgroup = ""
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
-% date = 2016-03-21T00:00:00Z
+% date = 2016-04-26T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour" 
