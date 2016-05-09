@@ -2,7 +2,7 @@
 % abbrev = "3-DNS-RRR" 
 % category = "std"
 % ipr="trust200902"
-% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01aa.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01ab.txt"
 % area = "Applications" 
 % keyword = ["dnssec", "delegation maintainance", "trust anchors"]
 %
@@ -298,6 +298,12 @@ This protocol is designed for machine to machine communications
 {backmatter}
 
 # Document History
+
+## Regex versio 01 
+Rewrote Abstract and Into (MP) 
+
+## Regex version 00 
+Working group document same as 03, just track changed to standard
 
 ## Version 03
 Clarified based on comments and questions from early implementors
