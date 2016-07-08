@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-regext-dnsoperator-to-rrr-protocol-00.txt">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-regext-dnsoperator-to-rrr-protocol-01ab.txt">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -84,29 +84,28 @@
 <abstract>
 <t>There are several problems that arise in the standard
 Registrant/Registrar/Registry model when the operator of a zone is neither the
-Registrant nor the Registrar for the delegation.  Historically the issues have
+Registrant nor the Registrar for the delegation. Historically the issues have
 been minor, and limited to difficulty guiding the Registrant through the
-initial changes to the NS records for the delegation.  As this is usually a
+initial changes to the NS records for the delegation. As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 </t>
-<t>When the domain on the other hand uses DNSSEC it necessary for the Registrant
-in this situation to make regular (sometimes annual) changes to the delegation
-in order to track KSK rollover, by updating the delegation's DS record(s).
-Under the current model this is prone to Registrant error and significant
-delays. Even when the Registrant has outsourced the operation of DNS to a
-third party the registrant still has to be in the loop to update the DS
-record.
+<t>On the other hand, when the domain is signed with DNSSEC it is necessary for
+the DS records in the parent delegation to be changed regularly in order to
+track KSK rollover. In the current model, this is subject to delays, as the
+DNS operator must get the attention of the registrant, and is error prone, as
+the registrant must successfully copy and paste DS data or DNSKEY data, which
+is difficult to visually compare.
 </t>
 <t>There is a need for a simple protocol that allows a third party DNS operator
-to update DS and NS records in a trusted manner for a delegation without
-involving the registrant for each operation.
+to update DS and NS records for a delegation, in a trusted manner, without
+involving the registrant in each operation.
 </t>
 <t>The protocol described in this draft is REST based, and when used through an
 authenticated channel can be used to establish the DNSSEC Initial Trust (to
-turn on DNSSEC or bootstrap DNSSEC).  Once DNSSEC trust is established this
+turn on DNSSEC or bootstrap DNSSEC). Once DNSSEC trust is established this
 channel can be used to trigger maintenance of delegation records such as DS,
-NS, and glue records.   The protocol is kept as simple as possible.
+NS, and glue records. The protocol is kept as simple as possible.
 </t>
 </abstract>
 
@@ -115,28 +114,37 @@ NS, and glue records.   The protocol is kept as simple as possible.
 <middle>
 
 <section anchor="introduction" title="Introduction">
-<t>Why is this needed?  DNS registration systems today are designed around making
-registrations easy and fast. After the domain has been registered the there
-are really three options on who maintains the DNS zone that is loaded on the
-&quot;primary&quot; DNS servers for the domain this can be the Registrant, Registrar, or
-a third party DNS Operator.
+<t>DNS registration systems are designed around making registrations easy and
+fast. When it comes to setting up the master (or primary) DNS service, the
+level of ease varies greatly depending on whether the DNS operator is the
+registrar, registrant, or a third party.
 </t>
-<t>Unfortunately the ease to make changes differs for each one of these options.
-The Registrant needs to use the interface that the registrar provides to
-update NS and DS records. The Registrar on the other hand can make changes
-directly into the registration system. The third party DNS Operator on the
-hand needs to go through the Registrant to update any delegation information.
+<t>When the registrar is the DNS operator, it is able to directly and
+automatically make changes at the registray as necessary. If the registrant
+is the DNS operator, they can make whatever changes they need using whatever
+interface the registrar provides. A third party DNS operator, on the other
+hand, must go through the registrant (who may or may not be technically
+capable) in order to have changes submitted through the registrar to the
+registry.
 </t>
-<t>Current system does not work well, there are many examples of failures
-including the inability to upload DS records due to non-support by Registrar
-interface, the registrant forgets/does-not perform action but tools proceed
-with key roll-over without checking that the new DS is in place. Another
-common failure is the DS record is not removed when the DNS Operator changes
-from one that supports DNSSEC signing to one that does not.
+<t>There are many examples of common failure modes with a third-party DNS
+operator:
 </t>
-<t>The failures result either inability to use DNSSEC or in validation failures
-that case the domain to become invalid and all users that are behind
-validating resolvers will not be able to to access the domain.
+<t>
+<list style="symbols">
+<t>submission of incorrect data to the registrar due to copy and paste
+ errors, or unintentionally omitting important data</t>
+<t>registrants failing to submit data to the registrar in a timely manner</t>
+<t>failure to remove DS records when moving from a DNS operator that
+ supports DNSSEC to one that does not</t>
+</list>
+</t>
+<t>These sorts of human errors can result in partial or complete failure of a
+zone for anyone using a DNSSEC validating resolver. The protocol described by
+this draft is intended to simplify the process of updating delegation
+information, for both the registrant and third party DNS operators, by
+enabling automation and eliminating obvious and common sources of human
+error.
 </t>
 </section>
 
@@ -183,9 +191,9 @@ anchor in the parent, DS record.
 </t>
 </section>
 
-<section anchor="how-does-a-child-signal-its-parent-it-wants-dnssec-trust-anchor--the-child" title="How does a child signal its parent it wants DNSSEC Trust Anchor?  The child">
-<t>needs first to sign the domain, then the child can &quot;upload&quot; the DS record to
-its parent. The &quot;normal&quot; way to upload is to go through registration
+<section anchor="how-does-a-child-signal-its-parent-it-wants-dnssec-trust-anchor" title="How does a child signal its parent it wants DNSSEC Trust Anchor?">
+<t>The child needs first to sign the domain, then the child can &quot;upload&quot; the DS
+record to its parent. The &quot;normal&quot; way to upload is to go through registration
 interface, but that fails frequently. The DNS Operator may not have access to
 the interface thus the registrant needs to relay the information. For large
 operations this does not scale, as evident in lack of Trust Anchors for signed
@@ -213,14 +221,14 @@ record publication. The basic tests include,
 </t>
 
 <figure align="center"><artwork align="center">
-1. The zone is signed 
+1. The zone is signed
 2. The zone has a CDS signed by a KSK referenced in the current DS,
    referring to a at least one key in the current DNSKEY RRset
 3. All the name-servers for the zone agree on the CDS RRset contents
 </artwork></figure>
 <t>Parents can have additional tests, defined delays, queries over TCP, and even
 ask the DNS Operator to prove they can add data to the zone, or provide a code
-that is tied to the affected zone.  The protocol is partially-synchronous,
+that is tied to the affected zone. The protocol is partially-synchronous,
 i.e. the server can elect to hold connection open until the operation has
 concluded or it can return that it received the request. It is up to the child
 to monitor the parent for completion of the operation and issue possible
@@ -230,14 +238,14 @@ follow-up calls.
 </section>
 
 <section anchor="op3dnsrr-restful-api" title="OP-3-DNS-RR RESTful API">
-<t>The specification of this API is minimalist, but a realistic one.  Question:
+<t>The specification of this API is minimalist, but a realistic one. Question:
 How to respond if the party contacted is not ALLOWED to make the requested
 change?
 </t>
 
 <section anchor="authentication" title="Authentication">
-<t>The API does not impose any unique server authentication requirements.  The
-server authentication provided by TLS fully addresses the needs.  In general,
+<t>The API does not impose any unique server authentication requirements. The
+server authentication provided by TLS fully addresses the needs. In general,
 for the API SHOULD be provided over TLS-protected transport (e.g., HTTPS) or
 VPN.
 </t>
@@ -246,8 +254,8 @@ VPN.
 <section anchor="authorization" title="Authorization">
 <t>Authorization is out of scope of this document. The CDS records present in the
 zone file are indications of intention to sign/unsign/update the DS records of
-the domain in the parent zone.  This means the proceeding of the action is not
-determined by who issued the request.  Therefore, authorization is out of the
+the domain in the parent zone. This means the proceeding of the action is not
+determined by who issued the request. Therefore, authorization is out of the
 scope. Registries and registrars who plan to provide this service can,
 however, implement their own policy such as IP white listing, API key, etc.
 </t>
@@ -286,9 +294,7 @@ Note: entity expecting CDNSKEY is still expected accept the /cds command.
 <t>HTTP Status code 400 indicates a failure due to validation.</t>
 <t>HTTP Status code 403 indicates a failure due to an invalid challenge token.</t>
 <t>HTTP Status code 404 indicates the domain does not exist.</t>
-<t>HTTP Status code 500 indicates a failure due to unforeseeable reasons.
-
-<vspace/></t>
+<t>HTTP Status code 500 indicates a failure due to unforeseeable reasons.</t>
 </list>
 </t>
 </section>
@@ -360,11 +366,7 @@ DNSSEC initial trust.
 <t>HTTP Status code 200 indicates a success.  Token included in the body of the response,
  as a valid TXT record</t>
 <t>HTTP Status code 404 indicates the domain does not exist.</t>
-<t>HTTP Status code 500 indicates a failure due to unforeseeable reasons.
-
-<vspace/>
-
-<vspace/></t>
+<t>HTTP Status code 500 indicates a failure due to unforeseeable reasons.</t>
 </list>
 </t>
 </section>
@@ -425,6 +427,16 @@ transfer issues
 </references>
 
 <section anchor="document-history" title="Document History">
+
+<section anchor="regex-versio-01" title="Regex versio 01">
+<t>Rewrote Abstract and Into (MP)
+</t>
+</section>
+
+<section anchor="regex-version-00" title="Regex version 00">
+<t>Working group document same as 03, just track changed to standard
+</t>
+</section>
 
 <section anchor="version-03" title="Version 03">
 <t>Clarified based on comments and questions from early implementors
