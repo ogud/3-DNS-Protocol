@@ -2,19 +2,19 @@
 
 
 
-regext                                                         J. Latour
+Network Working Group                                          J. Latour
 Internet-Draft                                                      CIRA
 Intended status: Standards Track                          O. Gudmundsson
-Expires: January 8, 2017                                Cloudflare, Inc.
+Expires: October 28, 2016                               Cloudflare, Inc.
                                                               P. Wouters
                                                                  Red Hat
                                                              M. Pounsett
                                                    Rightside Group, Ltd.
-                                                            July 7, 2016
+                                                          April 26, 2016
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-         draft-ietf-regext-dnsoperator-to-rrr-protocol-01ac.txt
+          draft-ietf-regext-dnsoperator-to-rrr-protocol-00.txt
 
 Abstract
 
@@ -27,17 +27,17 @@ Abstract
    operator first takes charge of the zone it has not been treated as a
    serious issue.
 
-   When the domain on the other hand uses DNSSEC it necessary to make
-   regular (sometimes annual) changes to the delegation, in order to
-   track KSK rollover, by updating the delegation's DS record(s).  Under
-   the current model this is prone to delays and errors.  Even when the
-   Registrant has outsourced the operation of DNS to a third party the
-   registrant still has to be in the loop to update the DS record.
+   When the domain on the other hand uses DNSSEC it necessary for the
+   Registrant in this situation to make regular (sometimes annual)
+   changes to the delegation in order to track KSK rollover, by updating
+   the delegation's DS record(s).  Under the current model this is prone
+   to Registrant error and significant delays.  Even when the Registrant
+   has outsourced the operation of DNS to a third party the registrant
+   still has to be in the loop to update the DS record.
 
    There is a need for a simple protocol that allows a third party DNS
    operator to update DS and NS records in a trusted manner for a
-   delegation without involving the registrant for each operation.  This
-   same protocol can be used by Registrants.
+   delegation without involving the registrant for each operation.
 
    The protocol described in this draft is REST based, and when used
    through an authenticated channel can be used to establish the DNSSEC
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Latour, et al.           Expires January 8, 2017                [Page 1]
+Latour, et al.          Expires October 28, 2016                [Page 1]
 
-Internet-Draft                  3-DNS-RRR                      July 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 Status of This Memo
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 8, 2017.
+   This Internet-Draft will expire on October 28, 2016.
 
 Copyright Notice
 
@@ -99,9 +99,9 @@ Table of Contents
    3.  What is the goal? . . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Why DNSSEC? . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  How does a child signal its parent it wants DNSSEC Trust
-           Anchor? . . . . . . . . . . . . . . . . . . . . . . . . .   5
+           Anchor?  The child  . . . . . . . . . . . . . . . . . . .   4
      3.3.  What checks are needed by parent? . . . . . . . . . . . .   5
-   4.  Third Party DNS operator to Registrars/Registries RESTful API   6
+   4.  OP-3-DNS-RR RESTful API . . . . . . . . . . . . . . . . . . .   5
      4.1.  Authentication  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Authorization . . . . . . . . . . . . . . . . . . . . . .   6
      4.3.  Base URL Locator  . . . . . . . . . . . . . . . . . . . .   6
@@ -109,41 +109,39 @@ Table of Contents
 
 
 
-Latour, et al.           Expires January 8, 2017                [Page 2]
+Latour, et al.          Expires October 28, 2016                [Page 2]
 
-Internet-Draft                  3-DNS-RRR                      July 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
        4.4.1.  Initial Trust Establishment (Enable DNSSEC
                validation) . . . . . . . . . . . . . . . . . . . . .   6
        4.4.2.  Removing a DS (turn off DNSSEC) . . . . . . . . . . .   7
-       4.4.3.  DS Maintenance (Key roll over)  . . . . . . . . . . .   8
-     4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   8
+       4.4.3.  DS Maintenance (Key roll over)  . . . . . . . . . . .   7
+     4.5.  Tokens resource . . . . . . . . . . . . . . . . . . . . .   7
        4.5.1.  Setup Initial Trust Establishment with Challenge  . .   8
-     4.6.  Customized Error Messages . . . . . . . . . . . . . . . .   9
-     4.7.  How to react to 403 on POST cds . . . . . . . . . . . . .   9
-   5.  Security considerations . . . . . . . . . . . . . . . . . . .   9
+     4.6.  Customized Error Messages . . . . . . . . . . . . . . . .   8
+     4.7.  How to react to 403 on POST cds . . . . . . . . . . . . .   8
+   5.  Security considerations . . . . . . . . . . . . . . . . . . .   8
    6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .   9
-   7.  Internationalization Considerations . . . . . . . . . . . . .  10
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .  10
-   Appendix A.  Document History . . . . . . . . . . . . . . . . . .  11
-     A.1.  Regex versio 01 . . . . . . . . . . . . . . . . . . . . .  11
-     A.2.  Regex version 00  . . . . . . . . . . . . . . . . . . . .  11
-     A.3.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  11
-     A.4.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  11
-     A.5.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  11
-     A.6.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  11
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+   7.  Internationalization Considerations . . . . . . . . . . . . .   9
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
+   Appendix A.  Document History . . . . . . . . . . . . . . . . . .  10
+     A.1.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  10
+     A.2.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  10
+     A.3.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  10
+     A.4.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  10
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
 
    Why is this needed?  DNS registration systems today are designed
    around making registrations easy and fast.  After the domain has been
-   registered there are really three options on who maintains the DNS
-   zone that is loaded on the "primary" DNS servers for the domain this
-   can be the Registrant, Registrar, or a third party DNS Operator.
+   registered the there are really three options on who maintains the
+   DNS zone that is loaded on the "primary" DNS servers for the domain
+   this can be the Registrant, Registrar, or a third party DNS Operator.
 
    Unfortunately the ease to make changes differs for each one of these
    options.  The Registrant needs to use the interface that the
@@ -152,9 +150,13 @@ Internet-Draft                  3-DNS-RRR                      July 2016
    The third party DNS Operator on the hand needs to go through the
    Registrant to update any delegation information.
 
-   Current system does not work well, there are many types of failures
-   have been reported and they have been at all levels in the
-   registration model.
+   Current system does not work well, there are many examples of
+   failures including the inability to upload DS records due to non-
+   support by Registrar interface, the registrant forgets/does-not
+   perform action but tools proceed with key roll-over without checking
+   that the new DS is in place.  Another common failure is the DS record
+   is not removed when the DNS Operator changes from one that supports
+   DNSSEC signing to one that does not.
 
    The failures result either inability to use DNSSEC or in validation
    failures that case the domain to become invalid and all users that
@@ -163,16 +165,10 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
 
 
-
-
-Latour, et al.           Expires January 8, 2017                [Page 3]
+Latour, et al.          Expires October 28, 2016                [Page 3]
 
-Internet-Draft                  3-DNS-RRR                      July 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
-
-   The goal of this document is to create an automated interface that
-   will reduce the friction that current exists in maintaining DNSSEC
-   delegations.
 
 2.  Notional Conventions
 
@@ -194,8 +190,10 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
 3.  What is the goal?
 
-   The primary goal is to have a protocol to establish a secure chain of
-   trust outside the traditional RRR EPP model.
+   The primary goal is to use the DNS protocol to provide information
+   from child zone to the parent zone, to maintain the delegation
+   information.  The precondition for this to be practical is that the
+   domain is DNSSEC signed.
 
    In the general case there should be a way to find the right
    Registrar/Registry entity to talk to but that does not exist.
@@ -211,30 +209,27 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
    DNSSEC [RFC4035] provides data authentication for DNS answers, having
    DNSSEC enabled makes it possible to trust the answers.  The biggest
-   obstacle in adoption is deploying DNSSEC is the initial configuration
-   of the DNSSEC domain trust anchor in the parent, DS record.
-
-
-
-
-
-
-
-
-Latour, et al.           Expires January 8, 2017                [Page 4]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
+   stumbling block is deploying DNSSEC is the initial configuration of
+   the DNSSEC domain trust anchor in the parent, DS record.
 
 3.2.  How does a child signal its parent it wants DNSSEC Trust Anchor?
+      The child
 
-   The child needs first to sign the domain, then the child can "upload"
-   the DS record to its parent.  The "normal" way to upload is to go
-   through registration interface, but that fails frequently.  The DNS
-   Operator may not have access to the interface thus the registrant
-   needs to relay the information.  For large operations this does not
-   scale, as evident in lack of Trust Anchors for signed deployments
-   that are operated by third parties.
+   needs first to sign the domain, then the child can "upload" the DS
+   record to its parent.  The "normal" way to upload is to go through
+   registration interface, but that fails frequently.  The DNS Operator
+
+
+
+Latour, et al.          Expires October 28, 2016                [Page 4]
+
+Internet-Draft                  3-DNS-RRR                     April 2016
+
+
+   may not have access to the interface thus the registrant needs to
+   relay the information.  For large operations this does not scale, as
+   evident in lack of Trust Anchors for signed deployments that are
+   operated by third parties.
 
    The child can signal its desire to have DNSSEC validation enabled by
    publishing one of the special DNS records CDS and/or CDNSKEY[RFC7344]
@@ -251,12 +246,6 @@ Internet-Draft                  3-DNS-RRR                      July 2016
    simple to accept and publish.  If there is a problem the parent has
    ability to not add the DS.
 
-   In the event this protocols and its associated authentication
-   mechanism does not address the Registrant's security requirements to
-   create a secure Trust Anchor delegation then the Registrant always
-   has recourse by submitting its DS record via its Registrar interface
-   with EPP submission to the Registry.
-
 3.3.  What checks are needed by parent?
 
    The parent upon receiving a signal that it check the child for desire
@@ -268,31 +257,30 @@ Internet-Draft                  3-DNS-RRR                      July 2016
    3. All the name-servers for the zone agree on the CDS RRset contents
 
    Parents can have additional tests, defined delays, queries over TCP,
-   ensure zone delegation best practice as per
-   [I-D.wallstrom-dnsop-dns-delegation-requirements] and even ask the
-   DNS Operator to prove they can add data to the zone, or provide a
-   code that is tied to the affected zone.  The protocol is partially-
-   synchronous, i.e. the server can elect to hold connection open until
-   the operation has concluded or it can return that it received the
+   and even ask the DNS Operator to prove they can add data to the zone,
+   or provide a code that is tied to the affected zone.  The protocol is
+   partially-synchronous, i.e. the server can elect to hold connection
+   open until the operation has concluded or it can return that it
+   received the request.  It is up to the child to monitor the parent
+   for completion of the operation and issue possible follow-up calls.
 
-
-
-Latour, et al.           Expires January 8, 2017                [Page 5]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
-
-   request.  It is up to the child to monitor the parent for completion
-   of the operation and issue possible follow-up calls.
-
-4.  Third Party DNS operator to Registrars/Registries RESTful API
+4.  OP-3-DNS-RR RESTful API
 
    The specification of this API is minimalist, but a realistic one.
+   Question: How to respond if the party contacted is not ALLOWED to
+   make the requested change?
 
-   Registry Lock mechanisms that prevents domain hijacking block domains
-   prevent certain attributes in the registry to be changed.  This API
-   may be denied access to change the DS records for domains that are
-   Registry Locked (HTTP Status code 401).
+
+
+
+
+
+
+
+Latour, et al.          Expires October 28, 2016                [Page 5]
+
+Internet-Draft                  3-DNS-RRR                     April 2016
+
 
 4.1.  Authentication
 
@@ -330,14 +318,6 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
    A DS record based on the CDS record in the child zone file will be
    inserted into the registry and the parent zone file upon the
-
-
-
-Latour, et al.           Expires January 8, 2017                [Page 6]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
-
    successful completion of such request.  If there are multiple CDS
    records in the CDS RRset, multiple DS records will be added.
 
@@ -351,7 +331,12 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
    o  HTTP Status code 400 indicates a failure due to validation.
 
-   o  HTTP Status code 401 indicates an unauthorized resource access.
+
+
+Latour, et al.          Expires October 28, 2016                [Page 6]
+
+Internet-Draft                  3-DNS-RRR                     April 2016
+
 
    o  HTTP Status code 403 indicates a failure due to an invalid
       challenge token.
@@ -367,32 +352,16 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
                    Syntax: DELETE /domains/{domain}/cds
 
-   A null CDS or CDNSKEY record mean the entire DS RRset must be
-   removed.
-
 4.4.2.2.  Response
 
    o  HTTP Status code 200 indicates a success.
 
    o  HTTP Status code 400 indicates a failure due to validation.
 
-   o  HTTP Status code 401 indicates an unauthorized resource access.
-
    o  HTTP Status code 404 indicates the domain does not exist.
 
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
-
-
-
-
-
-
-
-Latour, et al.           Expires January 8, 2017                [Page 7]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
 
 4.4.3.  DS Maintenance (Key roll over)
 
@@ -400,17 +369,11 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
                      Syntax: PUT /domains/{domain}/cds
 
-   Maintenance activities are performed based on the CDS available in
-   the child zone.  DS records may be added, removed.  But the entire DS
-   RRset must not be deleted.
-
 4.4.3.2.  Response
 
    o  HTTP Status code 200 indicates a success.
 
    o  HTTP Status code 400 indicates a failure due to validation.
-
-   o  HTTP Status code 401 indicates an unauthorized resource access.
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
@@ -421,6 +384,15 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
    Path: /domains/{domain}/tokens {domain}: is the domain name to be
    operated on
+
+
+
+
+
+Latour, et al.          Expires October 28, 2016                [Page 7]
+
+Internet-Draft                  3-DNS-RRR                     April 2016
+
 
 4.5.1.  Setup Initial Trust Establishment with Challenge
 
@@ -442,21 +414,13 @@ Internet-Draft                  3-DNS-RRR                      July 2016
       reasons.
 
 
-
-
-
-Latour, et al.           Expires January 8, 2017                [Page 8]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
-
 4.6.  Customized Error Messages
 
    Service providers can provide a customized error message in the
    response body in addition to the HTTP status code defined in the
    previous section.
 
-   This can include an Identifying number/string that can be used to
+   This can include an Identifiying number/string that can be used to
    track the requests.
 
    #Using the definitions This section at the moment contains comments
@@ -470,41 +434,25 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
 5.  Security considerations
 
-   Supplying the DS record as proof of control is not realistic since
-   the domain is already publicly signed and the CDS/DS is readily
-   available.
-
-   Open question:?? JL?: It is not recommended the protocol be used with
-   high profile domains such as TLDs and governments that are DNS
-   operators.  This protocol is meant to allow third party DNS operator
-   to submit the initial DS in a trusted manner without involving the
-   registrant.
-
-   This protocol should increase the adoption of DNSSEC and get more
-   zones to become validated thus overall the security gain outweighs
-   the possible drawbacks.
-
    TBD This will hopefully get more zones to become validated thus
    overall the security gain out weights the possible drawbacks.
 
    risk of takeover ? risk of validation errors < declines transfer
    issues
 
+
+
+
+
+
+Latour, et al.          Expires October 28, 2016                [Page 8]
+
+Internet-Draft                  3-DNS-RRR                     April 2016
+
+
 6.  IANA Actions
 
    URI ??? TBD
-
-
-
-
-
-
-
-
-Latour, et al.           Expires January 8, 2017                [Page 9]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
 
 7.  Internationalization Considerations
 
@@ -515,14 +463,9 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 8.1.  Normative References
 
    [I-D.ietf-dnsop-maintain-ds]
-              Gudmundsson, O. and P. Wouters, "Managing DS records from
-              parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-ds-03
-              (work in progress), June 2016.
-
-   [I-D.wallstrom-dnsop-dns-delegation-requirements]
-              Wallstrom, P. and J. Schlyter, "DNS Delegation
-              Requirements", draft-wallstrom-dnsop-dns-delegation-
-              requirements-00 (work in progress), February 2016.
+              Gu[eth]mundsson, O. and P. Wouters, "Managing DS records
+              from parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-
+              ds-00 (work in progress), December 2015.
 
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
@@ -557,36 +500,28 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
 
 
-Latour, et al.           Expires January 8, 2017               [Page 10]
+
+Latour, et al.          Expires October 28, 2016                [Page 9]
 
-Internet-Draft                  3-DNS-RRR                      July 2016
+Internet-Draft                  3-DNS-RRR                     April 2016
 
 
 Appendix A.  Document History
 
-A.1.  Regex versio 01
-
-   Rewrote Abstract and Into (MP) Introduced code 401 when changes are
-   not allowed Text edits and clarifications.
-
-A.2.  Regex version 00
-
-   Working group document same as 03, just track changed to standard
-
-A.3.  Version 03
+A.1.  Version 03
 
    Clarified based on comments and questions from early implementors
 
-A.4.  Version 02
+A.2.  Version 02
 
    Reflected comments on mailing lists
 
-A.5.  Version 01
+A.3.  Version 01
 
    This version adds a full REST definition this is based on suggestions
    from Jakob Schlyter.
 
-A.6.  Version 00
+A.4.  Version 00
 
    First rough version
 
@@ -610,14 +545,6 @@ Authors' Addresses
    Email: paul@nohats.ca
 
 
-
-
-
-Latour, et al.           Expires January 8, 2017               [Page 11]
-
-Internet-Draft                  3-DNS-RRR                      July 2016
-
-
    Matthew Pounsett
    Rightside Group, Ltd.
 
@@ -630,43 +557,4 @@ Internet-Draft                  3-DNS-RRR                      July 2016
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Latour, et al.           Expires January 8, 2017               [Page 12]
+Latour, et al.          Expires October 28, 2016               [Page 10]
