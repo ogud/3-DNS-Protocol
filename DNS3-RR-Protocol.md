@@ -2,7 +2,7 @@
 % abbrev = "3-DNS-RRR" 
 % category = "std"
 % ipr="trust200902"
-% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01ac.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01.txt"
 % workgroup = "regext"
 % area = "Applications" 
 % keyword = ["dnssec", "delegation maintenance", "trust anchors"]
@@ -97,7 +97,7 @@ that case the domain to become invalid and all users that are behind
 validating resolvers will not be able to to access the domain.
 
 The goal of this document is to create an automated interface that will reduce the 
-friction that current exists in maintaining DNSSEC delegations.
+friction in maintaining DNSSEC delegations.
 
 # Notional Conventions
 
@@ -119,11 +119,11 @@ interpreted as described in [@RFC2119].
 
 # What is the goal?
 The primary goal is to have a protocol to establish a secure chain of trust
-outside the traditional RRR EPP model. 
+that involves parties that are not in the traditional RRR EPP model, or when EPP is not used.
 
 In the general case there should be a way to find the right Registrar/Registry
-entity to talk to but that does not exist. Whois[] is the natural protocol to
-carry such information but that protocol is unreliable and hard to parse. Its
+entity to talk to, but it does not exist. Whois[] is the natural protocol to
+carry such information but that protocol but is unreliable and hard to parse. Its
 proposed successor RDAP [@RFC7480] has yet be deployed on most TLD's.
 
 The preferred communication mechanism is to use is to use a REST [@RFC6690]
@@ -131,9 +131,9 @@ call to start processing of the requested delegation information.
 
 ## Why DNSSEC?
 DNSSEC [@!RFC4035] provides data authentication for DNS answers, having DNSSEC
-enabled makes it possible to trust the answers. The biggest obstacle in adoption is
-deploying DNSSEC is the initial configuration of the DNSSEC domain trust
-anchor in the parent, DS record.
+enabled makes it possible to trust the answers. The biggest obstacle in DNSSEC adoption 
+is the initial configuration of the DNSSEC domain trust
+anchor at the parent, the DS record.
 
 ## How does a child signal its parent it wants DNSSEC Trust Anchor?
 The child needs first to sign the domain, then the child can "upload" the DS record to
@@ -148,14 +148,14 @@ publishing one of the special DNS records CDS and/or CDNSKEY[@!RFC7344] and
 its proposed extension [@!I-D.ietf-dnsop-maintain-ds#03].
 
 Once the "parent" "sees" these records it SHOULD start acceptance processing.
-This document will cover below how to make the CDS records visible to the
+This document covers how to make the CDS records visible to the
 right parental agent.
 
-We and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of
+This document and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of
 CDS/CDNSKEY record is sufficient for the parent to start the acceptance
 processing. The main point is to provide authentication thus if the child is
 in "good" state then the DS upload should be simple to accept and publish. If
-there is a problem the parent has ability to not add the DS.
+there is any problem the parent does not add the DS.
 
 In the event this protocols and its associated authentication mechanism does not
 address the Registrant's security requirements to create a secure Trust Anchor 
@@ -165,12 +165,12 @@ its Registrar interface with EPP submission to the Registry.
 ## What checks are needed by parent?
 The parent upon receiving a signal that it check the child for desire for DS
 record publication. The basic tests include,
-    1. The zone is signed
+    1. Is the zone is signed
     2. The zone has a CDS signed by a KSK referenced in the current DS,
        referring to a at least one key in the current DNSKEY RRset
     3. All the name-servers for the zone agree on the CDS RRset contents
 
-Parents can have additional tests, defined delays, queries over TCP, ensure zone
+Parents can perform additional tests, defined delays, queries over TCP, ensure zone
 delegation best practice as per [@!I-D.wallstrom-dnsop-dns-delegation-requirements#00] and even
 ask the DNS Operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. The protocol is partially-synchronous,
@@ -180,7 +180,6 @@ to monitor the parent for completion of the operation and issue possible
 follow-up calls.
 
 # Third Party DNS operator to Registrars/Registries RESTful API
-
 The specification of this API is minimalist, but a realistic one. 
 
 Registry Lock mechanisms that prevents domain hijacking block domains prevent certain
@@ -190,14 +189,14 @@ the DS records for domains that are Registry Locked (HTTP Status code 401).
 ## Authentication
 The API does not impose any unique server authentication requirements. The
 server authentication provided by TLS fully addresses the needs. In general,
-for the API SHOULD be provided over TLS-protected transport (e.g., HTTPS) or
+the API SHOULD be provided over TLS-protected transport (e.g., HTTPS) or
 VPN.
 
 ## Authorization
-Authorization is out of scope of this document. The CDS records present in the
+Authorization is outside the scope of this document. The CDS records present in the
 zone file are indications of intention to sign/unsign/update the DS records of
 the domain in the parent zone. This means the proceeding of the action is not
-determined by who issued the request. Therefore, authorization is out of the
+determined by who issued the request. Therefore, authorization is out of 
 scope. Registries and registrars who plan to provide this service can,
 however, implement their own policy such as IP white listing, API key, etc.
 
