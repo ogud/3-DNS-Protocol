@@ -2,11 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "std"
 % ipr="trust200902"
-% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01ab.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01ac.txt"
+% workgroup = "regext"
 % area = "Applications" 
-% keyword = ["dnssec", "delegation maintainance", "trust anchors"]
+% keyword = ["dnssec", "delegation maintenance", "trust anchors"]
 %
-% date = 2016-04-26T00:00:00Z
+% date = 2016-07-07T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour"
@@ -54,16 +55,17 @@ initial changes to the NS records for the delegation. As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 
-On the other hand, when the domain is signed with DNSSEC it is necessary for
-the DS records in the parent delegation to be changed regularly in order to
-track KSK rollover. In the current model, this is subject to delays, as the
-DNS operator must get the attention of the registrant, and is error prone, as
-the registrant must successfully copy and paste DS data or DNSKEY data, which
-is difficult to visually compare.
+When the domain on the other hand uses DNSSEC it necessary to make regular 
+(sometimes annual) changes to the delegation, in order to track KSK rollover, 
+by updating the delegation's DS record(s).
+Under the current model this is prone to delays and errors. Even when the Registrant has 
+outsourced the operation of DNS to a third party the registrant still has to 
+be in the loop to update the DS record. 
 
 There is a need for a simple protocol that allows a third party DNS operator
-to update DS and NS records for a delegation, in a trusted manner, without
-involving the registrant in each operation.
+to update DS and NS records in a trusted manner for a delegation without
+involving the registrant for each operation. This same protocol can be used by
+Registrants. 
 
 The protocol described in this draft is REST based, and when used through an
 authenticated channel can be used to establish the DNSSEC Initial Trust (to
@@ -75,33 +77,27 @@ NS, and glue records. The protocol is kept as simple as possible.
 
 # Introduction
 
-DNS registration systems are designed around making registrations easy and
-fast. When it comes to setting up the master (or primary) DNS service, the
-level of ease varies greatly depending on whether the DNS operator is the
-registrar, registrant, or a third party.
+Why is this needed?  DNS registration systems today are designed around making
+registrations easy and fast. After the domain has been registered there
+are really three options on who maintains the DNS zone that is loaded on the
+"primary" DNS servers for the domain this can be the Registrant, Registrar, or
+a third party DNS Operator.
 
-When the registrar is the DNS operator, it is able to directly and
-automatically make changes at the registray as necessary. If the registrant
-is the DNS operator, they can make whatever changes they need using whatever
-interface the registrar provides. A third party DNS operator, on the other
-hand, must go through the registrant (who may or may not be technically
-capable) in order to have changes submitted through the registrar to the
-registry.
+Unfortunately the ease to make changes differs for each one of these options.
+The Registrant needs to use the interface that the registrar provides to
+update NS and DS records. The Registrar on the other hand can make changes
+directly into the registration system. The third party DNS Operator on the
+hand needs to go through the Registrant to update any delegation information.
 
-There are many examples of common failure modes with a third-party DNS
-operator:
-   - submission of incorrect data to the registrar due to copy and paste
-     errors, or unintentionally omitting important data
-   - registrants failing to submit data to the registrar in a timely manner
-   - failure to remove DS records when moving from a DNS operator that
-     supports DNSSEC to one that does not
+Current system does not work well, there are many types of failures have been 
+reported and they have been at all levels in the registration model. 
 
-These sorts of human errors can result in partial or complete failure of a
-zone for anyone using a DNSSEC validating resolver. The protocol described by
-this draft is intended to simplify the process of updating delegation
-information, for both the registrant and third party DNS operators, by
-enabling automation and eliminating obvious and common sources of human
-error.
+The failures result either inability to use DNSSEC or in validation failures
+that case the domain to become invalid and all users that are behind
+validating resolvers will not be able to to access the domain.
+
+The goal of this document is to create an automated interface that will reduce the 
+friction that current exists in maintaining DNSSEC delegations.
 
 # Notional Conventions
 
@@ -122,9 +118,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 interpreted as described in [@RFC2119].
 
 # What is the goal?
-The primary goal is to use the DNS protocol to provide information from child
-zone to the parent zone, to maintain the delegation information. The
-precondition for this to be practical is that the domain is DNSSEC signed.
+The primary goal is to have a protocol to establish a secure chain of trust
+outside the traditional RRR EPP model. 
 
 In the general case there should be a way to find the right Registrar/Registry
 entity to talk to but that does not exist. Whois[] is the natural protocol to
@@ -136,13 +131,13 @@ call to start processing of the requested delegation information.
 
 ## Why DNSSEC?
 DNSSEC [@!RFC4035] provides data authentication for DNS answers, having DNSSEC
-enabled makes it possible to trust the answers. The biggest stumbling block is
+enabled makes it possible to trust the answers. The biggest obstacle in adoption is
 deploying DNSSEC is the initial configuration of the DNSSEC domain trust
 anchor in the parent, DS record.
 
 ## How does a child signal its parent it wants DNSSEC Trust Anchor?
-The child needs first to sign the domain, then the child can "upload" the DS
-record to its parent. The "normal" way to upload is to go through registration
+The child needs first to sign the domain, then the child can "upload" the DS record to
+its parent. The "normal" way to upload is to go through registration
 interface, but that fails frequently. The DNS Operator may not have access to
 the interface thus the registrant needs to relay the information. For large
 operations this does not scale, as evident in lack of Trust Anchors for signed
@@ -150,7 +145,7 @@ deployments that are operated by third parties.
 
 The child can signal its desire to have DNSSEC validation enabled by
 publishing one of the special DNS records CDS and/or CDNSKEY[@!RFC7344] and
-its proposed extension [@!I-D.ietf-dnsop-maintain-ds#00].
+its proposed extension [@!I-D.ietf-dnsop-maintain-ds#03].
 
 Once the "parent" "sees" these records it SHOULD start acceptance processing.
 This document will cover below how to make the CDS records visible to the
@@ -162,6 +157,11 @@ processing. The main point is to provide authentication thus if the child is
 in "good" state then the DS upload should be simple to accept and publish. If
 there is a problem the parent has ability to not add the DS.
 
+In the event this protocols and its associated authentication mechanism does not
+address the Registrant's security requirements to create a secure Trust Anchor 
+delegation then the Registrant always has recourse by submitting its DS record via 
+its Registrar interface with EPP submission to the Registry. 
+
 ## What checks are needed by parent?
 The parent upon receiving a signal that it check the child for desire for DS
 record publication. The basic tests include,
@@ -170,7 +170,8 @@ record publication. The basic tests include,
        referring to a at least one key in the current DNSKEY RRset
     3. All the name-servers for the zone agree on the CDS RRset contents
 
-Parents can have additional tests, defined delays, queries over TCP, and even
+Parents can have additional tests, defined delays, queries over TCP, ensure zone
+delegation best practice as per [@!I-D.wallstrom-dnsop-dns-delegation-requirements#00] and even
 ask the DNS Operator to prove they can add data to the zone, or provide a code
 that is tied to the affected zone. The protocol is partially-synchronous,
 i.e. the server can elect to hold connection open until the operation has
@@ -178,11 +179,13 @@ concluded or it can return that it received the request. It is up to the child
 to monitor the parent for completion of the operation and issue possible
 follow-up calls.
 
-# OP-3-DNS-RR RESTful API
+# Third Party DNS operator to Registrars/Registries RESTful API
 
-The specification of this API is minimalist, but a realistic one. Question:
-How to respond if the party contacted is not ALLOWED to make the requested
-change?
+The specification of this API is minimalist, but a realistic one. 
+
+Registry Lock mechanisms that prevents domain hijacking block domains prevent certain
+attributes in the registry to be changed.  This API may be denied access to change
+the DS records for domains that are Registry Locked (HTTP Status code 401).
 
 ## Authentication
 The API does not impose any unique server authentication requirements. The
@@ -222,6 +225,7 @@ Note: entity expecting CDNSKEY is still expected accept the /cds command.
 #### Response
    - HTTP Status code 201 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 403 indicates a failure due to an invalid challenge token.
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
@@ -231,9 +235,12 @@ Note: entity expecting CDNSKEY is still expected accept the /cds command.
 #### Request
     Syntax: DELETE /domains/{domain}/cds
 
+A null CDS or CDNSKEY record mean the entire DS RRset must be removed.
+
 #### Response
    - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
@@ -241,9 +248,13 @@ Note: entity expecting CDNSKEY is still expected accept the /cds command.
 #### Request
     Syntax: PUT /domains/{domain}/cds
 
+Maintenance activities are performed based on the CDS available in the child zone.
+DS records may be added, removed. But the entire DS RRset must not be deleted.
+
 #### Response
    - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
+   - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
@@ -269,7 +280,7 @@ DNSSEC initial trust.
 Service providers can provide a customized error message in the response body
 in addition to the HTTP status code defined in the previous section.
 
-This can include an Identifiying number/string that can be used to track the
+This can include an Identifying number/string that can be used to track the
 requests.
 
 #Using the definitions
@@ -280,6 +291,17 @@ The basic reaction to a 403 on POST /domains/{domain}/cds is to issue POST /doma
 command to fetch the challenge to insert into the zone.
 
 # Security considerations
+
+Supplying the DS record as proof of control is not realistic since the domain is 
+already publicly signed and the CDS/DS is readily available.
+
+Open question:??
+JL?: It is not recommended the protocol be used with high profile domains such as TLDs and governments
+that are DNS operators. This protocol is meant to allow third party DNS operator to submit the
+initial DS in a trusted manner without involving the registrant.
+
+This protocol should increase the adoption of DNSSEC and get more zones to become
+validated thus overall the security gain outweighs the possible drawbacks.
 
 TBD This will hopefully get more zones to become validated thus overall the
 security gain out weights the possible drawbacks.
@@ -301,6 +323,8 @@ This protocol is designed for machine to machine communications
 
 ## Regex versio 01 
 Rewrote Abstract and Into (MP) 
+Introduced code 401 when changes are not allowed 
+Text edits and clarifications. 
 
 ## Regex version 00 
 Working group document same as 03, just track changed to standard
