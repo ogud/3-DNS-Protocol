@@ -26,5 +26,5 @@
    Initial Trust (to turn on DNSSEC or bootstrap DNSSEC).  Once DNSSEC
    trust is established this channel can be used to trigger maintenance
    of delegation records such as DS, NS, and glue records.  The protocol
-   is kept as simple as possible.
+   is kept as simple as possible. 
 
