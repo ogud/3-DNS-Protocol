@@ -163,11 +163,11 @@ the Registrant always has recourse by submitting its DS record via its registrat
 
 ## How does a parental agent detects maintenance activities
 One the secure chain of trust is established, the parent should implement a system to
-automate domain polling for CDS maintenance record changes. The maintenance activites
+automate domain polling for CDS maintenance record changes. The maintenance activities
 includes adding or removing DS record(s) [@I-D.ogud-dnsop-maintain-ds#00].  
 
 Each parental agent is responsible to develop and implement and communicate their
-DNSSEC maintance policies.
+DNSSEC maintenance policies.
 
 ## What checks are needed by parent?
 The parent upon receiving a signal or detecting through polling that the child desires
@@ -278,7 +278,7 @@ DS records may be added, removed. But the entire DS RRset must not be deleted.
 
 The parent's DNSSEC policy may require proof the DNS Operator is in control of the domain.  
 The token API call returns a random token to be included as a _delegate TXT record prior establishing the
-DNSSEC initial trust. This is an additonal trust control mechanism to establisht the initial chain of trust. 
+DNSSEC initial trust. This is an additional trust control mechanism to establish the initial chain of trust. 
 Note that the _delegate TXT record is publicly available and not a secret token.
 
 
@@ -305,11 +305,11 @@ command to fetch the challenge to insert into the zone.
 
 # Security considerations
 
-When domains are provisoned with good Internet hygiene and zone delegation follows best 
+When domains are provisioned with good Internet hygiene and zone delegation follows best 
 practice such as [@!I-D.wallstrom-dnsop-dns-delegation-requirements#00], the registrar or registry can
-then trust the DNS information it queried over two different ASN and over TCP to establish the intial chain of trust.
+then trust the DNS information it queried over two different ASN and over TCP to establish the initial chain of trust.
 
-In addition, the registrar or registry can reuqired the DNS Operator to prove they control the zone 
+In addition, the registrar or registry can required the DNS Operator to prove they control the zone 
 by adding a challenge token a to the zone.
 
 This protocol should increase the adoption of DNSSEC and get more zones to become
