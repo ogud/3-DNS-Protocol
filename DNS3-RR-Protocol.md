@@ -47,6 +47,7 @@
 %
 
 .# Abstract
+
 There are several problems that arise in the standard
 Registrant/Registrar/Registry model when the operator of a zone is neither the
 Registrant nor the Registrar for the delegation. Historically the issues have
@@ -55,61 +56,71 @@ initial changes to the NS records for the delegation. As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 
-When the domain on the other hand uses DNSSEC it necessary to make regular 
-(sometimes annual) changes to the delegation, in order to track KSK rollover, 
-by updating the delegation's DS record(s).
-Under the current model this is prone to delays and errors. Even when the Registrant has 
-outsourced the operation of DNS to a third party the registrant still has to 
-be in the loop to update the DS record. 
+When the domain hand uses DNSSEC it necessary to make regular (sometimes
+annual) changes to the delegation, updating DS record(s) in order to track KSK
+rollover.  Under the current model this is prone to delays and errors, as the
+Registrant must participate in updates to DS records.
 
-There is a need for a simple protocol that allows a third party DNS operator
-to update DS and NS records in a trusted manner for a delegation without
-involving the registrant for each operation. This same protocol can be used by
-Registrants. 
-
-The protocol described in this draft is REST based, and when used through an
-authenticated channel can be used to establish the DNSSEC Initial Trust (to
-turn on DNSSEC or bootstrap DNSSEC). Once DNSSEC trust is established this
-channel can be used to trigger maintenance of delegation records such as DS,
-NS, and glue records. The protocol is kept as simple as possible.
+This document describes a simple protocol that allows a third party DNS
+operator to update DS and NS records for a delegation, in a trusted manner,
+without involving the Registrant for each operation. This same protocol can be
+used by Registrants.
 
 {mainmatter}
 
 # Introduction
 
-Why is this needed?  DNS registration systems today are designed around making
-registrations easy and fast. After the domain has been registered there
-are really three options on who maintains the DNS zone that is loaded on the
-"primary" DNS servers for the domain this can be the Registrant, Registrar, or
-a third party DNS Operator.
+After a domain has been registered, one of three parties will maintain the DNS
+zone loaded on the "primary" DNS servers: the Registrant, the Registrar, or a
+third party DNS operator.  DNS registration systems were originally designed
+around making registrations easy and fast, however after registration the
+complexity of making changes to the delegation differs for each of these
+parties.  The Registrar can make changes directly in the Registry systems
+through some API (typically EPP [@RFC5730]).  The Registrant is typically
+limited to using a web interface supplied by the Registrar.  A third party DNS
+Operator must to go through the Registrant to update any delegation
+information.
 
-Unfortunately the ease to make changes differs for each one of these options.
-The Registrant needs to use the interface that the registrar provides to
-update NS and DS records. The Registrar on the other hand can make changes
-directly into the registration system. The third party DNS Operator on the
-hand needs to go through the Registrant to update any delegation information.
+In this last case, the operator must contact and engage the Registrant in
+updating NS and DS records for the delegation.  New information must be
+communicated to the Registrant, who must submit that information to the
+Registrar.  Typically this involves cutting and pasting between email and a
+web interface, which is error prone.  Furthermore, involving Registrants in
+this way does not scale for even moderately sized DNS operators. Tracking
+thousands (or millions) of changes sent to customers, and following up if
+those changes are not submitted to the Registrar, or are submitted with
+errors, is itself expensive and error prone.
 
-Current system does not work well, there are many types of failures have been 
-reported and they have been at all levels in the registration model. 
+The current system does not work well, as there are many types of failures
+that have been reported at all levels in the registration model.  The failures
+result in either the inability to use DNSSEC or in validation failures that
+cause the domain to become unavailable to users behind validating resolvers.
 
-The failures result either inability to use DNSSEC or in validation failures
-that cause the domain to become invalid and all users that are behind
-validating resolvers will not be able to to access the domain.
-
-The goal of this document is to create an automated interface that will reduce the 
-friction in maintaining DNSSEC delegations.
+The goal of this document is to create a protocol for establishing a secure
+chain of trust that involves parties not in the traditional
+Registrant/Registrar/Registry (RRR) model, and to reduce the friction in
+maintaining DNSSEC secured delegations in these cases.  It describes a
+REST-based [@!RFC6690] protocol which can be used to establish DNSSEC initial
+trust (to enable or bootstrap DNSSEC), and to trigger maintenance of
+delegation records such as DS, NS, and glue records.
 
 # Notional Conventions
 
 ## Definitions
 
 For the purposes of this draft, a third-party DNS Operator is any DNS Operator
-responsible for a zone where the operator is neither the Registrant nor the
+responsible for a zone, where the operator is neither the Registrant nor the
 Registrar of record for the delegation.
 
-Uses of the word 'Registrar' in this document may also be applied to
-resellers: an entity that sells delegations through a registrar with whom the
-entity has a reseller agreement.
+Uses of "child" and "parent" refer to the relationship between DNS zone
+operators.  In this document, unless otherwise noted, the child is the
+third-party DNS operator and the parent is the Registry.
+
+Uses of the words "Registrar" or "Registration Entity" in this document may
+also be applied to Resellers or to Registries that engage in registration
+activities directly with Registrants.  Unless otherwise noted, they are used
+to refer to the entity which has a direct business relationship with the
+Registrant.  
 
 ## RFC2119 Keywords
 
@@ -117,243 +128,305 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [@RFC2119].
 
-# What is the goal?
-The primary goal is to have a protocol to establish a secure chain of trust
-that involves parties that are not in the traditional Registrant/Registrar/Registry (RRR) model.
+# Process Overview
 
-A DNS operator cannot easily and scalably identify the registrar (or registration agent, or reseller)
-for a domain name it is operating.  Thus the DNS operator has to fallback to relying on the registrant (as customer)
-of the services to establish a secure chain of trust.
+## Identifying the Registrar
 
-In the general case there should be a way to find the right Registrar/Registry
-entity to talk to, but it does not exist. Whois[] is the natural protocol to
-carry such information but that protocol but is unreliable and hard to parse. Its
-proposed successor RDAP [@RFC7480] has yet be deployed on most TLD's.
+As of publication of this document, there has never been a standardized or
+widely deployed method for easily and scalably identifying the Registar for a
+particular registration.
 
-The preferred communication mechanism is to use is to use a REST [@RFC6690]
-call to start processing of the requested delegation information.
+At this time, WHOIS [@RFC3912] is the only widely deployed protocol to carry
+such information, but WHOIS responses are unstructured text, and each
+implementor can lay out its text responses differently.  In addition,
+Registries may include referrals in this unstructured text to the WHOIS
+interfaces of their Registrars, and those Registrar WHOIS interface in turn
+have their own layouts.  This presents a text parsing problem which is
+infeasible to solve.
 
-## How does a child signal its parent it wants to establish a secure chain of trust?
-The child needs first to sign the domain, then the child can "upload" the DS record to
-its parent. The "normal" way to upload a DS record is for the registrant to go through registration 
-interface and submit a DS record (or DNSKEY or both), but a lack of registrar/reseller DNSSEC support in sufficient frequency
-is a significant operational problem to the detriment of DNSSEC adoption.
+RDAP, the successor to WHOIS, described in [@RFC7480], solves the problems of
+unstructured responses, and a consistently implemented referral system,
+however at this time RDAP has yet to be deployed at most Registries. 
 
-The DNS Operator may not have access to the interface thus the registrant needs to relay the information. For large
-operations this does not scale, as evident in lack of Trust Anchors for signed
-deployments that are operated by third parties.
+With no current mechanism in place to scalably discover the Registar for a
+particular registration, the problem of automatic discovery of the base URL 
+of the API is considered out of scope of this document.  The authors recommend
+standardization of an RDAP extension to obtain this information from the
+Registry.
 
-The child can signal its desire to have DNSSEC validation enabled by
-publishing one of the special DNS records CDS and/or CDNSKEY[@!RFC7344] and
-its proposed extension [@!I-D.ietf-dnsop-maintain-ds#03].
+## Establishing a Chain of Trust
 
-Once the "parent" "sees" these records it SHOULD start acceptance processing.
-This document covers how to make the CDS records visible to the
-right parental agent.
+After signing the zone, the child operator needs to upload the DS record(s) to
+the parent.  The child can signal its desire to have DNSSEC validation enabled
+by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
+[@!RFC7344] and [@!I-D.ietf-dnsop-maintain-ds].
 
-This document and [@I-D.ogud-dnsop-maintain-ds#00] argue that the publication of
-CDS/CDNSKEY record is sufficient for the parent to start the acceptance
-processing. The main point is to provide authentication thus if the child is
-in "good" state then the DS upload should be simple to accept and publish. If
-there is any problem the parent does not add the DS.
+A> [RFC Editor: The above I-D reference should be replaced with the correct
+RFC number upon publication.]
 
-In the event this protocols and its associated authentication mechanism does not
-address the Registrant's security requirements to create a secure delegation then
-the Registrant always has recourse by submitting its DS record via its registration interface. 
+In the case of an insecure delegation, the Registrar will normally not be
+scanning the child zone for CDS/CDNSKEY records.  The child operator can use
+this protocol to notify the Registrar to begin such a scan.
 
-## How does a parental agent detects maintenance activities
-One the secure chain of trust is established, the parent should implement a system to
-automate domain polling for CDS maintenance record changes. The maintenance activities
-includes adding or removing DS record(s) [@I-D.ogud-dnsop-maintain-ds#00].  
+Once the Registrar sees these records it SHOULD start acceptance processing.
 
-Each parental agent is responsible to develop and implement and communicate their
-DNSSEC maintenance policies.
+## Maintaining the Chain of Trust
 
-## What checks are needed by parent?
-The parent upon receiving a signal or detecting through polling that the child desires
-to have its DS record published. The basic tests include,
-    1. Is the zone is properly signed as per the parent DNSSEC policy 
-    2. The zone has a CDS signed by a KSK referenced in the current CDS,
-       referring to a at least one key in the current DNSKEY RRset
-    3. All the name-servers for the zone agree on the CDS RRset contents
+One the secure chain of trust is established, the Registrar SHOULD regularly
+check the child zone for CDS/CDNSKEY record changes.  The Registrar SHOULD
+also accept signals via this protocol to immediately check the child zone for
+CDS/CDNSKEY records.
 
-NOTE:(do we need a new section in the DPS for the CDS management policy [@RFC6841]?)
+Server implementations of this protocol MAY include rate limiting to protect
+their systems and the systems of child operators from abuse.
+
+Each parent operator and Registrar is responsible for developing,
+implementing, and communicating their DNSSEC maintenance policies.
+
+## Other Delegation Maintenance
+
+A> [ Not yet defined ]
+
+## Acceptance Processing
+
+The Registrar, upon receiving a signal or detecting through polling that the
+child desires to have its delegation updated, SHOULD run a series of tests to
+ensure that updating the parent zone will not create or exacerbate any
+problems with the child zone. The basic tests SHOULD include:
+
+  - checking that the child zone is is properly signed as per the Registrar
+    and parent DNSSEC policy
+  - if updating the DS record, checking that the child CDS RRset references a
+    KSK which is present in the child DNSKEY RRset and signs the CDS RRset
+  - ensuring all name servers in the apex NS RRset of the child zone agree on
+    the apex NS RRset and CDS RRset contents
+
+The Registrar SHOULD NOT make any changes to the DS RRset if the child name
+servers do not agree on the CDS/CDNSKEY content.
+
+A> [NOTE: Do we need a new section in the DPS for the CDS management policy
+A> [@RFC6841]?]
 	
-Parents can perform additional tests, defined delays, queries over TCP, ensure zone
-delegation best practice as per [@!I-D.wallstrom-dnsop-dns-delegation-requirements#00] and even
-ask the DNS Operator to prove they can add data to the zone, or provide a code
-that is tied to the affected zone. The protocol is partially-synchronous,
-i.e. the server can elect to hold connection open until the operation has
-concluded or it can return that it received the request. It is up to the child
-to monitor the parent for completion of the operation and issue possible
-follow-up calls.
+Registrars MAY require compliance with additional tests, particularly in the
+case of establishing a new chain of trust, such as:
 
-The parent can have a policy to accept a CDS signed by a ZSK or a CSK. The parent should not
-make any changes to DS RRset if the child name-servers do not agree on content.
+  - checking that all child name servers to respond with a consistent
+    CDS/CDNSKEY RRset for a number of queries over an extended period of time
+    to minimise the possibility of an attacker spoofing responses
+  - requiring the child name servers to respond with identical CDS/CDNSKEY
+    RRsets over TCP
+  - ensuring zone delegation best practices (for examples, see
+    [@I-D.wallstrom-dnsop-dns-delegation-requirements]
+  - requiring the child operator to prove they can add data to the zone (for
+    example, by publishing a particular token)
+  
+# API Definition
 
-# Third Party DNS operator to Registrars/Registries RESTful API
-The specification of this API is minimalist, but a realistic one. 
+This protocol is partially synchronous, meaning the server can elect to hold
+connections open until operations have completed, or it can return a status
+code indicating that it has received a request, and close the connection.  It
+is up to the child to monitor the parent for completion of the operation, and
+issue possible follow-up calls to the Registrar.
 
-This API may be denied access to change the DS records for domains that are Registry Locked 
-(HTTP Status code 401).  Registry Lock is a mechanisms provided by certain registries or registrars
-that prevents domain hijacking by ensuring no attributes of the domain are changeable and no 
-transfer or deletion transactions can be processed against the domain name may prevents certain
-attributes in the registry to be changed (locks).  
+Clients may be denied access to change the DS records for domains that are
+Registry Locked (HTTP Status code 401).  Registry Lock is a mechanism
+provided by certain Registries or Registrars that prevents domain hijacking by
+ensuring no attributes of the domain are changeable, and no transfer or
+deletion transactions can be processed against the domain name without manual
+intervention.
 
-## API Authentication
+## Authentication
+
 The API does not impose any unique server authentication requirements. The
-server authentication provided by TLS fully addresses the needs. The API
-MUST be provided over TLS-protected transport (e.g., HTTPS) or VPN.
+server authentication provided by TLS fully addresses the needs of this
+protocol. The API MUST be provided over TLS-protected transport (e.g., HTTPS)
+or VPN.
 
-## API Authorization
-Authorization to access the API is outside the scope of this document.
-The publication of CDS record(s) in the child zone file are indications of intention 
-to perform DS records activities (add/delete) for the domain in the parent zone. 
-This means the proceeding of the API action is not determined by who issued the API 
-request but by the intention in the CDS publication. 
-Therefore, authorization is out of scope. Registries and registrars who plan to provide this service can,
-however, implement their own policy to protect access to the API such as IP white listing, API key, etc.
+Client authentication is considered out of scope of this document.  The
+publication of CDS/CDNSKEY records in the child zone is an indication that the
+child operator intends to perform DS-record-updating activities (add/delete)
+in the parent zone.  Since this protocol is simply a signal to the Registrar
+that they should examine the child zone for such intentions, additional
+authentication of the client making the request is considered unnecessary.
 
-## API Base URL Locator
+Registrars MAY implement their own policy to protect acces to the API, such as
+with IP whitelisting, client TLS certificates, etc..  Registrars SHOULD take
+steps to ensure that a lack of additional authentication does not open up a
+denial of service mechanism against the systems of the Registrar, the
+Registry, or the child operator.
 
-The base URL for registries or registrars who want to provide this service to
-DNS Operators can be made auto-discoverable as an RDAP extension.
+## RESTful Resources
 
-## CDS resource
+In the following text, "{domain}" is the child zone to be operated on.
+
+### CDS resource
+
 Path: /domains/{domain}/cds
-{domain}: is the domain name to be operated on
 
-### Initial Trust Establishment (Enable DNSSEC validation)
-#### Request
+#### Establishing Initial Trust (Enabling DNSSEC)
+
+##### Request
+
 Syntax: POST /domains/{domain}/cds
 
-A DS record based on the CDS record in the child zone file will be inserted
-into the registry and the parent zone file upon the successful completion of
-such request. If there are multiple CDS records in the CDS RRset, multiple DS
-records will be added.
+Request that an initial set of DS records based on the CDS record in the child
+zone be inserted into the Registry and the parent zone upon the successful
+completion of the request. If there are multiple CDS records in the CDS RRset,
+multiple DS records will be added.
 
-#### Response
+##### Response
    - HTTP Status code 201 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
    - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 403 indicates a failure due to an invalid challenge token.
    - HTTP Status code 404 indicates the domain does not exist.
+   - HTTP Status code 409 indicates the delegation already has a DS RRset.
+   - HTTP Status code 429 indicates the client has been rate-limited.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
+This request is for setting up initial trust in the delegation.  The Registrar
+SHOULD return a status code 409 if it already has a DS RRset for the child
+zone.
 
-### Removing a DS (turn off DNSSEC)
-#### Request
-    Syntax: DELETE /domains/{domain}/cds
+Upon receipt of a 403 response the child operator SHOULD issue a POST for the
+"token" resource to fetch a challenge token to insert into the zone.
 
-A null CDS or CDNSKEY record mean the entire DS RRset must be removed.
+#### Removing DS Records
+##### Request
 
-#### Response
+Syntax: DELETE /domains/{domain}/cds
+
+Request that the Registrar check for a null CDS or CDNSKEY record in the child
+zone, indicating a request that the entire DS RRset be removed.  This will
+make the delegation insecure.
+
+##### Response
    - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
    - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 404 indicates the domain does not exist.
+   - HTTP Status code 412 indicates the parent does not have a DS RRset
+   - HTTP Status code 429 indicates the client has been rate-limited.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
-### DS Maintenance 
-#### Request
-    Syntax: PUT /domains/{domain}/cds
+#### Modifying DS Records
+##### Request
 
-Maintenance activities are performed based on the CDS available in the child zone.
-DS records may be added, removed. But the entire DS RRset must not be deleted.
+Syntax: PUT /domains/{domain}/cds
 
-#### Response
+Request that the Registrar modify the DS RRset based on the CDS/CDNSKEY
+available in the child zone.  As a result of this request the Registrar SHOULD
+add or delete DS records as indicated by the CDS/CDNSKEY RRset, but MUST NOT
+delete the entire DS RRset.
+
+##### Response
    - HTTP Status code 200 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
    - HTTP Status code 401 indicates an unauthorized resource access.
    - HTTP Status code 404 indicates the domain does not exist.
+   - HTTP Status code 412 indicates the parent does not have a DS RRset
+   - HTTP Status code 429 indicates the client has been rate-limited.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
-## Tokens resource
-   Path: /domains/{domain}/tokens
-   {domain}: is the domain name to be operated on
+### Token resource
 
-### Setup Initial Trust Establishment with Challenge
-#### Request
-    Syntax: POST /domains/{domain}/tokens
+Path: /domains/{domain}/token
 
-The parent's DNSSEC policy may require proof the DNS Operator is in control of the domain.  
-The token API call returns a random token to be included as a _delegate TXT record prior establishing the
-DNSSEC initial trust. This is an additional trust control mechanism to establish the initial chain of trust. 
-Note that the _delegate TXT record is publicly available and not a secret token.
+#### Establish Initial Trust with Challenge
 
+##### Request
 
-#### Response
-   - HTTP Status code 200 indicates a success.  Token included in the body of the response,
-     as a valid TXT record
+Syntax: POST /domains/{domain}/token
+
+The DNSSEC policy of the Registrar may require proof that the DNS Operator is
+in control of the domain.  The token API call returns a random token to be
+included as a TXT record for the _delegate.@ domain name (where @ is the apex
+of the child zone) prior establishing the DNSSEC initial trust.  This is an
+additional trust control mechanism to establish the initial chain of trust.
+
+Once the child operator has received a token, it SHOULD be inserted in the
+zone and the operator SHOULD proceed with a POST of the cds resource.
+
+Note that the _delegate TXT record is publicly available and not a secret
+token.
+
+##### Response
+   - HTTP Status code 200 indicates a success.  A token is included in the
+	 body of the response, as a valid TXT record
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
-
 
 ## Customized Error Messages
-Service providers can provide a customized error message in the response body
-in addition to the HTTP status code defined in the previous section.
 
-This can include an Identifying number/string that can be used to track the
-requests.
-
-#Using the definitions
-This section at the moment contains comments from early implementers
-
-## How to react to 403 on POST cds
-The basic reaction to a 403 on POST /domains/{domain}/cds is to issue POST /domains/{domain}/tokens
-command to fetch the challenge to insert into the zone.
+Registrars MAY provide a customized error message in the response body in
+addition to the HTTP status code defined in the previous section.  This
+response MAY include an identifying number/string that can be used to track
+the request.
 
 # Security considerations
 
-When domains are provisioned with good Internet hygiene and zone delegation follows best 
-practice such as [@!I-D.wallstrom-dnsop-dns-delegation-requirements#00], the registrar or registry can
-then trust the DNS information it queried over two different ASN and over TCP to establish the initial chain of trust.
+When zones are properly provisioned, and delegations follow standards and best
+practices (e.g. [@I-D.wallstrom-dnsop-dns-delegation-requirements]), the
+Registrar or Registry can trust the DNS information it receives from multiple
+child name servers, over time, and/or over TCP to establish the initial chain
+of trust.
 
-In addition, the registrar or registry can required the DNS Operator to prove they control the zone 
-by adding a challenge token a to the zone.
+In addition, the Registrar or Registry can require the DNS Operator to prove
+they control the zone by requiring the child operator to navigate additional
+hurdles, such as adding a challenge token to the zone.
 
-This protocol should increase the adoption of DNSSEC and get more zones to become
-validated thus overall the security gain outweighs the possible drawbacks.
+This protocol should increase the adoption of DNSSEC, enabling more zones to
+become validated thus overall the security gain outweighs the possible
+drawbacks.
 
-Registrant and DNS Operator always have the option to establish the chain of trust in band via the 
-standard Registrant/Registrar/Registry model.
-
+Registrants and DNS Operators always have the option to establish the chain of
+trust in band via the standard Registrant/Registrar/Registry model.
 
 # IANA Actions
-URI ??? TBD
 
+This document has no actions for IANA
 
 # Internationalization Considerations
-This protocol is designed for machine to machine communications
+
+This protocol is designed for machine to machine communications.  Clients and
+servers should use punycode [@!RFC3492] when operating on internationalized
+domain names.
 
 {backmatter}
 
 # Document History
 
-## Regex version 02 
-Clarified based on comments and questions from early implementors (JL)
-Text edits and clarifications. 
+## regext Version 03 (not yet published)
+  - simplify abstract
+  - move all justification text to Intro
+  - added HTTP response codes for rate limiting (429), missing DS RRsets
+	(412)
+  - expanded on Internationalization Considerations
+  - corrected informative/normative document references
+  - clarify parent/Registrar references in the draft
+  - general spelling/grammar/style cleanup
 
-## Regex version 01 
-Rewrote Abstract and Into (MP) 
-Introduced code 401 when changes are not allowed 
-Text edits and clarifications. 
+## regext Version 02 
+  - Clarified based on comments and questions from early implementors (JL)
+  - Text edits and clarifications. 
 
-## Regex version 00 
-Working group document same as 03, just track changed to standard
+## regext Version 01 
+  - Rewrote Abstract and Into (MP) 
+  - Introduced code 401 when changes are not allowed 
+  - Text edits and clarifications. 
+
+## regext Version 00 
+  - Working group document same as 03, just track changed to standard
 
 ## Version 03
-Clarified based on comments and questions from early implementors
+  - Clarified based on comments and questions from early implementors
 
 ## Version 02
-Reflected comments on mailing lists
+  - Reflected comments on mailing lists
 
 ## Version 01
-This version adds a full REST definition this is based on suggestions from
+  - This version adds a full REST definition this is based on suggestions from
 Jakob Schlyter.
 
-
 ## Version 00
-First rough version
-
-
+  - First rough version
