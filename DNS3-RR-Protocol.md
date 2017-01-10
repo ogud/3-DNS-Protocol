@@ -164,24 +164,24 @@ by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
 A> [RFC Editor: The above I-D reference should be replaced with the correct
 RFC number upon publication.]
 
-In the case of an insecure delegation, the parent will normally not be
+In the case of an insecure delegation, the Registrar will normally not be
 scanning the child zone for CDS/CDNSKEY records.  The child operator can use
-this protocol to notify the parent to begin such a scan.
+this protocol to notify the Registrar to begin such a scan.
 
-Once the parent sees these records it SHOULD start acceptance processing.
+Once the Registrar sees these records it SHOULD start acceptance processing.
 
 ## Maintaining the Chain of Trust
 
-One the secure chain of trust is established, the parent SHOULD regularly
-check the child zone for CDS/CDNSKEY record changes.  The parent SHOULD also
-accept signals via this protocol to immediately check the child zone for
-CDS/CDNSKEY records.  
+One the secure chain of trust is established, the Registrar SHOULD regularly
+check the child zone for CDS/CDNSKEY record changes.  The Registrar SHOULD
+also accept signals via this protocol to immediately check the child zone for
+CDS/CDNSKEY records.
 
 Server implementations of this protocol MAY include rate limiting to protect
 their systems and the systems of child operators from abuse.
 
-Each parent operator is responsible for developing, implementing, and
-communicating their DNSSEC maintenance policies.
+Each parent operator and Registrar is responsible for developing,
+implementing, and communicating their DNSSEC maintenance policies.
 
 ## Other Delegation Maintenance
 
@@ -189,26 +189,26 @@ A> [ Not yet defined ]
 
 ## Acceptance Processing
 
-The parent, upon receiving a signal or detecting through polling that the
+The Registrar, upon receiving a signal or detecting through polling that the
 child desires to have its delegation updated, SHOULD run a series of tests to
 ensure that updating the parent zone will not create or exacerbate any
 problems with the child zone. The basic tests SHOULD include:
 
-  - checking that the child zone is is properly signed as per the parent
-  DNSSEC policy
+  - checking that the child zone is is properly signed as per the Registrar
+    and parent DNSSEC policy
   - if updating the DS record, checking that the child CDS RRset references a
-  KSK which is present in the child DNSKEY RRset and signs the CDS RRset
+    KSK which is present in the child DNSKEY RRset and signs the CDS RRset
   - ensuring all name servers in the apex NS RRset of the child zone agree on
-  the apex NS RRset and CDS RRset contents
+    the apex NS RRset and CDS RRset contents
 
-The parent operator SHOULD NOT make any changes to the DS RRset if the child
-name servers do not agree on the CDS/CDNSKEY content.
+The Registrar SHOULD NOT make any changes to the DS RRset if the child name
+servers do not agree on the CDS/CDNSKEY content.
 
 A> [NOTE: Do we need a new section in the DPS for the CDS management policy
 A> [@RFC6841]?]
 	
-Parents MAY require compliance with additional tests, particularly in the case
-of establishing a new chain of trust, such as:
+Registrars MAY require compliance with additional tests, particularly in the
+case of establishing a new chain of trust, such as:
 
   - checking that all child name servers to respond with a consistent
     CDS/CDNSKEY RRset for a number of queries over an extended period of time
@@ -226,7 +226,7 @@ This protocol is partially synchronous, meaning the server can elect to hold
 connections open until operations have completed, or it can return a status
 code indicating that it has received a request, and close the connection.  It
 is up to the child to monitor the parent for completion of the operation, and
-issue possible follow-up calls.
+issue possible follow-up calls to the Registrar.
 
 Clients may be denied access to change the DS records for domains that are
 Registry Locked (HTTP Status code 401).  Registry Lock is a mechanism
@@ -284,7 +284,7 @@ multiple DS records will be added.
    - HTTP Status code 429 indicates the client has been rate-limited.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
-This request is for setting up initial trust in the delegation.  The parent
+This request is for setting up initial trust in the delegation.  The Registrar
 SHOULD return a status code 409 if it already has a DS RRset for the child
 zone.
 
@@ -296,7 +296,7 @@ Upon receipt of a 403 response the child operator SHOULD issue a POST for the
 
 Syntax: DELETE /domains/{domain}/cds
 
-Request that the parent check for a null CDS or CDNSKEY record in the child
+Request that the Registrar check for a null CDS or CDNSKEY record in the child
 zone, indicating a request that the entire DS RRset be removed.  This will
 make the delegation insecure.
 
@@ -314,10 +314,10 @@ make the delegation insecure.
 
 Syntax: PUT /domains/{domain}/cds
 
-Request that the parent modify the DS RRset based on the CDS/CDNSKEY available
-in the child zone.  As a result of this request the parent SHOULD add or
-delete DS records as indicated by the CDS/CDNSKEY RRset, but MUST NOT delete
-the entire DS RRset.
+Request that the Registrar modify the DS RRset based on the CDS/CDNSKEY
+available in the child zone.  As a result of this request the Registrar SHOULD
+add or delete DS records as indicated by the CDS/CDNSKEY RRset, but MUST NOT
+delete the entire DS RRset.
 
 ##### Response
    - HTTP Status code 200 indicates a success.
@@ -338,12 +338,11 @@ Path: /domains/{domain}/token
 
 Syntax: POST /domains/{domain}/token
 
-The DNSSEC policy of the parent operator may require proof that the DNS
-Operator is in control of the domain.  The token API call returns a random
-token to be included as a TXT record for the _delegate.@ domain name (where @
-is the apex of the child zone) prior establishing the DNSSEC initial trust.
-This is an additional trust control mechanism to establish the initial chain
-of trust.
+The DNSSEC policy of the Registrar may require proof that the DNS Operator is
+in control of the domain.  The token API call returns a random token to be
+included as a TXT record for the _delegate.@ domain name (where @ is the apex
+of the child zone) prior establishing the DNSSEC initial trust.  This is an
+additional trust control mechanism to establish the initial chain of trust.
 
 Once the child operator has received a token, it SHOULD be inserted in the
 zone and the operator SHOULD proceed with a POST of the cds resource.
@@ -404,6 +403,7 @@ domain names.
 	(412)
   - expanded on Internationalization Considerations
   - corrected informative/normative document references
+  - clarify parent/Registrar references in the draft
   - general spelling/grammar/style cleanup
 
 ## regext Version 02 
