@@ -30,12 +30,12 @@ Abstract
    When the domain hand uses DNSSEC it necessary to make regular
    (sometimes annual) changes to the delegation, updating DS record(s)
    in order to track KSK rollover.  Under the current model this is
-   prone to delays and errors, as the registrant must participate in
+   prone to delays and errors, as the Registrant must participate in
    updates to DS records.
 
    This document describes a simple protocol that allows a third party
    DNS operator to update DS and NS records for a delegation, in a
-   trusted manner, without involving the registrant for each operation.
+   trusted manner, without involving the Registrant for each operation.
    This same protocol can be used by Registrants.
 
 Status of This Memo
@@ -137,7 +137,7 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 
    In this last case, the operator must contact and engage the
    Registrant in updating NS and DS records for the delegation.  New
-   information must be communicated to the registrant, who must submit
+   information must be communicated to the Registrant, who must submit
    that information to the Registrar.  Typically this involves cutting
    and pasting between email and a web interface, which is error prone.
    Furthermore, involving Registrants in this way does not scale for
@@ -375,7 +375,7 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    Syntax: POST /domains/{domain}/cds
 
    Request that an initial set of DS records based on the CDS record in
-   the child zone be inserted into the registry and the parent zone upon
+   the child zone be inserted into the Registry and the parent zone upon
    the successful completion of the request.  If there are multiple CDS
    records in the CDS RRset, multiple DS records will be added.
 
