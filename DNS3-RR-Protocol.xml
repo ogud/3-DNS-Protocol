@@ -452,6 +452,7 @@ token.
 </section>
 </section>
 </section>
+</section>
 
 <section anchor="customized-error-messages" title="Customized Error Messages">
 <t>Registrars MAY provide a customized error message in the response body in
@@ -459,7 +460,6 @@ addition to the HTTP status code defined in the previous section.  This
 response MAY include an identifying number/string that can be used to track
 the request.
 </t>
-</section>
 </section>
 </section>
 

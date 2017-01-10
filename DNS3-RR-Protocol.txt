@@ -95,7 +95,7 @@ Table of Contents
      4.2.  RESTful Resources . . . . . . . . . . . . . . . . . . . .   7
        4.2.1.  CDS resource  . . . . . . . . . . . . . . . . . . . .   7
        4.2.2.  Token resource  . . . . . . . . . . . . . . . . . . .   9
-       4.2.3.  Customized Error Messages . . . . . . . . . . . . . .  10
+     4.3.  Customized Error Messages . . . . . . . . . . . . . . . .  10
    5.  Security considerations . . . . . . . . . . . . . . . . . . .  10
    6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .  10
    7.  Internationalization Considerations . . . . . . . . . . . . .  11
@@ -519,7 +519,7 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    o  HTTP Status code 500 indicates a failure due to unforeseeable
       reasons.
 
-4.2.3.  Customized Error Messages
+4.3.  Customized Error Messages
 
    Registrars MAY provide a customized error message in the response
    body in addition to the HTTP status code defined in the previous

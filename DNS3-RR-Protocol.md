@@ -357,7 +357,7 @@ token.
    - HTTP Status code 404 indicates the domain does not exist.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
-### Customized Error Messages
+## Customized Error Messages
 
 Registrars MAY provide a customized error message in the response body in
 addition to the HTTP status code defined in the previous section.  This
