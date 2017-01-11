@@ -64,8 +64,8 @@ initial changes to the NS records for the delegation. As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 
-When the domain hand uses DNSSEC it necessary to make regular (sometimes
-annual) changes to the delegation, updating DS record(s) in order to track KSK
+When the domain uses DNSSEC it necessary to make regular (sometimes annual)
+changes to the delegation, updating DS record(s) in order to track KSK
 rollover.  Under the current model this is prone to delays and errors, as the
 Registrant must participate in updates to DS records.
 
