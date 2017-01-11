@@ -344,7 +344,7 @@ Path: /domains/{domain}/token
 
 ##### Request
 
-Syntax: POST /domains/{domain}/token
+Syntax: GET /domains/{domain}/token
 
 The DNSSEC policy of the Registrar may require proof that the DNS Operator is
 in control of the domain.  The token API call returns a random token to be
@@ -354,6 +354,10 @@ additional trust control mechanism to establish the initial chain of trust.
 
 Once the child operator has received a token, it SHOULD be inserted in the
 zone and the operator SHOULD proceed with a POST of the cds resource.
+
+The Registrar MAY expire the token after a reasonable period.  The Registrar
+SHOULD document an explanation of whether and when tokens are expired in their
+DNSSEC policy.
 
 Note that the _delegate TXT record is publicly available and not a secret
 token.
