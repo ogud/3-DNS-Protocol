@@ -282,6 +282,9 @@ zone be inserted into the Registry and the parent zone upon the successful
 completion of the request. If there are multiple CDS records in the CDS RRset,
 multiple DS records will be added.
 
+The body of the POST SHOULD be empty, however server implementations SHOULD
+NOT reject nonempty requests.
+
 ##### Response
    - HTTP Status code 201 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
