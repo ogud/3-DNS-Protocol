@@ -699,24 +699,40 @@ Authors' Addresses
 
    Jacques Latour
    CIRA
+   Ottawa, ON
 
    Email: jacques.latour@cira.ca
 
 
    Olafur Gudmundsson
    Cloudflare, Inc.
+   San Francisco, CA
 
    Email: olafur+ietf@cloudflare.com
 
 
    Paul Wouters
    Red Hat
+   Toronto, ON
 
    Email: paul@nohats.ca
 
 
+
+
+
+
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 13]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
    Matthew Pounsett
    Rightside Group, Ltd.
+   Toronto, ON
 
    Email: matt@conundrum.com
 
@@ -725,4 +741,44 @@ Authors' Addresses
 
 
 
-Latour, et al.            Expires July 8, 2017                 [Page 13]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 14]

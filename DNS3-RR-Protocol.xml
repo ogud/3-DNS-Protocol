@@ -17,10 +17,10 @@
 <address>
 <postal>
 <street></street>
-<city></city>
+<city>Ottawa</city>
 <code></code>
 <country></country>
-<region></region>
+<region>ON</region>
 </postal>
 <phone></phone>
 <email>jacques.latour@cira.ca</email>
@@ -32,10 +32,10 @@
 <address>
 <postal>
 <street></street>
-<city></city>
+<city>San Francisco</city>
 <code></code>
 <country></country>
-<region></region>
+<region>CA</region>
 </postal>
 <phone></phone>
 <email>olafur+ietf@cloudflare.com</email>
@@ -47,10 +47,10 @@
 <address>
 <postal>
 <street></street>
-<city></city>
+<city>Toronto</city>
 <code></code>
 <country></country>
-<region></region>
+<region>ON</region>
 </postal>
 <phone></phone>
 <email>paul@nohats.ca</email>
@@ -62,10 +62,10 @@
 <address>
 <postal>
 <street></street>
-<city></city>
+<city>Toronto</city>
 <code></code>
 <country></country>
-<region></region>
+<region>ON</region>
 </postal>
 <phone></phone>
 <email>matt@conundrum.com</email>

@@ -15,8 +15,10 @@
 % surname = "Latour"
 % organization="CIRA"
 %   [author.address]
-%   street="Ottawa, ON"
 %   email="jacques.latour@cira.ca"
+%   [author.address.postal]
+%   city="Ottawa"
+%   region="ON"
 %
 % [[author]]
 % initials = "O."
@@ -25,7 +27,9 @@
 % organization = "Cloudflare, Inc."
 %  [author.address]
 %  email = "olafur+ietf@cloudflare.com"
-%  street = "San Francisco, CA"
+%  [author.address.postal]
+%  city = "San Francisco"
+%  region = "CA"
 %
 % [[author]]
 % fullname="Paul Wouters"
@@ -33,8 +37,10 @@
 % surname = "Wouters"
 % organization="Red Hat"
 %  [author.address]
-%  street="Toronto, ON"
 %  email="paul@nohats.ca"
+%  [author.address.postal]
+%  city="Toronto"
+%  region="ON"
 %
 % [[author]]
 % fullname="Matthew Pounsett"
@@ -42,8 +48,10 @@
 % surname="Pounsett"
 % organization="Rightside Group, Ltd."
 %  [author.address]
-%  street="Toronto, ON"
 %  email="matt@conundrum.com"
+%  [author.address.postal]
+%  city="Toronto"
+%  region="ON"
 %
 
 .# Abstract
