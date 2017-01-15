@@ -15,8 +15,10 @@
 % surname = "Latour"
 % organization="CIRA"
 %   [author.address]
-%   street="Ottawa, ON"
 %   email="jacques.latour@cira.ca"
+%   [author.address.postal]
+%   city="Ottawa"
+%   region="ON"
 %
 % [[author]]
 % initials = "O."
@@ -25,7 +27,9 @@
 % organization = "Cloudflare, Inc."
 %  [author.address]
 %  email = "olafur+ietf@cloudflare.com"
-%  street = "San Francisco, CA"
+%  [author.address.postal]
+%  city = "San Francisco"
+%  region = "CA"
 %
 % [[author]]
 % fullname="Paul Wouters"
@@ -33,8 +37,10 @@
 % surname = "Wouters"
 % organization="Red Hat"
 %  [author.address]
-%  street="Toronto, ON"
 %  email="paul@nohats.ca"
+%  [author.address.postal]
+%  city="Toronto"
+%  region="ON"
 %
 % [[author]]
 % fullname="Matthew Pounsett"
@@ -42,8 +48,10 @@
 % surname="Pounsett"
 % organization="Rightside Group, Ltd."
 %  [author.address]
-%  street="Toronto, ON"
 %  email="matt@conundrum.com"
+%  [author.address.postal]
+%  city="Toronto"
+%  region="ON"
 %
 
 .# Abstract
@@ -56,8 +64,8 @@ initial changes to the NS records for the delegation. As this is usually a
 one time activity when the operator first takes charge of the zone it has not
 been treated as a serious issue.
 
-When the domain hand uses DNSSEC it necessary to make regular (sometimes
-annual) changes to the delegation, updating DS record(s) in order to track KSK
+When the domain uses DNSSEC it necessary to make regular (sometimes annual)
+changes to the delegation, updating DS record(s) in order to track KSK
 rollover.  Under the current model this is prone to delays and errors, as the
 Registrant must participate in updates to DS records.
 
@@ -274,6 +282,9 @@ zone be inserted into the Registry and the parent zone upon the successful
 completion of the request. If there are multiple CDS records in the CDS RRset,
 multiple DS records will be added.
 
+The body of the POST SHOULD be empty, however server implementations SHOULD
+NOT reject nonempty requests.
+
 ##### Response
    - HTTP Status code 201 indicates a success.
    - HTTP Status code 400 indicates a failure due to validation.
@@ -336,7 +347,7 @@ Path: /domains/{domain}/token
 
 ##### Request
 
-Syntax: POST /domains/{domain}/token
+Syntax: GET /domains/{domain}/token
 
 The DNSSEC policy of the Registrar may require proof that the DNS Operator is
 in control of the domain.  The token API call returns a random token to be
@@ -346,6 +357,10 @@ additional trust control mechanism to establish the initial chain of trust.
 
 Once the child operator has received a token, it SHOULD be inserted in the
 zone and the operator SHOULD proceed with a POST of the cds resource.
+
+The Registrar MAY expire the token after a reasonable period.  The Registrar
+SHOULD document an explanation of whether and when tokens are expired in their
+DNSSEC policy.
 
 Note that the _delegate TXT record is publicly available and not a secret
 token.

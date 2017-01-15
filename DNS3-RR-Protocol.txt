@@ -27,11 +27,11 @@ Abstract
    operator first takes charge of the zone it has not been treated as a
    serious issue.
 
-   When the domain hand uses DNSSEC it necessary to make regular
-   (sometimes annual) changes to the delegation, updating DS record(s)
-   in order to track KSK rollover.  Under the current model this is
-   prone to delays and errors, as the Registrant must participate in
-   updates to DS records.
+   When the domain uses DNSSEC it necessary to make regular (sometimes
+   annual) changes to the delegation, updating DS record(s) in order to
+   track KSK rollover.  Under the current model this is prone to delays
+   and errors, as the Registrant must participate in updates to DS
+   records.
 
    This document describes a simple protocol that allows a third party
    DNS operator to update DS and NS records for a delegation, in a
@@ -97,7 +97,7 @@ Table of Contents
        4.2.2.  Token resource  . . . . . . . . . . . . . . . . . . .   9
      4.3.  Customized Error Messages . . . . . . . . . . . . . . . .  10
    5.  Security considerations . . . . . . . . . . . . . . . . . . .  10
-   6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .  10
+   6.  IANA Actions  . . . . . . . . . . . . . . . . . . . . . . . .  11
    7.  Internationalization Considerations . . . . . . . . . . . . .  11
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
@@ -105,7 +105,7 @@ Table of Contents
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .  12
      A.1.  regext Version 03 (not yet published) . . . . . . . . . .  12
      A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  12
-     A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  12
+     A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
 
 
 
@@ -379,13 +379,13 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    the successful completion of the request.  If there are multiple CDS
    records in the CDS RRset, multiple DS records will be added.
 
-4.2.1.1.2.  Response
+   The body of the POST SHOULD be empty, however server implementations
+   SHOULD NOT reject nonempty requests.
 
-   o  HTTP Status code 201 indicates a success.
 
-   o  HTTP Status code 400 indicates a failure due to validation.
 
-   o  HTTP Status code 401 indicates an unauthorized resource access.
+
+
 
 
 
@@ -393,6 +393,14 @@ Latour, et al.            Expires July 8, 2017                  [Page 7]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
 
+
+4.2.1.1.2.  Response
+
+   o  HTTP Status code 201 indicates a success.
+
+   o  HTTP Status code 400 indicates a failure due to validation.
+
+   o  HTTP Status code 401 indicates an unauthorized resource access.
 
    o  HTTP Status code 403 indicates a failure due to an invalid
       challenge token.
@@ -435,20 +443,19 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 
    o  HTTP Status code 404 indicates the domain does not exist.
 
-   o  HTTP Status code 412 indicates the parent does not have a DS RRset
-
-   o  HTTP Status code 429 indicates the client has been rate-limited.
-
-   o  HTTP Status code 500 indicates a failure due to unforeseeable
-      reasons.
-
-
 
 
 Latour, et al.            Expires July 8, 2017                  [Page 8]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
 
+
+   o  HTTP Status code 412 indicates the parent does not have a DS RRset
+
+   o  HTTP Status code 429 indicates the client has been rate-limited.
+
+   o  HTTP Status code 500 indicates a failure due to unforeseeable
+      reasons.
 
 4.2.1.3.  Modifying DS Records
 
@@ -486,11 +493,19 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 
 4.2.2.1.1.  Request
 
-   Syntax: POST /domains/{domain}/token
+   Syntax: GET /domains/{domain}/token
 
    The DNSSEC policy of the Registrar may require proof that the DNS
    Operator is in control of the domain.  The token API call returns a
    random token to be included as a TXT record for the _delegate.@
+
+
+
+Latour, et al.            Expires July 8, 2017                  [Page 9]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
    domain name (where @ is the apex of the child zone) prior
    establishing the DNSSEC initial trust.  This is an additional trust
    control mechanism to establish the initial chain of trust.
@@ -499,12 +514,9 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    in the zone and the operator SHOULD proceed with a POST of the cds
    resource.
 
-
-
-Latour, et al.            Expires July 8, 2017                  [Page 9]
-
-Internet-Draft                  3-DNS-RRR                   January 2017
-
+   The Registrar MAY expire the token after a reasonable period.  The
+   Registrar SHOULD document an explanation of whether and when tokens
+   are expired in their DNSSEC policy.
 
    Note that the _delegate TXT record is publicly available and not a
    secret token.
@@ -540,6 +552,16 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    navigate additional hurdles, such as adding a challenge token to the
    zone.
 
+
+
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 10]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
    This protocol should increase the adoption of DNSSEC, enabling more
    zones to become validated thus overall the security gain outweighs
    the possible drawbacks.
@@ -551,16 +573,6 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 6.  IANA Actions
 
    This document has no actions for IANA
-
-
-
-
-
-
-Latour, et al.            Expires July 8, 2017                 [Page 10]
-
-Internet-Draft                  3-DNS-RRR                   January 2017
-
 
 7.  Internationalization Considerations
 
@@ -598,6 +610,14 @@ Internet-Draft                  3-DNS-RRR                   January 2017
               Requirements", draft-wallstrom-dnsop-dns-delegation-
               requirements-03 (work in progress), October 2016.
 
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 11]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
               RFC2119, March 1997,
@@ -610,13 +630,6 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
               <http://www.rfc-editor.org/info/rfc5730>.
-
-
-
-Latour, et al.            Expires July 8, 2017                 [Page 11]
-
-Internet-Draft                  3-DNS-RRR                   January 2017
-
 
    [RFC6841]  Ljunggren, F., Eklund Lowinder, AM., and T. Okubo, "A
               Framework for DNSSEC Policies and DNSSEC Practice
@@ -654,6 +667,13 @@ A.2.  regext Version 02
 
    o  Text edits and clarifications.
 
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 12]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
 A.3.  regext Version 01
 
    o  Rewrote Abstract and Into (MP)
@@ -661,18 +681,6 @@ A.3.  regext Version 01
    o  Introduced code 401 when changes are not allowed
 
    o  Text edits and clarifications.
-
-
-
-
-
-
-
-
-Latour, et al.            Expires July 8, 2017                 [Page 12]
-
-Internet-Draft                  3-DNS-RRR                   January 2017
-
 
 A.4.  regext Version 00
 
@@ -699,24 +707,39 @@ Authors' Addresses
 
    Jacques Latour
    CIRA
+   Ottawa, ON
 
    Email: jacques.latour@cira.ca
 
 
    Olafur Gudmundsson
    Cloudflare, Inc.
+   San Francisco, CA
 
    Email: olafur+ietf@cloudflare.com
 
 
+
+
+
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 13]
+
+Internet-Draft                  3-DNS-RRR                   January 2017
+
+
    Paul Wouters
    Red Hat
+   Toronto, ON
 
    Email: paul@nohats.ca
 
 
    Matthew Pounsett
    Rightside Group, Ltd.
+   Toronto, ON
 
    Email: matt@conundrum.com
 
@@ -725,4 +748,37 @@ Authors' Addresses
 
 
 
-Latour, et al.            Expires July 8, 2017                 [Page 13]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Latour, et al.            Expires July 8, 2017                 [Page 14]
