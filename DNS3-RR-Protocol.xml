@@ -531,6 +531,9 @@ domain names.
 <t>corrected informative/normative document references</t>
 <t>clarify parent/Registrar references in the draft</t>
 <t>general spelling/grammar/style cleanup</t>
+<t>removed references to NS and glue maintenance</t>
+<t>clarify content of POST body for 'cds' resource</t>
+<t>change verb for obtaining a 'token' to GET</t>
 </list>
 </t>
 </section>

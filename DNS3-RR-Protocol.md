@@ -420,6 +420,9 @@ domain names.
   - corrected informative/normative document references
   - clarify parent/Registrar references in the draft
   - general spelling/grammar/style cleanup
+  - removed references to NS and glue maintenance
+  - clarify content of POST body for 'cds' resource
+  - change verb for obtaining a 'token' to GET
 
 ## regext Version 02 
   - Clarified based on comments and questions from early implementors (JL)

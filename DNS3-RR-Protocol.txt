@@ -104,7 +104,7 @@ Table of Contents
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .  12
      A.1.  regext Version 03 (not yet published) . . . . . . . . . .  12
-     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  12
+     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
      A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
 
 
@@ -660,12 +660,12 @@ A.1.  regext Version 03 (not yet published)
 
    o  general spelling/grammar/style cleanup
 
-A.2.  regext Version 02
+   o  removed references to NS and glue maintenance
 
-   o  Clarified based on comments and questions from early implementors
-      (JL)
+   o  clarify content of POST body for 'cds' resource
 
-   o  Text edits and clarifications.
+   o  change verb for obtaining a 'token' to GET
+
 
 
 
@@ -673,6 +673,13 @@ Latour, et al.            Expires July 8, 2017                 [Page 12]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
 
+
+A.2.  regext Version 02
+
+   o  Clarified based on comments and questions from early implementors
+      (JL)
+
+   o  Text edits and clarifications.
 
 A.3.  regext Version 01
 
@@ -712,13 +719,6 @@ Authors' Addresses
    Email: jacques.latour@cira.ca
 
 
-   Olafur Gudmundsson
-   Cloudflare, Inc.
-   San Francisco, CA
-
-   Email: olafur+ietf@cloudflare.com
-
-
 
 
 
@@ -728,6 +728,13 @@ Authors' Addresses
 Latour, et al.            Expires July 8, 2017                 [Page 13]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
+
+
+   Olafur Gudmundsson
+   Cloudflare, Inc.
+   San Francisco, CA
+
+   Email: olafur+ietf@cloudflare.com
 
 
    Paul Wouters
@@ -742,13 +749,6 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    Toronto, ON
 
    Email: matt@conundrum.com
-
-
-
-
-
-
-
 
 
 
