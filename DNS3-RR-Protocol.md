@@ -70,9 +70,9 @@ rollover.  Under the current model this is prone to delays and errors, as the
 Registrant must participate in updates to DS records.
 
 This document describes a simple protocol that allows a third party DNS
-operator to update DS and NS records for a delegation, in a trusted manner,
-without involving the Registrant for each operation. This same protocol can be
-used by Registrants.
+operator to update DS records for a delegation, in a trusted manner, without
+involving the Registrant for each operation. This same protocol can be used by
+Registrants.
 
 {mainmatter}
 
@@ -109,8 +109,8 @@ chain of trust that involves parties not in the traditional
 Registrant/Registrar/Registry (RRR) model, and to reduce the friction in
 maintaining DNSSEC secured delegations in these cases.  It describes a
 REST-based [@!RFC6690] protocol which can be used to establish DNSSEC initial
-trust (to enable or bootstrap DNSSEC), and to trigger maintenance of
-delegation records such as DS, NS, and glue records.
+trust (to enable or bootstrap DNSSEC), and to trigger maintenance of DS
+records.
 
 # Notional Conventions
 
@@ -420,6 +420,9 @@ domain names.
   - corrected informative/normative document references
   - clarify parent/Registrar references in the draft
   - general spelling/grammar/style cleanup
+  - removed references to NS and glue maintenance
+  - clarify content of POST body for 'cds' resource
+  - change verb for obtaining a 'token' to GET
 
 ## regext Version 02 
   - Clarified based on comments and questions from early implementors (JL)

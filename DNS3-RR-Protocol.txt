@@ -34,9 +34,9 @@ Abstract
    records.
 
    This document describes a simple protocol that allows a third party
-   DNS operator to update DS and NS records for a delegation, in a
-   trusted manner, without involving the Registrant for each operation.
-   This same protocol can be used by Registrants.
+   DNS operator to update DS records for a delegation, in a trusted
+   manner, without involving the Registrant for each operation.  This
+   same protocol can be used by Registrants.
 
 Status of This Memo
 
@@ -104,7 +104,7 @@ Table of Contents
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .  12
      A.1.  regext Version 03 (not yet published) . . . . . . . . . .  12
-     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  12
+     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
      A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
 
 
@@ -158,8 +158,8 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    in maintaining DNSSEC secured delegations in these cases.  It
    describes a REST-based [RFC6690] protocol which can be used to
    establish DNSSEC initial trust (to enable or bootstrap DNSSEC), and
-   to trigger maintenance of delegation records such as DS, NS, and glue
-   records.
+   to trigger maintenance of DS records.
+
 
 
 
@@ -586,8 +586,8 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 
    [I-D.ietf-dnsop-maintain-ds]
               Gudmundsson, O. and P. Wouters, "Managing DS records from
-              parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-ds-04
-              (work in progress), October 2016.
+              parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-ds-06
+              (work in progress), January 2017.
 
    [RFC3492]  Costello, A., "Punycode: A Bootstring encoding of Unicode
               for Internationalized Domain Names in Applications
@@ -660,12 +660,12 @@ A.1.  regext Version 03 (not yet published)
 
    o  general spelling/grammar/style cleanup
 
-A.2.  regext Version 02
+   o  removed references to NS and glue maintenance
 
-   o  Clarified based on comments and questions from early implementors
-      (JL)
+   o  clarify content of POST body for 'cds' resource
 
-   o  Text edits and clarifications.
+   o  change verb for obtaining a 'token' to GET
+
 
 
 
@@ -673,6 +673,13 @@ Latour, et al.            Expires July 8, 2017                 [Page 12]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
 
+
+A.2.  regext Version 02
+
+   o  Clarified based on comments and questions from early implementors
+      (JL)
+
+   o  Text edits and clarifications.
 
 A.3.  regext Version 01
 
@@ -712,13 +719,6 @@ Authors' Addresses
    Email: jacques.latour@cira.ca
 
 
-   Olafur Gudmundsson
-   Cloudflare, Inc.
-   San Francisco, CA
-
-   Email: olafur+ietf@cloudflare.com
-
-
 
 
 
@@ -728,6 +728,13 @@ Authors' Addresses
 Latour, et al.            Expires July 8, 2017                 [Page 13]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
+
+
+   Olafur Gudmundsson
+   Cloudflare, Inc.
+   San Francisco, CA
+
+   Email: olafur+ietf@cloudflare.com
 
 
    Paul Wouters
@@ -742,13 +749,6 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    Toronto, ON
 
    Email: matt@conundrum.com
-
-
-
-
-
-
-
 
 
 
