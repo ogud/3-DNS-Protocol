@@ -234,8 +234,7 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    After signing the zone, the child operator needs to upload the DS
    record(s) to the parent.  The child can signal its desire to have
    DNSSEC validation enabled by publishing one of the special DNS
-   records CDS and/or CDNSKEY as defined in [RFC7344] and
-   [I-D.ietf-dnsop-maintain-ds].
+   records CDS and/or CDNSKEY as defined in [RFC7344] and [RFC8078].
 
       [RFC Editor: The above I-D reference should be replaced with the
       correct RFC number upon publication.]
@@ -273,7 +272,8 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    create or exacerbate any problems with the child zone.  The basic
    tests SHOULD include:
 
-
+   o  checking that the child zone is is properly signed as per the
+      Registrar and parent DNSSEC policy
 
 
 
@@ -281,9 +281,6 @@ Latour, et al.            Expires July 8, 2017                  [Page 5]
 
 Internet-Draft                  3-DNS-RRR                   January 2017
 
-
-   o  checking that the child zone is is properly signed as per the
-      Registrar and parent DNSSEC policy
 
    o  if updating the DS record, checking that the child CDS RRset
       references a KSK which is present in the child DNSKEY RRset and
@@ -330,6 +327,9 @@ Internet-Draft                  3-DNS-RRR                   January 2017
    domain hijacking by ensuring no attributes of the domain are
    changeable, and no transfer or deletion transactions can be processed
    against the domain name without manual intervention.
+
+
+
 
 
 
@@ -584,11 +584,6 @@ Internet-Draft                  3-DNS-RRR                   January 2017
 
 8.1.  Normative References
 
-   [I-D.ietf-dnsop-maintain-ds]
-              Gudmundsson, O. and P. Wouters, "Managing DS records from
-              parent via CDS/CDNSKEY", draft-ietf-dnsop-maintain-ds-06
-              (work in progress), January 2017.
-
    [RFC3492]  Costello, A., "Punycode: A Bootstring encoding of Unicode
               for Internationalized Domain Names in Applications
               (IDNA)", RFC 3492, DOI 10.17487/RFC3492, March 2003,
@@ -602,6 +597,11 @@ Internet-Draft                  3-DNS-RRR                   January 2017
               DNSSEC Delegation Trust Maintenance", RFC 7344, DOI
               10.17487/RFC7344, September 2014,
               <http://www.rfc-editor.org/info/rfc7344>.
+
+   [RFC8078]  Gudmundsson, O. and P. Wouters, "Managing DS Records from
+              the Parent via CDS/CDNSKEY", RFC 8078, DOI 10.17487/
+              RFC8078, March 2017,
+              <http://www.rfc-editor.org/info/rfc8078>.
 
 8.2.  Informative References
 
