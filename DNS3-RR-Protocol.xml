@@ -202,7 +202,7 @@ Registry.
 <t>After signing the zone, the child operator needs to upload the DS record(s) to
 the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
-<xref target="RFC7344"/> and <xref target="I-D.ietf-dnsop-maintain-ds"/>.
+<xref target="RFC7344"/> and <xref target="RFC8078"/>.
 </t>
 <t><list style="empty">
 <t>[RFC Editor: The above I-D reference should be replaced with the correct
@@ -504,10 +504,10 @@ domain names.
 </middle>
 <back>
 <references title="Normative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-maintain-ds.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3492.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6690.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7344.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8078.xml"?>
 </references>
 <references title="Informative References">
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.wallstrom-dnsop-dns-delegation-requirements.xml"?>

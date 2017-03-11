@@ -167,7 +167,7 @@ Registry.
 After signing the zone, the child operator needs to upload the DS record(s) to
 the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
-[@!RFC7344] and [@!I-D.ietf-dnsop-maintain-ds].
+[@!RFC7344] and [@!RFC8078].
 
 A> [RFC Editor: The above I-D reference should be replaced with the correct
 RFC number upon publication.]
