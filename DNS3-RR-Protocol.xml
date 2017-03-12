@@ -102,7 +102,6 @@ Registrants.
 </t>
 </abstract>
 
-
 </front>
 
 <middle>
@@ -539,7 +538,16 @@ domain names.
 </t>
 </section>
 
-<section anchor="regext-version-02" title="regext Version 02">
+<section anchor="regext-version-03" title="regext Version 03">
+<t>
+<list style="symbols">
+<t>Updated refernce to RFC8078</t>
+<t>Text edits and clarificaitons</t>
+</list>
+</t>
+</section>
+
+<section anchor="regext-version-02-1" title="regext Version 02">
 <t>
 <list style="symbols">
 <t>Clarified based on comments and questions from early implementors (JL)</t>
