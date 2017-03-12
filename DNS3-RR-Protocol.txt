@@ -14,7 +14,7 @@ Expires: September 13, 2017                             Cloudflare, Inc.
 
 
        Third Party DNS operator to Registrars/Registries Protocol
-         draft-ietf-regext-dnsoperator-to-rrr-protocol-03aa.txt
+          draft-ietf-regext-dnsoperator-to-rrr-protocol-03.txt
 
 Abstract
 

@@ -2,7 +2,7 @@
 % abbrev = "3-DNS-RRR" 
 % category = "std"
 % ipr="trust200902"
-% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-03aa.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-03.txt"
 % workgroup = "regext"
 % area = "Applications" 
 % keyword = ["dnssec", "delegation maintenance", "trust anchors"]
