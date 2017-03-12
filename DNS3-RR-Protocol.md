@@ -411,7 +411,7 @@ domain names.
 
 # Document History
 
-## regext Version 02 
+## regext Version 03
   - simplify abstract
   - move all justification text to Intro
   - added HTTP response codes for rate limiting (429), missing DS RRsets
@@ -423,10 +423,7 @@ domain names.
   - removed references to NS and glue maintenance
   - clarify content of POST body for 'cds' resource
   - change verb for obtaining a 'token' to GET
-
-## regext Version 03 
   - Updated refernce to RFC8078
-  - Text edits and clarificaitons 
 
 ## regext Version 02 
   - Clarified based on comments and questions from early implementors (JL)

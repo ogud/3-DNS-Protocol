@@ -102,6 +102,7 @@ Registrants.
 </t>
 </abstract>
 
+
 </front>
 
 <middle>
@@ -519,7 +520,7 @@ domain names.
 
 <section anchor="document-history" title="Document History">
 
-<section anchor="regext-version-02" title="regext Version 02">
+<section anchor="regext-version-03" title="regext Version 03">
 <t>
 <list style="symbols">
 <t>simplify abstract</t>
@@ -533,20 +534,12 @@ domain names.
 <t>removed references to NS and glue maintenance</t>
 <t>clarify content of POST body for 'cds' resource</t>
 <t>change verb for obtaining a 'token' to GET</t>
-</list>
-</t>
-</section>
-
-<section anchor="regext-version-03" title="regext Version 03">
-<t>
-<list style="symbols">
 <t>Updated refernce to RFC8078</t>
-<t>Text edits and clarificaitons</t>
 </list>
 </t>
 </section>
 
-<section anchor="regext-version-02-1" title="regext Version 02">
+<section anchor="regext-version-02" title="regext Version 02">
 <t>
 <list style="symbols">
 <t>Clarified based on comments and questions from early implementors (JL)</t>
