@@ -103,9 +103,9 @@ Table of Contents
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .  12
-     A.1.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  12
-     A.2.  regext Version 03 . . . . . . . . . . . . . . . . . . . .  13
-     A.3.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
+     A.1.  regext Version 03 . . . . . . . . . . . . . . . . . . . .  12
+     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
+     A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
 
 
 
@@ -114,12 +114,11 @@ Latour, et al.         Expires September 13, 2017               [Page 2]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
-     A.4.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
-     A.5.  regext Version 00 . . . . . . . . . . . . . . . . . . . .  13
-     A.6.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.7.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.8.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.9.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.4.  regext Version 00 . . . . . . . . . . . . . . . . . . . .  13
+     A.5.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.6.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.7.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.8.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  13
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
 
 1.  Introduction
@@ -160,6 +159,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    describes a REST-based [RFC6690] protocol which can be used to
    establish DNSSEC initial trust (to enable or bootstrap DNSSEC), and
    to trigger maintenance of DS records.
+
 
 
 
@@ -643,7 +643,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 Appendix A.  Document History
 
-A.1.  regext Version 02
+A.1.  regext Version 03
 
    o  simplify abstract
 
@@ -674,20 +674,16 @@ Latour, et al.         Expires September 13, 2017              [Page 12]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
-A.2.  regext Version 03
-
    o  Updated refernce to RFC8078
 
-   o  Text edits and clarificaitons
-
-A.3.  regext Version 02
+A.2.  regext Version 02
 
    o  Clarified based on comments and questions from early implementors
       (JL)
 
    o  Text edits and clarifications.
 
-A.4.  regext Version 01
+A.3.  regext Version 01
 
    o  Rewrote Abstract and Into (MP)
 
@@ -695,30 +691,34 @@ A.4.  regext Version 01
 
    o  Text edits and clarifications.
 
-A.5.  regext Version 00
+A.4.  regext Version 00
 
    o  Working group document same as 03, just track changed to standard
 
-A.6.  Version 03
+A.5.  Version 03
 
    o  Clarified based on comments and questions from early implementors
 
-A.7.  Version 02
+A.6.  Version 02
 
    o  Reflected comments on mailing lists
 
-A.8.  Version 01
+A.7.  Version 01
 
    o  This version adds a full REST definition this is based on
       suggestions from Jakob Schlyter.
 
-A.9.  Version 00
+A.8.  Version 00
 
    o  First rough version
 
 Authors' Addresses
 
+   Jacques Latour
+   CIRA
+   Ottawa, ON
 
+   Email: jacques.latour@cira.ca
 
 
 
@@ -728,13 +728,6 @@ Authors' Addresses
 Latour, et al.         Expires September 13, 2017              [Page 13]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
-
-
-   Jacques Latour
-   CIRA
-   Ottawa, ON
-
-   Email: jacques.latour@cira.ca
 
 
    Olafur Gudmundsson
@@ -756,6 +749,13 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    Toronto, ON
 
    Email: matt@conundrum.com
+
+
+
+
+
+
+
 
 
 

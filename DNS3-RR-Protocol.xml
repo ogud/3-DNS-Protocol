@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-regext-dnsoperator-to-rrr-protocol-01.txt">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-regext-dnsoperator-to-rrr-protocol-03aa.txt">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -72,7 +72,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2017" month="January" day="4"/>
+<date year="2017" month="March" day="12"/>
 
 <area>Applications</area>
 <workgroup>regext</workgroup>
@@ -311,7 +311,7 @@ in the parent zone.  Since this protocol is simply a signal to the Registrar
 that they should examine the child zone for such intentions, additional
 authentication of the client making the request is considered unnecessary.
 </t>
-<t>Registrars MAY implement their own policy to protect acces to the API, such as
+<t>Registrars MAY implement their own policy to protect access to the API, such as
 with IP whitelisting, client TLS certificates, etc..  Registrars SHOULD take
 steps to ensure that a lack of additional authentication does not open up a
 denial of service mechanism against the systems of the Registrar, the
@@ -520,7 +520,7 @@ domain names.
 
 <section anchor="document-history" title="Document History">
 
-<section anchor="regext-version-03-not-yet-published" title="regext Version 03 (not yet published)">
+<section anchor="regext-version-03" title="regext Version 03">
 <t>
 <list style="symbols">
 <t>simplify abstract</t>
@@ -534,6 +534,7 @@ domain names.
 <t>removed references to NS and glue maintenance</t>
 <t>clarify content of POST body for 'cds' resource</t>
 <t>change verb for obtaining a 'token' to GET</t>
+<t>Updated refernce to RFC8078</t>
 </list>
 </t>
 </section>
