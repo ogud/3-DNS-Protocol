@@ -2,12 +2,12 @@
 % abbrev = "3-DNS-RRR" 
 % category = "std"
 % ipr="trust200902"
-% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-01.txt"
+% docName = "draft-ietf-regext-dnsoperator-to-rrr-protocol-03aa.txt"
 % workgroup = "regext"
 % area = "Applications" 
 % keyword = ["dnssec", "delegation maintenance", "trust anchors"]
 %
-% date = 2017-01-04T00:00:00Z
+% date = 2017-03-12T00:00:00Z
 %
 % [[author]]
 % fullname = "Jacques Latour"
@@ -257,7 +257,7 @@ in the parent zone.  Since this protocol is simply a signal to the Registrar
 that they should examine the child zone for such intentions, additional
 authentication of the client making the request is considered unnecessary.
 
-Registrars MAY implement their own policy to protect acces to the API, such as
+Registrars MAY implement their own policy to protect access to the API, such as
 with IP whitelisting, client TLS certificates, etc..  Registrars SHOULD take
 steps to ensure that a lack of additional authentication does not open up a
 denial of service mechanism against the systems of the Registrar, the
@@ -411,7 +411,7 @@ domain names.
 
 # Document History
 
-## regext Version 03 (not yet published)
+## regext Version 02 
   - simplify abstract
   - move all justification text to Intro
   - added HTTP response codes for rate limiting (429), missing DS RRsets
@@ -423,6 +423,10 @@ domain names.
   - removed references to NS and glue maintenance
   - clarify content of POST body for 'cds' resource
   - change verb for obtaining a 'token' to GET
+
+## regext Version 03 
+  - Updated refernce to RFC8078
+  - Text edits and clarificaitons 
 
 ## regext Version 02 
   - Clarified based on comments and questions from early implementors (JL)
