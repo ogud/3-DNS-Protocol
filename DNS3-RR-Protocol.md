@@ -121,8 +121,9 @@ responsible for a zone, where the operator is neither the Registrant nor the
 Registrar of record for the delegation.
 
 Uses of "child" and "parent" refer to the relationship between DNS zone
-operators.  In this document, unless otherwise noted, the child is the
-third-party DNS operator and the parent is the Registry.
+operators (see [@RFC7719] and [@I-D.ietf-dnsop-terminology-bis]).  In
+this document, unless otherwise noted, the child is the third-party DNS
+operator and the parent is the Registry.
 
 Uses of the words "Registrar" or "Registration Entity" in this document may
 also be applied to Resellers or to Registries that engage in registration

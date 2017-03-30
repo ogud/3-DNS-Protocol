@@ -119,7 +119,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
      A.6.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  13
      A.7.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  13
      A.8.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  13
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
@@ -179,8 +179,9 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    Registrant nor the Registrar of record for the delegation.
 
    Uses of "child" and "parent" refer to the relationship between DNS
-   zone operators.  In this document, unless otherwise noted, the child
-   is the third-party DNS operator and the parent is the Registry.
+   zone operators (see [RFC7719] and [I-D.ietf-dnsop-terminology-bis]).
+   In this document, unless otherwise noted, the child is the third-
+   party DNS operator and the parent is the Registry.
 
    Uses of the words "Registrar" or "Registration Entity" in this
    document may also be applied to Resellers or to Registries that
@@ -217,7 +218,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    With no current mechanism in place to scalably discover the Registar
    for a particular registration, the problem of automatic discovery of
-   the base URL of the API is considered out of scope of this document.
 
 
 
@@ -226,6 +226,7 @@ Latour, et al.         Expires September 13, 2017               [Page 4]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
+   the base URL of the API is considered out of scope of this document.
    The authors recommend standardization of an RDAP extension to obtain
    this information from the Registry.
 
@@ -272,8 +273,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    create or exacerbate any problems with the child zone.  The basic
    tests SHOULD include:
 
-   o  checking that the child zone is is properly signed as per the
-      Registrar and parent DNSSEC policy
+
 
 
 
@@ -281,6 +281,9 @@ Latour, et al.         Expires September 13, 2017               [Page 5]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
 
+
+   o  checking that the child zone is is properly signed as per the
+      Registrar and parent DNSSEC policy
 
    o  if updating the DS record, checking that the child CDS RRset
       references a KSK which is present in the child DNSKEY RRset and
@@ -327,9 +330,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    domain hijacking by ensuring no attributes of the domain are
    changeable, and no transfer or deletion transactions can be processed
    against the domain name without manual intervention.
-
-
-
 
 
 
@@ -594,21 +594,21 @@ Internet-Draft                  3-DNS-RRR                     March 2017
               <http://www.rfc-editor.org/info/rfc6690>.
 
    [RFC7344]  Kumari, W., Gudmundsson, O., and G. Barwood, "Automating
-              DNSSEC Delegation Trust Maintenance", RFC 7344, DOI
-              10.17487/RFC7344, September 2014,
+              DNSSEC Delegation Trust Maintenance", RFC 7344,
+              DOI 10.17487/RFC7344, September 2014,
               <http://www.rfc-editor.org/info/rfc7344>.
 
    [RFC8078]  Gudmundsson, O. and P. Wouters, "Managing DS Records from
-              the Parent via CDS/CDNSKEY", RFC 8078, DOI 10.17487/
-              RFC8078, March 2017,
+              the Parent via CDS/CDNSKEY", RFC 8078,
+              DOI 10.17487/RFC8078, March 2017,
               <http://www.rfc-editor.org/info/rfc8078>.
 
 8.2.  Informative References
 
-   [I-D.wallstrom-dnsop-dns-delegation-requirements]
-              Wallstrom, P. and J. Schlyter, "DNS Delegation
-              Requirements", draft-wallstrom-dnsop-dns-delegation-
-              requirements-03 (work in progress), October 2016.
+   [I-D.ietf-dnsop-terminology-bis]
+              Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
+              Terminology", draft-ietf-dnsop-terminology-bis-05 (work in
+              progress), March 2017.
 
 
 
@@ -618,13 +618,18 @@ Latour, et al.         Expires September 13, 2017              [Page 11]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
+   [I-D.wallstrom-dnsop-dns-delegation-requirements]
+              Wallstrom, P. and J. Schlyter, "DNS Delegation
+              Requirements", draft-wallstrom-dnsop-dns-delegation-
+              requirements-03 (work in progress), October 2016.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC3912]  Daigle, L., "WHOIS Protocol Specification", RFC 3912, DOI
-              10.17487/RFC3912, September 2004,
+   [RFC3912]  Daigle, L., "WHOIS Protocol Specification", RFC 3912,
+              DOI 10.17487/RFC3912, September 2004,
               <http://www.rfc-editor.org/info/rfc3912>.
 
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
@@ -637,9 +642,13 @@ Internet-Draft                  3-DNS-RRR                     March 2017
               <http://www.rfc-editor.org/info/rfc6841>.
 
    [RFC7480]  Newton, A., Ellacott, B., and N. Kong, "HTTP Usage in the
-              Registration Data Access Protocol (RDAP)", RFC 7480, DOI
-              10.17487/RFC7480, March 2015,
+              Registration Data Access Protocol (RDAP)", RFC 7480,
+              DOI 10.17487/RFC7480, March 2015,
               <http://www.rfc-editor.org/info/rfc7480>.
+
+   [RFC7719]  Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
+              Terminology", RFC 7719, DOI 10.17487/RFC7719, December
+              2015, <http://www.rfc-editor.org/info/rfc7719>.
 
 Appendix A.  Document History
 
@@ -658,6 +667,13 @@ A.1.  regext Version 03
 
    o  clarify parent/Registrar references in the draft
 
+
+
+Latour, et al.         Expires September 13, 2017              [Page 12]
+
+Internet-Draft                  3-DNS-RRR                     March 2017
+
+
    o  general spelling/grammar/style cleanup
 
    o  removed references to NS and glue maintenance
@@ -665,14 +681,6 @@ A.1.  regext Version 03
    o  clarify content of POST body for 'cds' resource
 
    o  change verb for obtaining a 'token' to GET
-
-
-
-
-Latour, et al.         Expires September 13, 2017              [Page 12]
-
-Internet-Draft                  3-DNS-RRR                     March 2017
-
 
    o  Updated refernce to RFC8078
 
@@ -712,14 +720,6 @@ A.8.  Version 00
 
    o  First rough version
 
-Authors' Addresses
-
-   Jacques Latour
-   CIRA
-   Ottawa, ON
-
-   Email: jacques.latour@cira.ca
-
 
 
 
@@ -728,6 +728,15 @@ Authors' Addresses
 Latour, et al.         Expires September 13, 2017              [Page 13]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
+
+
+Authors' Addresses
+
+   Jacques Latour
+   CIRA
+   Ottawa, ON
+
+   Email: jacques.latour@cira.ca
 
 
    Olafur Gudmundsson
@@ -749,15 +758,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    Toronto, ON
 
    Email: matt@conundrum.com
-
-
-
-
-
-
-
-
-
 
 
 
