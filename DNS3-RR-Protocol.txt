@@ -36,7 +36,8 @@ Abstract
    This document describes a simple protocol that allows a third party
    DNS operator to update DS records for a delegation, in a trusted
    manner, without involving the Registrant for each operation.  This
-   same protocol can be used by Registrants.
+   same protocol can be used by Registrants to maintain their own
+   domains if they wish.
 
 Status of This Memo
 
@@ -48,8 +49,7 @@ Status of This Memo
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at http://datatracker.ietf.org/drafts/current/.
 
-   Internet-Drafts are draft documents valid for a maximum of six months
-   and may be updated, replaced, or obsoleted by other documents at any
+
 
 
 
@@ -58,6 +58,8 @@ Latour, et al.         Expires September 13, 2017               [Page 1]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
@@ -85,7 +87,7 @@ Table of Contents
      2.1.  Definitions . . . . . . . . . . . . . . . . . . . . . . .   4
      2.2.  RFC2119 Keywords  . . . . . . . . . . . . . . . . . . . .   4
    3.  Process Overview  . . . . . . . . . . . . . . . . . . . . . .   4
-     3.1.  Identifying the Registrar . . . . . . . . . . . . . . . .   4
+     3.1.  Identifying the Registration Entity . . . . . . . . . . .   4
      3.2.  Establishing a Chain of Trust . . . . . . . . . . . . . .   5
      3.3.  Maintaining the Chain of Trust  . . . . . . . . . . . . .   5
      3.4.  Other Delegation Maintenance  . . . . . . . . . . . . . .   5
@@ -103,9 +105,7 @@ Table of Contents
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Document History . . . . . . . . . . . . . . . . . .  12
-     A.1.  regext Version 03 . . . . . . . . . . . . . . . . . . . .  12
-     A.2.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
-     A.3.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
+     A.1.  regext Version 04 (future publication)  . . . . . . . . .  12
 
 
 
@@ -114,11 +114,14 @@ Latour, et al.         Expires September 13, 2017               [Page 2]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
-     A.4.  regext Version 00 . . . . . . . . . . . . . . . . . . . .  13
-     A.5.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.6.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.7.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  13
-     A.8.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.2.  regext Version 03 . . . . . . . . . . . . . . . . . . . .  12
+     A.3.  regext Version 02 . . . . . . . . . . . . . . . . . . . .  13
+     A.4.  regext Version 01 . . . . . . . . . . . . . . . . . . . .  13
+     A.5.  regext Version 00 . . . . . . . . . . . . . . . . . . . .  13
+     A.6.  Version 03  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.7.  Version 02  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.8.  Version 01  . . . . . . . . . . . . . . . . . . . . . . .  13
+     A.9.  Version 00  . . . . . . . . . . . . . . . . . . . . . . .  14
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
@@ -132,11 +135,11 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    these parties.  The Registrar can make changes directly in the
    Registry systems through some API (typically EPP [RFC5730]).  The
    Registrant is typically limited to using a web interface supplied by
-   the Registrar.  A third party DNS Operator must to go through the
-   Registrant to update any delegation information.
+   the Registrar or Reseller.  A third party DNS Operator must to go
+   through the Registrant to update any delegation information.
 
    In this last case, the operator must contact and engage the
-   Registrant in updating NS and DS records for the delegation.  New
+   Registrant in updating DS records for the delegation.  New
    information must be communicated to the Registrant, who must submit
    that information to the Registrar.  Typically this involves cutting
    and pasting between email and a web interface, which is error prone.
@@ -162,9 +165,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 
 
-
-
-
 Latour, et al.         Expires September 13, 2017               [Page 3]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
@@ -183,11 +183,14 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    In this document, unless otherwise noted, the child is the third-
    party DNS operator and the parent is the Registry.
 
-   Uses of the words "Registrar" or "Registration Entity" in this
-   document may also be applied to Resellers or to Registries that
-   engage in registration activities directly with Registrants.  Unless
-   otherwise noted, they are used to refer to the entity which has a
-   direct business relationship with the Registrant.
+   Use of the term "Registration Entity" in this document may refer to
+   any party that engages directly in registration activities with the
+   Registrant.  Typically this will be a Reseller or Registrar, but in
+   some cases, such as when a Registry directly sells registrations to
+   the public, may apply to the Registry.  Even in cases where a
+   Registrar is involved, this term may still apply to a Registry if
+   that Registry normally accepts DS/DNSKEY updates directly from
+   Registrants.
 
 2.2.  RFC2119 Keywords
 
@@ -197,11 +200,11 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 3.  Process Overview
 
-3.1.  Identifying the Registrar
+3.1.  Identifying the Registration Entity
 
    As of publication of this document, there has never been a
    standardized or widely deployed method for easily and scalably
-   identifying the Registar for a particular registration.
+   identifying the Registration Entity for a particular registration.
 
    At this time, WHOIS [RFC3912] is the only widely deployed protocol to
    carry such information, but WHOIS responses are unstructured text,
@@ -216,9 +219,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    referral system, however at this time RDAP has yet to be deployed at
    most Registries.
 
-   With no current mechanism in place to scalably discover the Registar
-   for a particular registration, the problem of automatic discovery of
-
 
 
 Latour, et al.         Expires September 13, 2017               [Page 4]
@@ -226,6 +226,8 @@ Latour, et al.         Expires September 13, 2017               [Page 4]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
+   With no current mechanism in place to scalably discover the Registar
+   for a particular registration, the problem of automatic discovery of
    the base URL of the API is considered out of scope of this document.
    The authors recommend standardization of an RDAP extension to obtain
    this information from the Registry.
@@ -237,29 +239,27 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    DNSSEC validation enabled by publishing one of the special DNS
    records CDS and/or CDNSKEY as defined in [RFC7344] and [RFC8078].
 
-      [RFC Editor: The above I-D reference should be replaced with the
-      correct RFC number upon publication.]
+   In the case of an insecure delegation, the Registration Entity will
+   normally not be scanning the child zone for CDS/CDNSKEY records.  The
+   child operator can use this protocol to notify the Registration
+   Entity to begin such a scan.
 
-   In the case of an insecure delegation, the Registrar will normally
-   not be scanning the child zone for CDS/CDNSKEY records.  The child
-   operator can use this protocol to notify the Registrar to begin such
-   a scan.
-
-   Once the Registrar sees these records it SHOULD start acceptance
-   processing.
+   Once the Registration Entity sees these records it SHOULD start
+   acceptance processing.
 
 3.3.  Maintaining the Chain of Trust
 
-   One the secure chain of trust is established, the Registrar SHOULD
-   regularly check the child zone for CDS/CDNSKEY record changes.  The
-   Registrar SHOULD also accept signals via this protocol to immediately
-   check the child zone for CDS/CDNSKEY records.
+   One the secure chain of trust is established, the Registration Entity
+   SHOULD regularly check the child zone for CDS/CDNSKEY record changes.
+   The Registration Entity SHOULD also accept signals via this protocol
+   to immediately check the child zone for CDS/CDNSKEY records.
 
    Server implementations of this protocol MAY include rate limiting to
    protect their systems and the systems of child operators from abuse.
 
-   Each parent operator and Registrar is responsible for developing,
-   implementing, and communicating their DNSSEC maintenance policies.
+   Each parent operator and Registration Entity is responsible for
+   developing, implementing, and communicating their DNSSEC maintenance
+   policies.
 
 3.4.  Other Delegation Maintenance
 
@@ -267,10 +267,10 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 3.5.  Acceptance Processing
 
-   The Registrar, upon receiving a signal or detecting through polling
-   that the child desires to have its delegation updated, SHOULD run a
-   series of tests to ensure that updating the parent zone will not
-   create or exacerbate any problems with the child zone.  The basic
+   The Registration Entity, upon receiving a signal or detecting through
+   polling that the child desires to have its delegation updated, SHOULD
+   run a series of tests to ensure that updating the parent zone will
+   not create or exacerbate any problems with the child zone.  The basic
    tests SHOULD include:
 
 
@@ -283,7 +283,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 
    o  checking that the child zone is is properly signed as per the
-      Registrar and parent DNSSEC policy
+      Registration Entity and parent DNSSEC policies
 
    o  if updating the DS record, checking that the child CDS RRset
       references a KSK which is present in the child DNSKEY RRset and
@@ -292,14 +292,15 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    o  ensuring all name servers in the apex NS RRset of the child zone
       agree on the apex NS RRset and CDS RRset contents
 
-   The Registrar SHOULD NOT make any changes to the DS RRset if the
-   child name servers do not agree on the CDS/CDNSKEY content.
+   The Registration Entity SHOULD NOT make any changes to the DS RRset
+   if the child name servers do not agree on the CDS/CDNSKEY content.
 
-      [NOTE: Do we need a new section in the DPS for the CDS management
-      policy [RFC6841]?]
+      [NOTE to be removed before publication: Do we need a new section
+      in the DPS for the CDS management policy [RFC6841]?]
 
-   Registrars MAY require compliance with additional tests, particularly
-   in the case of establishing a new chain of trust, such as:
+   Registration Entities MAY require compliance with additional tests,
+   particularly in the case of establishing a new chain of trust, such
+   as:
 
    o  checking that all child name servers to respond with a consistent
       CDS/CDNSKEY RRset for a number of queries over an extended period
@@ -322,14 +323,13 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    return a status code indicating that it has received a request, and
    close the connection.  It is up to the child to monitor the parent
    for completion of the operation, and issue possible follow-up calls
-   to the Registrar.
+   to the Registration Entity.
 
    Clients may be denied access to change the DS records for domains
    that are Registry Locked (HTTP Status code 401).  Registry Lock is a
    mechanism provided by certain Registries or Registrars that prevents
    domain hijacking by ensuring no attributes of the domain are
-   changeable, and no transfer or deletion transactions can be processed
-   against the domain name without manual intervention.
+
 
 
 
@@ -337,6 +337,9 @@ Latour, et al.         Expires September 13, 2017               [Page 6]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
 
+
+   changeable, and no transfer or deletion transactions can be processed
+   against the domain name without manual intervention.
 
 4.1.  Authentication
 
@@ -349,15 +352,17 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    The publication of CDS/CDNSKEY records in the child zone is an
    indication that the child operator intends to perform DS-record-
    updating activities (add/delete) in the parent zone.  Since this
-   protocol is simply a signal to the Registrar that they should examine
-   the child zone for such intentions, additional authentication of the
-   client making the request is considered unnecessary.
+   protocol is simply a signal to the Registration Entity that they
+   should examine the child zone for such intentions, additional
+   authentication of the client making the request is considered
+   unnecessary.
 
-   Registrars MAY implement their own policy to protect access to the
-   API, such as with IP whitelisting, client TLS certificates, etc..
-   Registrars SHOULD take steps to ensure that a lack of additional
-   authentication does not open up a denial of service mechanism against
-   the systems of the Registrar, the Registry, or the child operator.
+   Registration Entities MAY implement their own policy to protect
+   access to the API, such as with IP whitelisting, client TLS
+   certificates, etc..  Registration Entities SHOULD take steps to
+   ensure that a lack of additional authentication does not open up a
+   denial of service mechanism against the systems of the Registration
+   Entity, the Registry, or the child operator.
 
 4.2.  RESTful Resources
 
@@ -381,11 +386,6 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    The body of the POST SHOULD be empty, however server implementations
    SHOULD NOT reject nonempty requests.
-
-
-
-
-
 
 
 
@@ -416,8 +416,8 @@ Internet-Draft                  3-DNS-RRR                     March 2017
       reasons.
 
    This request is for setting up initial trust in the delegation.  The
-   Registrar SHOULD return a status code 409 if it already has a DS
-   RRset for the child zone.
+   Registration Entity SHOULD return a status code 409 if it already has
+   a DS RRset for the child zone.
 
    Upon receipt of a 403 response the child operator SHOULD issue a POST
    for the "token" resource to fetch a challenge token to insert into
@@ -429,9 +429,9 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    Syntax: DELETE /domains/{domain}/cds
 
-   Request that the Registrar check for a null CDS or CDNSKEY record in
-   the child zone, indicating a request that the entire DS RRset be
-   removed.  This will make the delegation insecure.
+   Request that the Registration Entity check for a null CDS or CDNSKEY
+   record in the child zone, indicating a request that the entire DS
+   RRset be removed.  This will make the delegation insecure.
 
 4.2.1.2.2.  Response
 
@@ -463,10 +463,10 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    Syntax: PUT /domains/{domain}/cds
 
-   Request that the Registrar modify the DS RRset based on the CDS/
-   CDNSKEY available in the child zone.  As a result of this request the
-   Registrar SHOULD add or delete DS records as indicated by the CDS/
-   CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
+   Request that the Registration Entity modify the DS RRset based on the
+   CDS/CDNSKEY available in the child zone.  As a result of this request
+   the Registration Entity SHOULD add or delete DS records as indicated
+   by the CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
 
 4.2.1.3.2.  Response
 
@@ -495,9 +495,9 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    Syntax: GET /domains/{domain}/token
 
-   The DNSSEC policy of the Registrar may require proof that the DNS
-   Operator is in control of the domain.  The token API call returns a
-   random token to be included as a TXT record for the _delegate.@
+   The DNSSEC policy of the Registration Entity may require proof that
+   the DNS Operator is in control of the domain.  The token API call
+   returns a random token to be included as a TXT record for the
 
 
 
@@ -506,7 +506,7 @@ Latour, et al.         Expires September 13, 2017               [Page 9]
 Internet-Draft                  3-DNS-RRR                     March 2017
 
 
-   domain name (where @ is the apex of the child zone) prior
+   _delegate.@ domain name (where @ is the apex of the child zone) prior
    establishing the DNSSEC initial trust.  This is an additional trust
    control mechanism to establish the initial chain of trust.
 
@@ -514,9 +514,9 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    in the zone and the operator SHOULD proceed with a POST of the cds
    resource.
 
-   The Registrar MAY expire the token after a reasonable period.  The
-   Registrar SHOULD document an explanation of whether and when tokens
-   are expired in their DNSSEC policy.
+   The Registration Entity MAY expire the token after a reasonable
+   period.  The Registration Entity SHOULD document an explanation of
+   whether and when tokens are expired in their DNSSEC policy.
 
    Note that the _delegate TXT record is publicly available and not a
    secret token.
@@ -533,24 +533,24 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 4.3.  Customized Error Messages
 
-   Registrars MAY provide a customized error message in the response
-   body in addition to the HTTP status code defined in the previous
-   section.  This response MAY include an identifying number/string that
-   can be used to track the request.
+   Registration Entities MAY provide a customized error message in the
+   response body in addition to the HTTP status code defined in the
+   previous section.  This response MAY include an identifying number/
+   string that can be used to track the request.
 
 5.  Security considerations
 
    When zones are properly provisioned, and delegations follow standards
    and best practices (e.g.
-   [I-D.wallstrom-dnsop-dns-delegation-requirements]), the Registrar or
-   Registry can trust the DNS information it receives from multiple
-   child name servers, over time, and/or over TCP to establish the
-   initial chain of trust.
+   [I-D.wallstrom-dnsop-dns-delegation-requirements]), the Registration
+   Entity or Registry can trust the DNS information it receives from
+   multiple child name servers, over time, and/or over TCP to establish
+   the initial chain of trust.
 
-   In addition, the Registrar or Registry can require the DNS Operator
-   to prove they control the zone by requiring the child operator to
-   navigate additional hurdles, such as adding a challenge token to the
-   zone.
+   In addition, the Registration Entity or Registry can require the DNS
+   Operator to prove they control the zone by requiring the child
+   operator to navigate additional hurdles, such as adding a challenge
+   token to the zone.
 
 
 
@@ -577,7 +577,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 7.  Internationalization Considerations
 
    This protocol is designed for machine to machine communications.
-   Clients and servers should use punycode [RFC3492] when operating on
+   Clients and servers SHOULD use punycode [RFC3492] when operating on
    internationalized domain names.
 
 8.  References
@@ -652,7 +652,12 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
 Appendix A.  Document History
 
-A.1.  regext Version 03
+A.1.  regext Version 04 (future publication)
+
+   o  changed uses of Registrar to Registration Entity and updated
+      definitions to improve clarity
+
+A.2.  regext Version 03
 
    o  simplify abstract
 
@@ -661,11 +666,6 @@ A.1.  regext Version 03
    o  added HTTP response codes for rate limiting (429), missing DS
       RRsets (412)
 
-   o  expanded on Internationalization Considerations
-
-   o  corrected informative/normative document references
-
-   o  clarify parent/Registrar references in the draft
 
 
 
@@ -673,6 +673,12 @@ Latour, et al.         Expires September 13, 2017              [Page 12]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
 
+
+   o  expanded on Internationalization Considerations
+
+   o  corrected informative/normative document references
+
+   o  clarify parent/Registrar references in the draft
 
    o  general spelling/grammar/style cleanup
 
@@ -684,14 +690,14 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    o  Updated refernce to RFC8078
 
-A.2.  regext Version 02
+A.3.  regext Version 02
 
    o  Clarified based on comments and questions from early implementors
       (JL)
 
    o  Text edits and clarifications.
 
-A.3.  regext Version 01
+A.4.  regext Version 01
 
    o  Rewrote Abstract and Into (MP)
 
@@ -699,28 +705,22 @@ A.3.  regext Version 01
 
    o  Text edits and clarifications.
 
-A.4.  regext Version 00
+A.5.  regext Version 00
 
    o  Working group document same as 03, just track changed to standard
 
-A.5.  Version 03
+A.6.  Version 03
 
    o  Clarified based on comments and questions from early implementors
 
-A.6.  Version 02
+A.7.  Version 02
 
    o  Reflected comments on mailing lists
 
-A.7.  Version 01
+A.8.  Version 01
 
    o  This version adds a full REST definition this is based on
       suggestions from Jakob Schlyter.
-
-A.8.  Version 00
-
-   o  First rough version
-
-
 
 
 
@@ -729,6 +729,10 @@ Latour, et al.         Expires September 13, 2017              [Page 13]
 
 Internet-Draft                  3-DNS-RRR                     March 2017
 
+
+A.9.  Version 00
+
+   o  First rough version
 
 Authors' Addresses
 
@@ -758,10 +762,6 @@ Authors' Addresses
    Toronto, ON
 
    Email: matt@conundrum.com
-
-
-
-
 
 
 
