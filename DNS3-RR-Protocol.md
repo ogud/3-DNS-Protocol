@@ -189,7 +189,7 @@ any problems with the child zone. The basic tests SHOULD include:
   - ensuring all name servers in the apex NS RRset of the child zone agree on the apex NS RRset and CDS RRset contents
 
 The Registration Entity SHOULD NOT make any changes to the DS RRset if the
-child name servers do not agree on the CDS/CDNSKEY content.
+child name servers do not agree on the CDS content.
 
 A> [NOTE to be removed before publication: Do we need a new section in the DPS
 A> for the CDS management policy [@RFC6841]?]
@@ -229,7 +229,7 @@ protocol. The API MUST be provided over TLS-protected transport (e.g., HTTPS)
 or VPN.
 
 Client authentication is considered out of scope of this document.  The
-publication of CDS/CDNSKEY records in the child zone is an indication that the
+publication of CDS records in the child zone is an indication that the
 child operator intends to perform DS-record-updating activities (add/delete)
 in the parent zone.  Since this protocol is simply a signal to the
 Registration Entity that they should examine the child zone for such
@@ -304,10 +304,7 @@ This will make the delegation insecure.
 
 Syntax: PUT /domains/{domain}/cds
 
-Request that the Registration Entity modify the DS RRset based on the
-CDS/CDNSKEY available in the child zone.  As a result of this request the
-Registration Entity SHOULD add or delete DS records as indicated by the
-CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
+Request that the Registration Entity modify the DS RRset based on the CDS/CDNSKEY available in the child zone.  As a result of this request the Registration Entity SHOULD add or delete DS or DNSKEY records as indicated by the CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
 
 ##### Response
    - HTTP Status code 200 indicates a success.
