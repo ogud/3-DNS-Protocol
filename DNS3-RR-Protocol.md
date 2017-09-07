@@ -187,9 +187,6 @@ any problems with the child zone. The basic tests SHOULD include:
 The Registration Entity SHOULD NOT make any changes to the DS RRset if the
 child name servers do not agree on the CDS content.
 
-A> [NOTE to be removed before publication: Do we need a new section in the DPS
-A> for the CDS management policy [@RFC6841]?]
-
 ## Bootstrapping DNSSEC
 	
 Registration Entities SHOULD require compliance with additional tests in the case of establishing a new chain of trust.
