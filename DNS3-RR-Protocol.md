@@ -133,6 +133,8 @@ Registry.  Even in cases where a Registrar is involved, this term may still
 apply to a Registry if that Registry normally accepts DS/DNSKEY updates
 directly from Registrants.
 
+The CDS and CDNSKEY DNS resource records, having substantially the same function but for different record types, are used interchangably in this document.  Unless otherwise noted, any use of "CDS" or "CDNSKEY" can be assumed to also refer to the other.
+
 ## RFC2119 Keywords
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
@@ -417,6 +419,7 @@ domain names.
 ## regext Version 04 (future publication)
   - changed uses of Registrar to Registration Entity and updated definitions
 	to improve clarity
+  - adding note about CDS/CDNSKEY interchangability in this document
 
 ## regext Version 03
   - simplify abstract
