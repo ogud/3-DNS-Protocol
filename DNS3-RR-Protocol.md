@@ -173,10 +173,6 @@ their systems and the systems of child operators from abuse.
 Each parent operator and Registration Entity is responsible for developing,
 implementing, and communicating their DNSSEC maintenance policies.
 
-## Other Delegation Maintenance
-
-A> [ Not yet defined ]
-
 ## Acceptance Processing
 
 The Registration Entity, upon receiving a signal or detecting through polling
@@ -398,6 +394,7 @@ domain names.
   - adding note about CDS/CDNSKEY interchangability in this document
   - added advice to scan all delegations (including insecure delegations) for CDS in order to bootstrap or update DNSSEC
   - added advice on EPP/CDS conflict resolution (suggestion from IETF99 REGEXT meeting)
+  - removed "Other Delegation Maintenance" section, since we decided a while ago not to use this to update NS
 
 ## regext Version 03
   - simplify abstract
