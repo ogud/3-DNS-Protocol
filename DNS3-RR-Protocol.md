@@ -206,6 +206,10 @@ Registration Entities SHOULD require compliance with additional tests in the cas
 
  - The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See (FIXME SECTION REFERENCE) below.
   
+## Conflict Resolution
+
+A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP [@RFC5730]) may from time to time receive conflicting information from these two channels.  The Registration Entity SHOULD prefer data obtained from CDS, as the child zone operator must be trusted to know best what the current state of zone signing is for the child zone.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
+
 # API Definition
 
 This protocol is partially synchronous, meaning the server can elect to hold
@@ -393,6 +397,7 @@ domain names.
 	to improve clarity
   - adding note about CDS/CDNSKEY interchangability in this document
   - added advice to scan all delegations (including insecure delegations) for CDS in order to bootstrap or update DNSSEC
+  - added advice on EPP/CDS conflict resolution (suggestion from IETF99 REGEXT meeting)
 
 ## regext Version 03
   - simplify abstract
