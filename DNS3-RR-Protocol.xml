@@ -108,26 +108,9 @@ Registrants to maintain their own domains if they wish.
 <middle>
 
 <section anchor="introduction" title="Introduction">
-<t>After a domain has been registered, one of three parties will maintain the DNS
-zone loaded on the &quot;primary&quot; DNS servers: the Registrant, the Registrar, or a
-third party DNS operator.  DNS registration systems were originally designed
-around making registrations easy and fast, however after registration the
-complexity of making changes to the delegation differs for each of these
-parties.  The Registrar can make changes directly in the Registry systems
-through some API (typically EPP <xref target="RFC5730"/>).  The Registrant is typically
-limited to using a web interface supplied by the Registrar or Reseller.  A
-third party DNS Operator must to go through the Registrant to update any
-delegation information.
+<t>After a domain has been registered, one of three parties will maintain the DNS zone loaded on the &quot;primary&quot; DNS servers: the Registrant, the Registrar, or a third party DNS operator.  DNS registration systems were originally designed around making registrations easy and fast, however after registration the complexity of making changes to the delegation differs for each of these parties.  The Registrar can make changes directly in the Registry systems through some API (typically EPP <xref target="RFC5730"/>).  The Registrant is typically limited to using a web interface supplied by the Registrar or Reseller.  Typically, a third party DNS Operator must to go through the Registrant to update any delegation information.
 </t>
-<t>In this last case, the operator must contact and engage the Registrant in
-updating DS records for the delegation.  New information must be communicated
-to the Registrant, who must submit that information to the Registrar.
-Typically this involves cutting and pasting between email and a web interface,
-which is error prone.  Furthermore, involving Registrants in this way does not
-scale for even moderately sized DNS operators. Tracking thousands (or
-millions) of changes sent to customers, and following up if those changes are
-not submitted to the Registrar, or are submitted with errors, is itself
-expensive and error prone.
+<t>Unless the responsible Registration Entity is scanning child zones for CDS records in order to bootstrap or update DNSSEC, the operator must contact and engage the Registrant in updating DS records for the delegation.  New information must be communicated to the Registrant, who must submit that information to the Registrar.  Typically this involves cutting and pasting between email and a web interface, which is error prone.  Furthermore, involving Registrants in this way does not scale for even moderately sized DNS operators. Tracking thousands (or millions) of changes sent to customers, and following up if those changes are not submitted to the Registrar, or are submitted with errors, is itself expensive and error prone.
 </t>
 <t>The current system does not work well, as there are many types of failures
 that have been reported at all levels in the registration model.  The failures
@@ -164,6 +147,8 @@ Registry.  Even in cases where a Registrar is involved, this term may still
 apply to a Registry if that Registry normally accepts DS/DNSKEY updates
 directly from Registrants.
 </t>
+<t>The CDS and CDNSKEY DNS resource records, having substantially the same function but for different record types, are used interchangably in this document.  Unless otherwise noted, any use of &quot;CDS&quot; or &quot;CDNSKEY&quot; can be assumed to also refer to the other.
+</t>
 </section>
 
 <section anchor="rfc2119-keywords" title="RFC2119 Keywords">
@@ -193,7 +178,7 @@ infeasible to solve.
 unstructured responses, and a consistently implemented referral system,
 however at this time RDAP has yet to be deployed at most Registries.
 </t>
-<t>With no current mechanism in place to scalably discover the Registar for a
+<t>With no current mechanism in place to scalably discover the Registrar for a
 particular registration, the problem of automatic discovery of the base URL
 of the API is considered out of scope of this document.  The authors recommend
 standardization of an RDAP extension to obtain this information from the
@@ -207,20 +192,16 @@ the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
 <xref target="RFC7344"/> and <xref target="RFC8078"/>.
 </t>
-<t>In the case of an insecure delegation, the Registration Entity will normally
-not be scanning the child zone for CDS/CDNSKEY records.  The child operator
-can use this protocol to notify the Registration Entity to begin such a scan.
+<t>Registration Entities MAY regularly scan the child name servers of unsecured delegations for CDS records in order to bootstrap DNSSEC, and are advised to do so.  At the time of publication, some ccTLD Registries are already doing this.  A Registration Entity that regularly scans all child zones under its responsibility (both secured and unsecured) for CDS will not require the API described in this document.  However, such a Registration Entity should follow the guidelines discussed in <xref target="bootstrap"/> below when using CDS to bootstrap DNSSEC on a previously unsecured delegation.
 </t>
-<t>Once the Registration Entity sees these records it SHOULD start acceptance
-processing.
+<t>In the case where the Registration Entity is not normally scanning child zones for CDS records, the Registration Entity SHOULD implement the API from this document, allowing child operators to notify the Registration Entity to begin such a scan.
+</t>
+<t>Once the Registration Entity finds CDS records in a child zone it is responsible for, or receives a signal via this API, it SHOULD start acceptance processing as described below.
 </t>
 </section>
 
 <section anchor="maintaining-the-chain-of-trust" title="Maintaining the Chain of Trust">
-<t>One the secure chain of trust is established, the Registration Entity SHOULD
-regularly check the child zone for CDS/CDNSKEY record changes.  The
-Registration Entity SHOULD also accept signals via this protocol to
-immediately check the child zone for CDS/CDNSKEY records.
+<t>One the secure chain of trust is established, the Registration Entity SHOULD regularly scan the child zone for CDS record changes.  If the Registration Entity implements the protocol described in this document, then it SHOULD also accept signals via this protocol to immediately check the child zone for CDS records.
 </t>
 <t>Server implementations of this protocol MAY include rate limiting to protect
 their systems and the systems of child operators from abuse.
@@ -228,13 +209,6 @@ their systems and the systems of child operators from abuse.
 <t>Each parent operator and Registration Entity is responsible for developing,
 implementing, and communicating their DNSSEC maintenance policies.
 </t>
-</section>
-
-<section anchor="other-delegation-maintenance" title="Other Delegation Maintenance">
-<t><list style="empty">
-<t>[ Not yet defined ]
-</t>
-</list></t>
 </section>
 
 <section anchor="acceptance-processing" title="Acceptance Processing">
@@ -245,39 +219,31 @@ any problems with the child zone. The basic tests SHOULD include:
 </t>
 <t>
 <list style="symbols">
-<t>checking that the child zone is is properly signed as per the Registration
-Entity and parent DNSSEC policies</t>
-<t>if updating the DS record, checking that the child CDS RRset references a
-KSK which is present in the child DNSKEY RRset and signs the CDS RRset</t>
-<t>ensuring all name servers in the apex NS RRset of the child zone agree on
-the apex NS RRset and CDS RRset contents</t>
+<t>checks that the child zone is is properly signed as per the Registration Entity and parent DNSSEC policies</t>
+<t>if updating the DS record, a check to ensure the child CDS RRset references a KSK which is present in the child DNSKEY RRset and signs the CDS RRset</t>
+<t>ensuring all name servers in the apex NS RRset of the child zone agree on the apex NS RRset and CDS RRset contents</t>
 </list>
 </t>
 <t>The Registration Entity SHOULD NOT make any changes to the DS RRset if the
-child name servers do not agree on the CDS/CDNSKEY content.
+child name servers do not agree on the CDS content.
 </t>
-<t><list style="empty">
-<t>[NOTE to be removed before publication: Do we need a new section in the DPS
-for the CDS management policy <xref target="RFC6841"/>?]
-</t>
-</list></t>
-<t>Registration Entities MAY require compliance with additional tests,
-particularly in the case of establishing a new chain of trust, such as:
+</section>
+
+<section anchor="bootstrap" title="Bootstrapping DNSSEC">
+<t>Registration Entities SHOULD require compliance with additional tests in the case of establishing a new chain of trust.
 </t>
 <t>
 <list style="symbols">
-<t>checking that all child name servers to respond with a consistent
-CDS/CDNSKEY RRset for a number of queries over an extended period of time
-to minimise the possibility of an attacker spoofing responses</t>
-<t>requiring the child name servers to respond with identical CDS/CDNSKEY
-RRsets over TCP</t>
-<t>ensuring zone delegation best practices (for examples, see
-<xref target="I-D.wallstrom-dnsop-dns-delegation-requirements"/></t>
-<t>requiring the child operator to prove they can add data to the zone (for
-example, by publishing a particular token)
-
-<vspace/></t>
+<t>The Registration Entity SHOULD check that all child name servers respond with a consistent CDS RRset for a number of queries over an extended period of time.  Any change in DS response or inconsistency between child responses in that time might indicate an attempted Man in the Middle (MITM) attack, and SHOULD reset the test.  This minimizes the possibility of an attacker spoofing responses.  An example of such a policy might be to scan all child name servers in the delegation NS set every two hours for a week.</t>
+<t>The Registration Entity SHOULD require all of the child name servers in the delegation NS set to send the same response to a CDS query whether sent over TCP or UDP.</t>
+<t>The Registration Entity MAY require the child zone to implement zone delegation best practices as described in <xref target="I-D.wallstrom-dnsop-dns-delegation-requirements"/>.</t>
+<t>The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See <xref target="token"/> below.</t>
 </list>
+</t>
+</section>
+
+<section anchor="conflict-resolution" title="Conflict Resolution">
+<t>A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP <xref target="RFC5730"/>) may from time to time receive conflicting information from these two channels.  The Registration Entity SHOULD prefer data obtained from CDS, as the child zone operator must be trusted to know best what the current state of zone signing is for the child zone.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
 </t>
 </section>
 </section>
@@ -304,7 +270,7 @@ protocol. The API MUST be provided over TLS-protected transport (e.g., HTTPS)
 or VPN.
 </t>
 <t>Client authentication is considered out of scope of this document.  The
-publication of CDS/CDNSKEY records in the child zone is an indication that the
+publication of CDS records in the child zone is an indication that the
 child operator intends to perform DS-record-updating activities (add/delete)
 in the parent zone.  Since this protocol is simply a signal to the
 Registration Entity that they should examine the child zone for such
@@ -312,7 +278,7 @@ intentions, additional authentication of the client making the request is
 considered unnecessary.
 </t>
 <t>Registration Entities MAY implement their own policy to protect access to the
-API, such as with IP whitelisting, client TLS certificates, etc..
+API, such as with IP white listing, client TLS certificates, etc..
 Registration Entities SHOULD take steps to ensure that a lack of additional
 authentication does not open up a denial of service mechanism against the
 systems of the Registration Entity, the Registry, or the child operator.
@@ -396,10 +362,7 @@ This will make the delegation insecure.
 <section anchor="request-2" title="Request">
 <t>Syntax: PUT /domains/{domain}/cds
 </t>
-<t>Request that the Registration Entity modify the DS RRset based on the
-CDS/CDNSKEY available in the child zone.  As a result of this request the
-Registration Entity SHOULD add or delete DS records as indicated by the
-CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
+<t>Request that the Registration Entity modify the DS RRset based on the CDS/CDNSKEY available in the child zone.  As a result of this request the Registration Entity SHOULD add or delete DS or DNSKEY records as indicated by the CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
 </t>
 </section>
 
@@ -419,7 +382,7 @@ CDS/CDNSKEY RRset, but MUST NOT delete the entire DS RRset.
 </section>
 </section>
 
-<section anchor="token-resource" title="Token resource">
+<section anchor="token" title="Token resource">
 <t>Path: /domains/{domain}/token
 </t>
 
@@ -505,20 +468,19 @@ domain names.
 </middle>
 <back>
 <references title="Normative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3492.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6690.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7344.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8078.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3492.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6690.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7344.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8078.xml"?>
 </references>
 <references title="Informative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-terminology-bis.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.wallstrom-dnsop-dns-delegation-requirements.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3912.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6841.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7480.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7719.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-terminology-bis.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.wallstrom-dnsop-dns-delegation-requirements.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3912.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7480.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7719.xml"?>
 </references>
 
 <section anchor="document-history" title="Document History">
@@ -528,6 +490,10 @@ domain names.
 <list style="symbols">
 <t>changed uses of Registrar to Registration Entity and updated definitions
 to improve clarity</t>
+<t>adding note about CDS/CDNSKEY interchangability in this document</t>
+<t>added advice to scan all delegations (including insecure delegations) for CDS in order to bootstrap or update DNSSEC</t>
+<t>added advice on EPP/CDS conflict resolution (suggestion from IETF99 REGEXT meeting)</t>
+<t>removed &quot;Other Delegation Maintenance&quot; section, since we decided a while ago not to use this to update NS</t>
 </list>
 </t>
 </section>
@@ -546,7 +512,7 @@ to improve clarity</t>
 <t>removed references to NS and glue maintenance</t>
 <t>clarify content of POST body for 'cds' resource</t>
 <t>change verb for obtaining a 'token' to GET</t>
-<t>Updated refernce to RFC8078</t>
+<t>Updated reference to RFC8078</t>
 </list>
 </t>
 </section>
