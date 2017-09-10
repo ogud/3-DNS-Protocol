@@ -256,8 +256,8 @@ Internet-Draft                  3-DNS-RRR                     March 2017
    regularly scans all child zones under its responsibility (both
    secured and unsecured) for CDS will not require the API described in
    this document.  However, such a Registration Entity should follow the
-   guidelines discussed in (FIXME SECTION REFERENCE) below when using
-   CDS to bootstrap DNSSEC on a previously unsecured delegation.
+   guidelines discussed in Section 3.5 below when using CDS to bootstrap
+   DNSSEC on a previously unsecured delegation.
 
    In the case where the Registration Entity is not normally scanning
    child zones for CDS records, the Registration Entity SHOULD implement
@@ -344,7 +344,7 @@ Internet-Draft                  3-DNS-RRR                     March 2017
 
    o  The Registration Entity MAY require the child operator to prove
       they can add data to the zone, for example by publishing a
-      particular token.  See (FIXME SECTION REFERENCE) below.
+      particular token.  See Section 4.2.2 below.
 
 3.6.  Conflict Resolution
 

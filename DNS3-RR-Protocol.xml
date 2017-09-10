@@ -192,7 +192,7 @@ the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
 <xref target="RFC7344"/> and <xref target="RFC8078"/>.
 </t>
-<t>Registration Entities MAY regularly scan the child name servers of unsecured delegations for CDS records in order to bootstrap DNSSEC, and are advised to do so.  At the time of publication, some ccTLD Registries are already doing this.  A Registration Entity that regularly scans all child zones under its responsibility (both secured and unsecured) for CDS will not require the API described in this document.  However, such a Registration Entity should follow the guidelines discussed in (FIXME SECTION REFERENCE) below when using CDS to bootstrap DNSSEC on a previously unsecured delegation.
+<t>Registration Entities MAY regularly scan the child name servers of unsecured delegations for CDS records in order to bootstrap DNSSEC, and are advised to do so.  At the time of publication, some ccTLD Registries are already doing this.  A Registration Entity that regularly scans all child zones under its responsibility (both secured and unsecured) for CDS will not require the API described in this document.  However, such a Registration Entity should follow the guidelines discussed in <xref target="bootstrap"/> below when using CDS to bootstrap DNSSEC on a previously unsecured delegation.
 </t>
 <t>In the case where the Registration Entity is not normally scanning child zones for CDS records, the Registration Entity SHOULD implement the API from this document, allowing child operators to notify the Registration Entity to begin such a scan.
 </t>
@@ -229,7 +229,7 @@ child name servers do not agree on the CDS content.
 </t>
 </section>
 
-<section anchor="bootstrapping-dnssec" title="Bootstrapping DNSSEC">
+<section anchor="bootstrap" title="Bootstrapping DNSSEC">
 <t>Registration Entities SHOULD require compliance with additional tests in the case of establishing a new chain of trust.
 </t>
 <t>
@@ -237,7 +237,7 @@ child name servers do not agree on the CDS content.
 <t>The Registration Entity SHOULD check that all child name servers respond with a consistent CDS RRset for a number of queries over an extended period of time.  Any change in DS response or inconsistency between child responses in that time might indicate an attempted Man in the Middle (MITM) attack, and SHOULD reset the test.  This minimizes the possibility of an attacker spoofing responses.  An example of such a policy might be to scan all child name servers in the delegation NS set every two hours for a week.</t>
 <t>The Registration Entity SHOULD require all of the child name servers in the delegation NS set to send the same response to a CDS query whether sent over TCP or UDP.</t>
 <t>The Registration Entity MAY require the child zone to implement zone delegation best practices as described in <xref target="I-D.wallstrom-dnsop-dns-delegation-requirements"/>.</t>
-<t>The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See (FIXME SECTION REFERENCE) below.</t>
+<t>The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See <xref target="token"/> below.</t>
 </list>
 </t>
 </section>
@@ -382,7 +382,7 @@ This will make the delegation insecure.
 </section>
 </section>
 
-<section anchor="token-resource" title="Token resource">
+<section anchor="token" title="Token resource">
 <t>Path: /domains/{domain}/token
 </t>
 

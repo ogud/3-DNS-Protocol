@@ -157,7 +157,7 @@ the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
 [@!RFC7344] and [@!RFC8078].
 
-Registration Entities MAY regularly scan the child name servers of unsecured delegations for CDS records in order to bootstrap DNSSEC, and are advised to do so.  At the time of publication, some ccTLD Registries are already doing this.  A Registration Entity that regularly scans all child zones under its responsibility (both secured and unsecured) for CDS will not require the API described in this document.  However, such a Registration Entity should follow the guidelines discussed in (FIXME SECTION REFERENCE) below when using CDS to bootstrap DNSSEC on a previously unsecured delegation.
+Registration Entities MAY regularly scan the child name servers of unsecured delegations for CDS records in order to bootstrap DNSSEC, and are advised to do so.  At the time of publication, some ccTLD Registries are already doing this.  A Registration Entity that regularly scans all child zones under its responsibility (both secured and unsecured) for CDS will not require the API described in this document.  However, such a Registration Entity should follow the guidelines discussed in (#bootstrap) below when using CDS to bootstrap DNSSEC on a previously unsecured delegation.
 
 In the case where the Registration Entity is not normally scanning child zones for CDS records, the Registration Entity SHOULD implement the API from this document, allowing child operators to notify the Registration Entity to begin such a scan.
 
@@ -187,7 +187,7 @@ any problems with the child zone. The basic tests SHOULD include:
 The Registration Entity SHOULD NOT make any changes to the DS RRset if the
 child name servers do not agree on the CDS content.
 
-## Bootstrapping DNSSEC
+## Bootstrapping DNSSEC {#bootstrap}
 	
 Registration Entities SHOULD require compliance with additional tests in the case of establishing a new chain of trust.
 
@@ -197,7 +197,7 @@ Registration Entities SHOULD require compliance with additional tests in the cas
 
  - The Registration Entity MAY require the child zone to implement zone delegation best practices as described in [@I-D.wallstrom-dnsop-dns-delegation-requirements].
 
- - The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See (FIXME SECTION REFERENCE) below.
+ - The Registration Entity MAY require the child operator to prove they can add data to the zone, for example by publishing a particular token.  See (#token) below.
   
 ## Conflict Resolution
 
@@ -312,7 +312,7 @@ Request that the Registration Entity modify the DS RRset based on the CDS/CDNSKE
    - HTTP Status code 429 indicates the client has been rate-limited.
    - HTTP Status code 500 indicates a failure due to unforeseeable reasons.
 
-### Token resource
+### Token resource {#token}
 
 Path: /domains/{domain}/token
 
