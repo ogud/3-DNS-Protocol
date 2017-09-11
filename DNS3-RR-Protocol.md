@@ -202,7 +202,7 @@ Registration Entities SHOULD require compliance with additional tests in the cas
   
 ## Conflict Resolution
 
-A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP [@RFC5730]) may from time to time receive conflicting information from these two channels.  The Registration Entity SHOULD prefer data obtained from CDS, as the child zone operator must be trusted to know best what the current state of zone signing is for the child zone.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
+A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP [@RFC5730]) may from time to time receive conflicting information from these two channels. The Registration Entity SHOULD prefer data obtained from out of band, as the Registrant or Registrar is the trusted entity to perform domain registration changes.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
 
 # API Definition
 
