@@ -70,7 +70,8 @@ rollover.  Under the current model this is prone to delays and errors, as the
 Registrant must participate in updates to DS records.
 
 This document describes a simple protocol that allows a third party DNS
-operator to update DS records for a delegation, in a trusted manner, without
+operatorto establish the initial chain of trust (bootstrap), to update DS records for a 
+delegation, to remove the secure delegation, in a trusted manner, without
 involving the Registrant for each operation. This same protocol can be used by
 Registrants to maintain their own domains if they wish.
 
@@ -165,7 +166,7 @@ Once the Registration Entity finds CDS records in a child zone it is responsible
 
 ## Maintaining the Chain of Trust
 
-One the secure chain of trust is established, the Registration Entity SHOULD regularly scan the child zone for CDS record changes.  If the Registration Entity implements the protocol described in this document, then it SHOULD also accept signals via this protocol to immediately check the child zone for CDS records.
+Once the secure chain of trust is established, the Registration Entity SHOULD regularly scan the child zone for CDS record changes.  If the Registration Entity implements the protocol described in this document, then it SHOULD also accept signals via this protocol to immediately check the child zone for CDS records.
 
 Server implementations of this protocol MAY include rate limiting to protect
 their systems and the systems of child operators from abuse.
@@ -191,9 +192,9 @@ child name servers do not agree on the CDS content.
 	
 Registration Entities SHOULD require compliance with additional tests in the case of establishing a new chain of trust.
 
- - The Registration Entity SHOULD check that all child name servers respond with a consistent CDS RRset for a number of queries over an extended period of time.  Any change in DS response or inconsistency between child responses in that time might indicate an attempted Man in the Middle (MITM) attack, and SHOULD reset the test.  This minimizes the possibility of an attacker spoofing responses.  An example of such a policy might be to scan all child name servers in the delegation NS set every two hours for a week.
+ - The Registration Entity SHOULD check that all child name servers respond with a consistent CDS RRset for a number of queries over an extended period of time.  Any change in DS response or inconsistency between child responses in that time might indicate an attempted Man in the Middle (MITM) attack, and SHOULD reset the test.  This minimizes the possibility of an attacker spoofing responses.  An example of such a policy might be to scan all child name servers in the delegation NS RRset every two hours for a week.
 
- - The Registration Entity SHOULD require all of the child name servers in the delegation NS set to send the same response to a CDS query whether sent over TCP or UDP.
+ - The Registration Entity SHOULD require all of the child name servers in the delegation NS RRset to send the same response to a CDS query whether sent over TCP or UDP.
 
  - The Registration Entity MAY require the child zone to implement zone delegation best practices as described in [@I-D.wallstrom-dnsop-dns-delegation-requirements].
 
