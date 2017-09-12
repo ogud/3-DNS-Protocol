@@ -153,7 +153,7 @@ Registry.
 
 ## Establishing a Chain of Trust
 
-After signing the zone, the child operator needs to upload the DS record(s) to
+After signing the zone, the child DNS Operator needs to upload the DS record(s) to
 the parent.  The child can signal its desire to have DNSSEC validation enabled
 by publishing one of the special DNS records CDS and/or CDNSKEY as defined in
 [@!RFC7344] and [@!RFC8078].
@@ -203,6 +203,8 @@ Registration Entities SHOULD require compliance with additional tests in the cas
 ## Conflict Resolution
 
 A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP [@RFC5730]) may from time to time receive conflicting information from these two channels. The Registration Entity SHOULD prefer data obtained from out of band, as the Registrant or Registrar is the trusted entity to perform domain registration changes.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
+
+The Registry MAY establish a conflict flag attribute by Registrar or by domain to determine if DS maintenance activity via this API is permitted.  In the event a conflict is detected (EPP DS change) for a domain the conflict flag may be set preventing further DS maintenance activity via this API. 
 
 # API Definition
 
