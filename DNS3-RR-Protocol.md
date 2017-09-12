@@ -204,7 +204,7 @@ Registration Entities SHOULD require compliance with additional tests in the cas
 
 A Registration Entity which accepts DS/DNSKEY updates both via CDS/CDNSKEY and via an out of band update mechanism (such as EPP [@RFC5730]) may from time to time receive conflicting information from these two channels. The Registration Entity SHOULD prefer data obtained from out of band, as the Registrant or Registrar is the trusted entity to perform domain registration changes.  The Registration Entity MUST include in its published DNSSEC policy a statement describing how it will resolve such conflicts.
 
-The Registry MAY estalish a conflict flag attribute by Registrar or by domain to detemrine if DS maintenance activity via this API is permitted.  In the event a conflict is detected (EPP DS change) for a domain the conflict flag may be set preventing further DS maintance activity via this API. 
+The Registry MAY establish a conflict flag attribute by Registrar or by domain to determine if DS maintenance activity via this API is permitted.  In the event a conflict is detected (EPP DS change) for a domain the conflict flag may be set preventing further DS maintenance activity via this API. 
 
 # API Definition
 
